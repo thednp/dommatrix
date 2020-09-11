@@ -1,13 +1,12 @@
 {
   "name": "dommatrix",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "ES6/ES7 shim for DOMMatrix",
   "main": "dist/dommatrix.min.js",
   "module": "dist/dommatrix.esm.js",
   "jsnext": "src/index.js",
   "files": [
     "dist/*.{js,map}",
-    "src/**/*.{js,map}",
     "src/*.{js,map}"
   ],
   "scripts": {

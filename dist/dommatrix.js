@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.1 (https://github.com/thednp/dommatrix)
+* DOMMatrix v0.0.3 (https://github.com/thednp/dommatrix)
 * Copyright 2020 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -163,6 +163,7 @@
 	};
 	CSSMatrix.prototype.translate = function translate (x, y, z){
 		if (z == null) { z = 0; }
+		if (y == null) { y = 0; }
 		this.m34 !== 0 && z && (this.is2D = false);
 		return multiply(this, Translate(x, y, z))
 	};
