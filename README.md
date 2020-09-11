@@ -7,9 +7,11 @@ The constructor should work as defined by the [w3c CSS3 3d Transforms](http://ww
 This version comes with the following changes:
  * removed `afine` property and replaced it with `is2D` to be more inline with DOMMatrix
  * added `isIdentity` property
- * removed inverse() instance method
- * removed transform() instance method
- * removed toFullString() instance method
+ * while applying methods the above properties change 
+ * fixed the `translate()` instance method to work with one axis transformation, also inline with DOMMatrix 
+ * removed `inverse()` instance method
+ * removed `transform()` instance method
+ * removed `toFullString()` instance method
 
 
 # Install
