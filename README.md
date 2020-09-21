@@ -198,7 +198,7 @@ Other methods make use of this method to feed their output values from this matr
 
 The `transposed` parameter changes the order of the elements in the output. By default the column major order is used, which is the standard representation of a typical 4x4 3D transformation matrix, however the `CSS` syntax requires the row major order, so we can set this parameter to `true` to facilitate that.
 
-There are also *toFloat64Array()* and *toFloat32Array()* which return a new `Float64Array` / `toFloat32Array` containing all 6/16 elements which comprise the matrix. The elements are stored into the array as double-precision floating-point numbers (`Float64Array`) or single-precision floating-point numbers (`Float32Array`), in column-major (colexographical access access or "colex") order. These last two methods are not yet present in the prototype, but are ready to go.
+There are also *toFloat64Array()* and *toFloat32Array()* which return a new `Float64Array` / `Float32Array` containing all 6/16 elements which comprise the matrix. The elements are stored into the array as double-precision floating-point numbers (`Float64Array`) or single-precision floating-point numbers (`Float32Array`), in column-major (colexographical access access or "colex") order. These last two methods are not yet present in the prototype, but are ready to go.
 
 The result can be immediatelly fed as parameter for the initialization of a new matrix. 
 
