@@ -1,6 +1,10 @@
 # DOMMatrix shim
 
-An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Legacy browsers might need some other shims here and there.
+An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
+
+[![NPM Version](https://img.shields.io/npm/v/dommatrix.svg?style=flat-square)](https://www.npmjs.com/package/dommatrix)
+[![NPM Downloads](https://img.shields.io/npm/dm/dommatrix.svg?style=flat-square)](http://npm-stat.com/charts.html?dommatrix)
+[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/dommatrix/badge)](https://www.jsdelivr.com/package/npm/dommatrix)
 
 The constructor is almost equivalent with the **DOMMatrix** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
 
@@ -29,85 +33,17 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 npm install dommatrix
 ```
 
-# Usage
 
-The initialization doesn't support CSS syntax strings with transform functions like `rotate()` or `translate()` only `matrix()` and `matrix3d()`, or 6/16 elements arrays.
+# CDN
 
-**Basics**
-```js
-// ES6+
-import CSSMatrix from 'dommatrix'
-
-// init
-let myMatrix = new CSSMatrix('matrix(1,0.25,-0.25,1,0,0)')
-```
-
-OR 
-```js
-// Node.js
-var CSSMatrix = require('dommatrix');
-
-// init
-let myMatrix = new CSSMatrix()
-```
+Link available on [jsdelivr](https://www.jsdelivr.com/package/npm/dommatrix).
 
 
-**Advanced API Examples**
+# Standard Methods
 
-```js
-import CSSMatrix from 'dommatrix'
+Main instance methods described in the W3C draft
 
-// init
-let myMatrix = new CSSMatrix('matrix(1,0.25,-0.25,1,0,0)')
-
-// the above is equivalent with providing the values are arguments
-let myMatrix = new CSSMatrix(1,0.25,-0.25,1,0,0)
-// or by providing an Array, Float32Array, Float64Array
-let myMatrix = new CSSMatrix([1,0.25,-0.25,1,0,0])
-
-// call methods to apply transformations
-let myMatrix = new CSSMatrix().translate(15)
-
-// equivalent to 
-let myMatrix = new CSSMatrix().translate(15,0)
-
-// equivalent to 
-let myMatrix = new CSSMatrix().translate(15,0,0)
-
-// rotations work as expected
-let myMatrix = new CSSMatrix().rotate(15)
-// equivalent to 
-let myMatrix = new CSSMatrix().rotate(0,0,15)
-```
-
-
-# Adding Perspective To Matrix
-
-```js
-import CSSMatrix from 'dommatrix'
-
-// perspective
-let perspective = 400
-
-// init
-let myMatrix = new CSSMatrix()
-
-// set perspective
-myMatrix.m34  = -1/perspective
-
-// now your matrix is always 3D
-// we can apply any 3D transformation
-myMatrix = myMatrix.rotate(45,0,0)
-
-// this matrix is now equivalent with this
-// CSS transformation syntax
-// perspective(400px) rotateX(45deg)
-```
-
-
-# Standard Methods - described in the W3C draft
-
-**translate(x, y, z)** 
+## translate(x, y, z)
 
 The translate method returns a new matrix which is this matrix post multiplied by a translation matrix containing the passed values. If the `z` parameter is undefined, a 0 value is used in its place. This matrix is not
 modified.
@@ -118,7 +54,7 @@ Parameters:
 * `z` the Z axis component of the translation value.
 
 
-**rotate(rx, ry, rz)**
+## rotate(rx, ry, rz)
 
 The rotate method returns a new matrix which is this matrix post multiplied by each of 3 rotation matrices about the major axes, first X, then Y, then Z. If the `y` and `z` components are undefined, the `x` value is used to rotate the
 object about the `z` axis, as though the vector (0,0,x) were passed. All rotation values are expected to be in degrees. This matrix is not modified.
@@ -129,7 +65,7 @@ Parameters:
 * `rz` the Z axis component of the rotation value.
 
 
-**rotateAxisAngle(x, y, z, angle)**
+## rotateAxisAngle(x, y, z, angle)
 
 This method returns a new matrix which is this matrix post multiplied by a rotation matrix with the given axis and `angle`. The right-hand rule is used to determine the direction of rotation. All rotation values are
 in degrees. This matrix is not modified.
@@ -141,7 +77,7 @@ Parameters:
 * `angle` The angle of rotation about the axis vector, in degrees.
 
 
-**scale(x, y, z)**
+## scale(x, y, z)
 
 The scale method returns a new matrix which is this matrix post multiplied by a scale matrix containing the passed values. If the `z` component is undefined, a 1 value is used in its place. If the `y` component is undefined, the `x` component value is used in its place. This matrix is not modified.
 
@@ -176,6 +112,8 @@ Depending on the value of `is2D`, the method will return the CSS matrix syntax i
 * `matrix(a, b, c, d, e, f)`
 
 
+# Additional Methods
+
 **transformPoint(point)**
 
 Transforms the specified point using the matrix, returning a new `DOMPoint` like *Object* containing the transformed point. 
@@ -189,12 +127,10 @@ The `point` parameter expects a `DOMPoint` or an *Object* with `x`, `y`, `z` and
 **transform(vector)**
 
 Transforms the specified vector using the matrix, returning a new `{x,y,z,w}` *Object* comprising the transformed vector. 
-Neither the matrix nor the original vector are altered.
+Neither the matrix nor the original vector are altered. This method was in the [original source](https://github.com/arian/CSSMatrix/) and I chose to keep it.
 
 The `vector` parameter expects an *Object* with `x`, `y`, `z` and `w` components.
 
-
-# Additional Methods
 
 **multiply(m2)**
 
@@ -212,7 +148,7 @@ The method also accepts 6/16 elements *Float64Array* / *Float32Array* / *Array* 
 For simplicity reasons, this method expects only valid *matrix()* / *matrix3d()* string values, which means other transform functions like *translate()*, *rotate()* are not supported.
 
 Parameter:
-* The `source` parameter is either the String representing the CSS syntax of the matrix, which is also the result of `getComputedStyle()`.
+* The `source` parameter can be the *String* representing the CSS syntax of the matrix, which is also the result of `getComputedStyle()`.
 * The `source` can also be an *Array* resulted from `toArray()` method calls.
 
 
@@ -270,7 +206,137 @@ Feed a `CSSMatrix` object with the values of a 6/16 values array and returns the
 
 The `array` parameter is the source to feed the values for the new matrix.
 
-There are two more methods *fromFloat64Array(array)* and *fromFloat32Array(array)* which are only aliases for `fromArray` for now, but will be updated accordingly once DOMMatrix API is final.
+
+# Usage
+
+The initialization doesn't support CSS syntax strings with transform functions like `rotate()` or `translate()` only `matrix()` and `matrix3d()`, or 6/16 elements arrays.
+
+## Basics
+```js
+// ES6+
+import CSSMatrix from 'dommatrix'
+
+// init
+let myMatrix = new CSSMatrix('matrix(1,0.25,-0.25,1,0,0)')
+```
+
+OR 
+```js
+// Node.js
+var CSSMatrix = require('dommatrix');
+
+// init
+let myMatrix = new CSSMatrix('matrix(1,0.25,-0.25,1,0,0)')
+```
+
+
+## Advanced API Examples**
+
+
+**Provide Values on Initialization**
+
+```js
+// the above are equivalent with providing the values are arguments
+let myMatrix = new CSSMatrix(1,0.25,-0.25,1,0,0)
+
+// or by providing an Array, Float32Array, Float64Array
+let myMatrix = new CSSMatrix([1,0.25,-0.25,1,0,0])
+```
+
+**Use Static Methods to Initialize**
+
+```js
+let myTranlateMatrix = new CSSMatrix(1,0,0,1,150,150)
+
+// fromMatrix will create a clone of the above matrix
+let myMatrix = CSSMatrix.fromMatrix(myTranlateMatrix)
+
+// create a new CSSMatrix from an Array, Float32Array, Float64Array
+let myMatrix = CSSMatrix.fromArray([1,0.25,-0.25,1,0,0])
+```
+
+**Using Main Methods**
+```js
+// call methods to apply transformations
+let myMatrix = new CSSMatrix().translate(15)
+
+// equivalent to 
+let myMatrix = new CSSMatrix().translate(15,0)
+
+// equivalent to 
+let myMatrix = new CSSMatrix().translate(15,0,0)
+
+// rotations work as expected
+let myMatrix = new CSSMatrix().rotate(15)
+
+// equivalent to 
+let myMatrix = new CSSMatrix().rotate(0,0,15)
+```
+
+**Manipulate The Matrix values**
+
+```js
+// reset the matrix to identity form
+// the equivalent of the CSS "transform: none"
+myMatrix.setIdentity()
+
+// replace existing matrix with values from array
+// it's best to use the above setIdentity() before
+// replacing the current matrix or feed from a 16 values Array
+CSSMatrix.feedFromArray(myMatrix, [1,0.25,-0.25,1,0,0])
+
+// apply additional transformations to an existing matrix
+// by calling instance methods
+myMatrix = myMatrix.translate(15).skewX(45)
+
+// apply additional transformations to an existing matrix
+// by calling a static method to create a new matrix;
+// the result of the multiply instance method and
+// the result of the Rotate static method combined create
+// a third CSSMatrix instance that replaces the original
+// matrix entirely
+myMatrix = myMatrix.multiply(CSSMatrix.Rotate(0,45))
+```
+
+Calling the methods after initialization will not change the instance *Object* unless you put the "=" sign between your instance name and the return of the call, except `setIdentity` instance method and `feedFromArray` static method that do exactly that.
+
+
+**Exporting The Matrix**
+```js
+// export to the CSS syntax transform
+let myMatrix = new CSSMatrix().translate(15).toString()
+
+// export to Array
+let myMatrix = new CSSMatrix().rotate(45).toArray()
+
+// if the matrix is 3D you can also export a transposed matrix array
+// which is compatible with the CSS syntax row major order representation
+let myMatrix = new CSSMatrix().translate(15,0,0).toArray(true)
+```
+
+
+# Adding Perspective To Matrix
+
+```js
+import CSSMatrix from 'dommatrix'
+
+// perspective
+let perspective = 400
+
+// init
+let myMatrix = new CSSMatrix()
+
+// set perspective
+myMatrix.m34  = -1/perspective
+
+// now your matrix is always 3D
+// we can apply any 3D transformation
+myMatrix = myMatrix.rotate(45,0,0)
+
+// this matrix is now equivalent with this
+// CSS transformation syntax
+// perspective(400px) rotateX(45deg)
+```
 
 
 # Thanks

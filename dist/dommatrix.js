@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.4c (https://github.com/thednp/dommatrix)
+* DOMMatrix v0.0.4d (https://github.com/thednp/dommatrix)
 * Copyright 2020 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
