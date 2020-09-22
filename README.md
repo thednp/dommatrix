@@ -13,7 +13,6 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * **changed** `setMatrixValue()` instance method to do all the heavy duty work with parameters;
 * *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
 * *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
-* *removed* `transform()` instance method, replaced with something that actually works;
 * *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
 * **added** `is2D` (*getter* and *setter*) property;
 * **added** `isIdentity` (*getter* and *setter*) property;
@@ -21,7 +20,7 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * **added** `fromMatrix` static method, not present in the constructor prototype;
 * **added** `fromArray()`, `fromFloat64Array()` and `fromFloat32Array()` static methods, not present in the constructor prototype, the last 2 are not published since `fromArray()` can also process *Float32Array* / *Float64Array* via `Array.from()`;
 * **added** `toArray()`, `toFloat64Array()` and `toFloat32Array()` instance methods, the last two are not present in the constructor prototype;
-* **added** `transformPoint()` instance method which works like the original and replaces the old `transform()` method.
+* **added** `transformPoint()` instance method which works like the original.
 
 
 # Install
@@ -184,7 +183,15 @@ Neither the matrix nor the original point are altered.
 
 The method is equivalent with `transformPoint()` method of the `DOMMatrix` constructor.
 
-The `point` parameter expects a vector *Object* with `x`, `y`, `z` and `w` properties or a `DOMPoint`
+The `point` parameter expects a `DOMPoint` or an *Object* with `x`, `y`, `z` and `w` components.
+
+
+**transform(vector)**
+
+Transforms the specified vector using the matrix, returning a new `{x,y,z,w}` *Object* comprising the transformed vector. 
+Neither the matrix nor the original vector are altered.
+
+The `vector` parameter expects an *Object* with `x`, `y`, `z` and `w` components.
 
 
 # Additional Methods
