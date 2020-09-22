@@ -113,7 +113,7 @@ CSSMatrix.prototype.transformPoint = function transformPoint (v){
     w: m.m44
   }
 };
-	CSSMatrix.prototype.transform = function transform (t){
+CSSMatrix.prototype.transform = function transform (t){
 		var m = this,
       x = m.m11 * t.x + m.m12 * t.y + m.m13 * t.z + m.m14 * t.w,
       y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w,

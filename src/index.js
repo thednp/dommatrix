@@ -310,7 +310,7 @@ export default class CSSMatrix {
 	 * @param {Tuple} tupple an object with x, y, z and w components
 	 * @return {Tuple} the passed tuple
 	 */
-	transform(t){
+  transform(t){
 		let m = this,
         x = m.m11 * t.x + m.m12 * t.y + m.m13 * t.z + m.m14 * t.w,
         y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w,
