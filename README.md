@@ -8,24 +8,6 @@ An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOM
 
 The constructor is almost equivalent with the **DOMMatrix** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
 
-In contrast with the [original source](https://github.com/arian/CSSMatrix/) there have been a series of changes to the prototype for consistency, performance as well as requirements to better accomodate the **DOMMatrix** interface:
-
-* **changed** the order of the initialization parameters of a 3D matrix, now uses the column major order, as described in the specification pages; this change is to accommodate outputs of `toFloat64Array()` of the DOMMatrix constructor (which also returns items in the expected order);
-* **changed** how the constructor determines if the matrix is 2D, based on a [more accurate method](https://github.com/jsidea/jsidea/blob/2b4486c131d5cca2334293936fa13454b34fcdef/ts/jsidea/geom/Matrix3D.ts#L788) which is actually checking the designated values of the 3D space; in contrast, the old *CSSMatrix* constructor sets `afine` property at initialization only and based on the number of arguments or the type of the input CSS transform syntax; 
-* **fixed** the `translate()`, `scale()` and `rotate()` instance methods to work with one axis transformation, also inline with **DOMMatrix**;
-* **changed** `toString()` instance method to utilize the new method `toArray()` described below;
-* **changed** `setMatrixValue()` instance method to do all the heavy duty work with parameters;
-* *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
-* *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
-* *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
-* **added** `is2D` (*getter* and *setter*) property;
-* **added** `isIdentity` (*getter* and *setter*) property;
-* **added** `feedFromArray` static method, not present in the constructor prototype;
-* **added** `fromMatrix` static method, not present in the constructor prototype;
-* **added** `fromArray()`, `fromFloat64Array()` and `fromFloat32Array()` static methods, not present in the constructor prototype, the last 2 are not published since `fromArray()` can also process *Float32Array* / *Float64Array* via `Array.from()`;
-* **added** `toArray()`, `toFloat64Array()` and `toFloat32Array()` instance methods, the last two are not present in the constructor prototype;
-* **added** `transformPoint()` instance method which works like the original.
-
 
 # Install
 
@@ -43,7 +25,7 @@ Link available on [jsdelivr](https://www.jsdelivr.com/package/npm/dommatrix).
 
 Main instance methods described in the [MDN specifications](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix).
 
-## translate(x, y, z)
+## translate(*x, y, z*)
 
 The translate method returns a new matrix which is this matrix post multiplied by a translation matrix containing the passed values. If the `z` parameter is undefined, a 0 value is used in its place. This matrix is not
 modified.
@@ -54,7 +36,7 @@ Parameters:
 * `z` the Z axis component of the translation value.
 
 
-## rotate(rx, ry, rz)
+## rotate(*rx, ry, rz*)
 
 The rotate method returns a new matrix which is this matrix post multiplied by each of 3 rotation matrices about the major axes, first X, then Y, then Z. If the `y` and `z` components are undefined, the `x` value is used to rotate the
 object about the `z` axis, as though the vector (0,0,x) were passed. All rotation values are expected to be in degrees. This matrix is not modified.
@@ -65,7 +47,7 @@ Parameters:
 * `rz` the Z axis component of the rotation value.
 
 
-## rotateAxisAngle(x, y, z, angle)
+## rotateAxisAngle(*x, y, z, angle*)
 
 This method returns a new matrix which is this matrix post multiplied by a rotation matrix with the given axis and `angle`. The right-hand rule is used to determine the direction of rotation. All rotation values are
 in degrees. This matrix is not modified.
@@ -77,7 +59,7 @@ Parameters:
 * `angle` The angle of rotation about the axis vector, in degrees.
 
 
-## scale(x, y, z)
+## scale(*x, y, z*)
 
 The scale method returns a new matrix which is this matrix post multiplied by a scale matrix containing the passed values. If the `z` component is undefined, a 1 value is used in its place. If the `y` component is undefined, the `x` component value is used in its place. This matrix is not modified.
 
@@ -87,14 +69,14 @@ Parameters:
 * `z` the Z axis component of the scale value.
 
 
-## skewX(angle)
+## skewX(*angle*)
 
 Specifies a skew transformation along the `x-axis` by the given angle. This matrix is not modified.
 
 The `angle` parameter sets the amount in degrees to skew.
 
 
-## skewY(angle)
+## skewY(*angle*)
 
 Specifies a skew transformation along the `y-axis` by the given angle. This matrix is not modified.
 
@@ -113,24 +95,6 @@ Depending on the value of `is2D`, the method will return the CSS matrix syntax i
 
 
 # Additional Methods
-
-## transformPoint(*point*)
-
-Transforms the specified point using the matrix, returning a new `DOMPoint` like *Object* containing the transformed point. 
-Neither the matrix nor the original point are altered.
-
-The method is equivalent with `transformPoint()` method of the `DOMMatrix` constructor.
-
-The `point` parameter expects a `DOMPoint` or an *Object* with `x`, `y`, `z` and `w` components.
-
-
-## transform(*vector*)
-
-Transforms the specified vector using the matrix, returning a new `{x,y,z,w}` *Object* comprising the transformed vector. 
-Neither the matrix nor the original vector are altered. This method was in the [original source](https://github.com/arian/CSSMatrix/) and I chose to keep it.
-
-The `vector` parameter expects an *Object* with `x`, `y`, `z` and `w` components.
-
 
 ## multiply(*m2*)
 
@@ -155,6 +119,24 @@ Parameter:
 ## setIdentity()
 
 Set the current `CSSMatrix` instance to the identity form and returns it.
+
+
+## transformPoint(*point*)
+
+Transforms the specified point using the matrix, returning a new `DOMPoint` like *Object* containing the transformed point. 
+Neither the matrix nor the original point are altered.
+
+The method is equivalent with `transformPoint()` method of the `DOMMatrix` constructor.
+
+The `point` parameter expects a `DOMPoint` or an *Object* with `x`, `y`, `z` and `w` components.
+
+
+## transform(*vector*)
+
+Transforms the specified vector using the matrix, returning a new `{x,y,z,w}` *Object* comprising the transformed vector. 
+Neither the matrix nor the original vector are altered. This method was in the [original source](https://github.com/arian/CSSMatrix/) and I chose to keep it.
+
+The `vector` parameter expects an *Object* with `x`, `y`, `z` and `w` components.
 
 
 ## toArray(*transposed*)
@@ -343,6 +325,25 @@ myMatrix = myMatrix.rotate(45,0,0)
 // CSS transformation syntax
 // perspective(400px) rotateX(45deg)
 ```
+
+# More Info
+In contrast with the [original source](https://github.com/arian/CSSMatrix/) there have been a series of changes to the prototype for consistency, performance as well as requirements to better accomodate the **DOMMatrix** interface:
+
+* **changed** the order of the initialization parameters of a 3D matrix, now uses the column major order, as described in the specification pages; this change is to accommodate outputs of `toFloat64Array()` of the DOMMatrix constructor (which also returns items in the expected order);
+* **changed** how the constructor determines if the matrix is 2D, based on a [more accurate method](https://github.com/jsidea/jsidea/blob/2b4486c131d5cca2334293936fa13454b34fcdef/ts/jsidea/geom/Matrix3D.ts#L788) which is actually checking the designated values of the 3D space; in contrast, the old *CSSMatrix* constructor sets `afine` property at initialization only and based on the number of arguments or the type of the input CSS transform syntax; 
+* **fixed** the `translate()`, `scale()` and `rotate()` instance methods to work with one axis transformation, also inline with **DOMMatrix**;
+* **changed** `toString()` instance method to utilize the new method `toArray()` described below;
+* **changed** `setMatrixValue()` instance method to do all the heavy duty work with parameters;
+* *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
+* *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
+* *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
+* **added** `is2D` (*getter* and *setter*) property;
+* **added** `isIdentity` (*getter* and *setter*) property;
+* **added** `feedFromArray` static method, not present in the constructor prototype;
+* **added** `fromMatrix` static method, not present in the constructor prototype;
+* **added** `fromArray()`, `fromFloat64Array()` and `fromFloat32Array()` static methods, not present in the constructor prototype, the last 2 are not published since `fromArray()` can also process *Float32Array* / *Float64Array* via `Array.from()`;
+* **added** `toArray()`, `toFloat64Array()` and `toFloat32Array()` instance methods, the last two are not present in the constructor prototype;
+* **added** `transformPoint()` instance method which works like the original.
 
 
 # Thanks
