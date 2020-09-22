@@ -41,7 +41,7 @@ Link available on [jsdelivr](https://www.jsdelivr.com/package/npm/dommatrix).
 
 # Standard Methods
 
-Main instance methods described in the W3C draft
+Main instance methods described in the [MDN specifications](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix).
 
 ## translate(x, y, z)
 
@@ -87,21 +87,21 @@ Parameters:
 * `z` the Z axis component of the scale value.
 
 
-**skewX(angle)**
+## skewX(angle)
 
 Specifies a skew transformation along the `x-axis` by the given angle. This matrix is not modified.
 
 The `angle` parameter sets the amount in degrees to skew.
 
 
-**skewY(angle)**
+## skewY(angle)
 
 Specifies a skew transformation along the `y-axis` by the given angle. This matrix is not modified.
 
 The `angle` parameter sets the amount in degrees to skew.
 
 
-**toString()**
+## toString()
 
 Creates and returns a string representation of the matrix in CSS matrix syntax, using the appropriate CSS matrix notation.
 The 16 items in the array 3D matrix array are *transposed* in row-major order.
@@ -114,7 +114,7 @@ Depending on the value of `is2D`, the method will return the CSS matrix syntax i
 
 # Additional Methods
 
-**transformPoint(point)**
+## transformPoint(*point*)
 
 Transforms the specified point using the matrix, returning a new `DOMPoint` like *Object* containing the transformed point. 
 Neither the matrix nor the original point are altered.
@@ -124,7 +124,7 @@ The method is equivalent with `transformPoint()` method of the `DOMMatrix` const
 The `point` parameter expects a `DOMPoint` or an *Object* with `x`, `y`, `z` and `w` components.
 
 
-**transform(vector)**
+## transform(*vector*)
 
 Transforms the specified vector using the matrix, returning a new `{x,y,z,w}` *Object* comprising the transformed vector. 
 Neither the matrix nor the original vector are altered. This method was in the [original source](https://github.com/arian/CSSMatrix/) and I chose to keep it.
@@ -132,16 +132,16 @@ Neither the matrix nor the original vector are altered. This method was in the [
 The `vector` parameter expects an *Object* with `x`, `y`, `z` and `w` components.
 
 
-**multiply(m2)**
+## multiply(*m2*)
 
 The multiply method returns a new `CSSMatrix` which is the result of this matrix multiplied by the passed matrix, with the passed matrix to the right. This matrix as well as the one passed are not modified.
 
 The `m2` parameter is expecting a `CSSMatrix` or `DOMMatrix` instance.
 
 
-**setMatrixValue(string)**
+## setMatrixValue(*string*)
 
-The setMatrixValue method replaces the existing matrix with one computed in the browser. EG: `matrix(1,0.25,-0.25,1,0,0)`.
+This method replaces the existing matrix with one computed in the browser. EG: `matrix(1,0.25,-0.25,1,0,0)`.
 
 The method also accepts 6/16 elements *Float64Array* / *Float32Array* / *Array* values, the result of `CSSMatrix` => `toArray()` / `DOMMatrix` => `toFloat64Array()` / `toFloat32Array()`.
 
@@ -152,12 +152,12 @@ Parameter:
 * The `source` can also be an *Array* resulted from `toArray()` method calls.
 
 
-**setIdentity()**
+## setIdentity()
 
 Set the current `CSSMatrix` instance to the identity form and returns it.
 
 
-**toArray(transposed)**
+## toArray(*transposed*)
 
 Returns an *Array* containing all 16 elements which comprise the 3D matrix. The method can return either the elements in default column major order or row major order (what we call the *transposed* matrix, used by `toString`).
 
@@ -174,24 +174,26 @@ The result can be immediatelly fed as parameter for the initialization of a new 
 
 # Getters and Setters
 
-**isIdentity**
+## isIdentity
 
 A `Boolean` whose value is `true` if the matrix is the identity matrix. The identity matrix is one in which every value is 0 except those on the main diagonal from top-left to bottom-right corner (in other words, where the offsets in each direction are equal).
 
 
-**is2D**
+## is2D
 
 A `Boolean` flag whose value is `true` if the matrix was initialized as a 2D matrix and `false` if the matrix is 3D.
 
 
-# Static Methods - not included in the constructor prototype
+# Static Methods
 
-**fromMatrix(m2)**
+The methods attached to the `CSSMatrix` *Object* but not included in the constructor prototype. Some methods aim to be equivalents while others provide utility.
+
+## fromMatrix(*m2*)
 
 Creates a new mutable `CSSMatrix` object given an existing matrix or a `DOMMatrix` *Object* which provides the values for its properties. The `m2` parameter is the matrix instance passed into the method and neither this matrix or the one passed are modified.
 
 
-**fromArray(array)**
+## fromArray(*array*)
 
 Creates a new mutable `CSSMatrix` object given an array of values. If the array has six values, the result is a 2D matrix; if the array has 16 values, the result is a 3D matrix. Otherwise, a `console.error` is thrown and returns the current matrix.
 
@@ -200,7 +202,7 @@ The `array` parameter is the source to feed the values for the new matrix.
 There are two more methods *fromFloat64Array(array)* and *fromFloat32Array(array)* which are only aliases for `fromArray` for now, but will be updated accordingly once DOMMatrix API is final.
 
 
-**feedFromArray(array)**
+## feedFromArray(*array*)
 
 Feed a `CSSMatrix` object with the values of a 6/16 values array and returns the updated matrix.
 
@@ -233,7 +235,7 @@ let myMatrix = new CSSMatrix('matrix(1,0.25,-0.25,1,0,0)')
 ## Advanced API Examples**
 
 
-**Provide Values on Initialization**
+### Provide Values on Initialization
 
 ```js
 // the above are equivalent with providing the values are arguments
@@ -243,7 +245,7 @@ let myMatrix = new CSSMatrix(1,0.25,-0.25,1,0,0)
 let myMatrix = new CSSMatrix([1,0.25,-0.25,1,0,0])
 ```
 
-**Use Static Methods to Initialize**
+### Use Static Methods to Initialize
 
 ```js
 let myTranlateMatrix = new CSSMatrix(1,0,0,1,150,150)
@@ -255,7 +257,7 @@ let myMatrix = CSSMatrix.fromMatrix(myTranlateMatrix)
 let myMatrix = CSSMatrix.fromArray([1,0.25,-0.25,1,0,0])
 ```
 
-**Using Main Methods**
+### Using Main Methods
 ```js
 // call methods to apply transformations
 let myMatrix = new CSSMatrix().translate(15)
@@ -273,7 +275,7 @@ let myMatrix = new CSSMatrix().rotate(15)
 let myMatrix = new CSSMatrix().rotate(0,0,15)
 ```
 
-**Manipulate The Matrix values**
+### Manipulate The Matrix values
 
 ```js
 // reset the matrix to identity form
@@ -284,6 +286,10 @@ myMatrix.setIdentity()
 // it's best to use the above setIdentity() before
 // replacing the current matrix or feed from a 16 values Array
 CSSMatrix.feedFromArray(myMatrix, [1,0.25,-0.25,1,0,0])
+
+// replace existing matrix with values from array
+// as if your're re-initializing the matrix
+myMatrix.setMatrixValue(1,0.25,-0.25,1,0,0)
 
 // apply additional transformations to an existing matrix
 // by calling instance methods
@@ -298,10 +304,10 @@ myMatrix = myMatrix.translate(15).skewX(45)
 myMatrix = myMatrix.multiply(CSSMatrix.Rotate(0,45))
 ```
 
-Calling the methods after initialization will not change the instance *Object* unless you put the "=" sign between your instance name and the return of the call, except `setIdentity` instance method and `feedFromArray` static method that do exactly that.
+Calling the transform function instance methods (translate,rotate) after initialization will not change the instance *Object* unless you put the "=" sign between your instance name and the return of the call. Only `setIdentity` and `setMatrixValue` instance methods as well as the `feedFromArray` static method can do that.
 
 
-**Exporting The Matrix**
+### Exporting The Matrix
 ```js
 // export to the CSS syntax transform
 let myMatrix = new CSSMatrix().translate(15).toString()
@@ -315,7 +321,7 @@ let myMatrix = new CSSMatrix().translate(15,0,0).toArray(true)
 ```
 
 
-# Adding Perspective To Matrix
+### Adding Perspective To Matrix
 
 ```js
 import CSSMatrix from 'dommatrix'
