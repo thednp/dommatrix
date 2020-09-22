@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.4 (https://github.com/thednp/dommatrix)
+* DOMMatrix v0.0.4b (https://github.com/thednp/dommatrix)
 * Copyright 2020 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -166,7 +166,7 @@ CSSMatrix.prototype.setMatrixValue = function setMatrixValue (source){
       console.error("CSSMatrix: expecting valid CSS matrix() / matrix3d() syntax");
     }
   } else if (source[0] instanceof CSSMatrix) {
-    feedFromArray(m,source[0]);
+    feedFromArray(m,source[0].toArray());
   } else if (Array.isArray(source[0])) {
     feedFromArray(m,source[0]);
   } else if (Array.isArray(source)) {

@@ -347,7 +347,7 @@ export default class CSSMatrix {
         console.error(`CSSMatrix: expecting valid CSS matrix() / matrix3d() syntax`)
       }
     } else if (source[0] instanceof CSSMatrix) { // CSSMatrix instance
-      feedFromArray(m,source[0])
+      feedFromArray(m,source[0].toArray())
     } else if (Array.isArray(source[0])) { // Float32Array,Float64Array source
       feedFromArray(m,source[0])    
     } else if (Array.isArray(source)) { // Arguments list come here

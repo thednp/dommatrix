@@ -68,8 +68,10 @@ let myMatrix = new CSSMatrix([1,0.25,-0.25,1,0,0])
 
 // call methods to apply transformations
 let myMatrix = new CSSMatrix().translate(15)
+
 // equivalent to 
 let myMatrix = new CSSMatrix().translate(15,0)
+
 // equivalent to 
 let myMatrix = new CSSMatrix().translate(15,0,0)
 
@@ -77,6 +79,30 @@ let myMatrix = new CSSMatrix().translate(15,0,0)
 let myMatrix = new CSSMatrix().rotate(15)
 // equivalent to 
 let myMatrix = new CSSMatrix().rotate(0,0,15)
+```
+
+
+# Adding Perspective To Matrix
+
+```js
+import CSSMatrix from 'dommatrix'
+
+// perspective
+let perspective = 400
+
+// init
+let myMatrix = new CSSMatrix()
+
+// set perspective
+myMatrix.m34  = -1/perspective
+
+// now your matrix is always 3D
+// we can apply any 3D transformation
+myMatrix = myMatrix.rotate(45,0,0)
+
+// this matrix is now equivalent with this
+// CSS transformation syntax
+// perspective(400px) rotateX(45deg)
 ```
 
 
