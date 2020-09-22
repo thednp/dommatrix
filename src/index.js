@@ -316,14 +316,14 @@ export default class CSSMatrix {
         y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w,
         z = m.m31 * t.x + m.m32 * t.y + m.m33 * t.z + m.m34 * t.w,
         w = m.m41 * t.x + m.m42 * t.y + m.m43 * t.z + m.m44 * t.w
-    
+
 		return {
       x: x / w,
       y: y / w,
       z: z / w,
       w : w
     }
-	}  
+  }  
 }
 
 // Transform Functions

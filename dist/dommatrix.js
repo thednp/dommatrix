@@ -131,7 +131,7 @@
       z: z / w,
       w : w
     }
-  	};
+  };
   Object.defineProperties( CSSMatrix.prototype, prototypeAccessors );
   CSSMatrix.Translate = function Translate(x, y, z){
     var m = new CSSMatrix();
