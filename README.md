@@ -9,7 +9,7 @@ An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOM
 The constructor is almost equivalent with the **DOMMatrix** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
 
 # WIKI
-
+Head over to the [wiki pages](https://github.com/thednp/DOMMatrix/wiki) for developer guidelines.
 
 # More Info
 In contrast with the [original source](https://github.com/arian/CSSMatrix/) there have been a series of changes to the prototype for consistency, performance as well as requirements to better accomodate the **DOMMatrix** interface:
