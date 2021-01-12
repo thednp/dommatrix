@@ -13,6 +13,304 @@
  * @param {[m11,m21,m31,m41,m12,m22,m32,m42,m13,m23,m33,m43,m14,m24,m34,m44]} Arguments representing the 16 elements of a 3d matrix
  */
 
+
+// Transform Functions
+// https://www.w3.org/TR/css-transforms-1/#transform-functions
+
+/**
+ * Creates a new `CSSMatrix` for the translation matrix and returns it.
+ * This method is equivalent to the CSS `translate3d()` function.
+ * 
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translate3d
+ *  
+ * @param {Number} x the `x-axis` position.
+ * @param {Number} y the `y-axis` position.
+ * @param {Number} z the `z-axis` position.
+ */
+function Translate(x, y, z){
+  let m = new CSSMatrix();
+  m.m41 = m.e = x;
+  m.m42 = m.f = y;
+  m.m43 = z;
+  return m
+}
+
+/**
+ * Creates a new `CSSMatrix` for the rotation matrix and returns it.
+ * 
+ * http://en.wikipedia.org/wiki/Rotation_matrix
+ * 
+ * @param {Number} rx the `x-axis` rotation.
+ * @param {Number} ry the `y-axis` rotation.
+ * @param {Number} rz the `z-axis` rotation.
+ */
+
+function Rotate(rx, ry, rz){
+  let m = new CSSMatrix()
+
+  rx *= Math.PI / 180
+  ry *= Math.PI / 180
+  rz *= Math.PI / 180
+
+  // minus sin() because of right-handed system
+  let cosx = Math.cos(rx), sinx = -Math.sin(rx),
+      cosy = Math.cos(ry), siny = -Math.sin(ry),
+      cosz = Math.cos(rz), sinz = -Math.sin(rz);
+
+  m.m11 = m.a = cosy * cosz
+  m.m12 = m.b = -cosy * sinz
+  m.m13 = siny
+
+  m.m21 = m.c = sinx * siny * cosz + cosx * sinz
+  m.m22 = m.d = cosx * cosz - sinx * siny * sinz
+  m.m23 = -sinx * cosy
+
+  m.m31 = sinx * sinz - cosx * siny * cosz
+  m.m32 = sinx * cosz + cosx * siny * sinz
+  m.m33 = cosx * cosy
+
+  return m
+}
+
+/**
+ * Creates a new `CSSMatrix` for the rotation matrix and returns it.
+ * This method is equivalent to the CSS `rotate3d()` function.
+ * 
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotate3d
+ *  
+ * @param {Number} x the `x-axis` vector length.
+ * @param {Number} y the `y-axis` vector length.
+ * @param {Number} z the `z-axis` vector length.
+ * @param {Number} angle the value in degrees of the rotation.
+ */
+function RotateAxisAngle(x, y, z, angle){
+  angle *= Math.PI / 360;
+
+  let sinA = Math.sin(angle), 
+      cosA = Math.cos(angle), 
+      sinA2 = sinA * sinA,
+      length = Math.sqrt(x * x + y * y + z * z);
+
+  if (length === 0){
+    // bad vector length, use something reasonable
+    x = 0;
+    y = 0;
+    z = 1;
+  } else {
+    x /= length;
+    y /= length;
+    z /= length;
+  }
+
+  let x2 = x * x, y2 = y * y, z2 = z * z;
+
+  let m = new CSSMatrix();
+  m.m11 = m.a = 1 - 2 * (y2 + z2) * sinA2;
+  m.m12 = m.b = 2 * (x * y * sinA2 + z * sinA * cosA);
+  m.m13 = 2 * (x * z * sinA2 - y * sinA * cosA);
+  m.m21 = m.c = 2 * (y * x * sinA2 - z * sinA * cosA);
+  m.m22 = m.d = 1 - 2 * (z2 + x2) * sinA2;
+  m.m23 = 2 * (y * z * sinA2 + x * sinA * cosA);
+  m.m31 = 2 * (z * x * sinA2 + y * sinA * cosA);
+  m.m32 = 2 * (z * y * sinA2 - x * sinA * cosA);
+  m.m33 = 1 - 2 * (x2 + y2) * sinA2;
+  m.m14 = m.m24 = m.m34 = 0;
+  m.m41 = m.e = m.m42 = m.f = m.m43 = 0;
+  m.m44 = 1;
+
+  return m
+}
+
+/**
+ * Creates a new `CSSMatrix` for the scale matrix and returns it.
+ * This method is equivalent to the CSS `scale3d()` function.
+ * 
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/scale3d
+ *  
+ * @param {Number} x the `x-axis` scale.
+ * @param {Number} y the `y-axis` scale.
+ * @param {Number} z the `z-axis` scale.
+ */
+function Scale(x, y, z){
+  let m = new CSSMatrix();
+  m.m11 = m.a = x;
+  m.m22 = m.d = y;
+  m.m33 = z;
+  return m
+}
+
+/**
+ * Creates a new `CSSMatrix` for the shear of the `x-axis` rotation matrix and 
+ * returns it. This method is equivalent to the CSS `skewX()` function.
+ * 
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewX
+ *  
+ * @param {Number} angle the angle in degrees.
+ */
+function SkewX(angle){
+  angle *= Math.PI / 180;
+  let m = new CSSMatrix();
+  m.m21 = m.c = Math.tan(angle);
+  return m
+}
+
+/**
+ * Creates a new `CSSMatrix` for the shear of the `y-axis` rotation matrix and 
+ * returns it. This method is equivalent to the CSS `skewY()` function.
+ * 
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewY
+ *  
+ * @param {Number} angle the angle in degrees.
+ */
+function SkewY(angle){
+  angle *= Math.PI / 180;
+  let m = new CSSMatrix();
+  m.m12 = m.b = Math.tan(angle);
+  return m
+}
+
+/**
+ * Creates a new `CSSMatrix` resulted from the multiplication of two matrixes 
+ * and returns it. Both matrixes are not changed.
+ * 
+ * @param {CSSMatrix} m1 the first matrix.
+ * @param {CSSMatrix} m2 the second matrix.
+ */
+function Multiply(m1, m2){
+  let m11 = m2.m11 * m1.m11 + m2.m12 * m1.m21 + m2.m13 * m1.m31 + m2.m14 * m1.m41,
+      m12 = m2.m11 * m1.m12 + m2.m12 * m1.m22 + m2.m13 * m1.m32 + m2.m14 * m1.m42,
+      m13 = m2.m11 * m1.m13 + m2.m12 * m1.m23 + m2.m13 * m1.m33 + m2.m14 * m1.m43,
+      m14 = m2.m11 * m1.m14 + m2.m12 * m1.m24 + m2.m13 * m1.m34 + m2.m14 * m1.m44,
+
+      m21 = m2.m21 * m1.m11 + m2.m22 * m1.m21 + m2.m23 * m1.m31 + m2.m24 * m1.m41,
+      m22 = m2.m21 * m1.m12 + m2.m22 * m1.m22 + m2.m23 * m1.m32 + m2.m24 * m1.m42,
+      m23 = m2.m21 * m1.m13 + m2.m22 * m1.m23 + m2.m23 * m1.m33 + m2.m24 * m1.m43,
+      m24 = m2.m21 * m1.m14 + m2.m22 * m1.m24 + m2.m23 * m1.m34 + m2.m24 * m1.m44,
+
+      m31 = m2.m31 * m1.m11 + m2.m32 * m1.m21 + m2.m33 * m1.m31 + m2.m34 * m1.m41,
+      m32 = m2.m31 * m1.m12 + m2.m32 * m1.m22 + m2.m33 * m1.m32 + m2.m34 * m1.m42,
+      m33 = m2.m31 * m1.m13 + m2.m32 * m1.m23 + m2.m33 * m1.m33 + m2.m34 * m1.m43,
+      m34 = m2.m31 * m1.m14 + m2.m32 * m1.m24 + m2.m33 * m1.m34 + m2.m34 * m1.m44,
+
+      m41 = m2.m41 * m1.m11 + m2.m42 * m1.m21 + m2.m43 * m1.m31 + m2.m44 * m1.m41,
+      m42 = m2.m41 * m1.m12 + m2.m42 * m1.m22 + m2.m43 * m1.m32 + m2.m44 * m1.m42,
+      m43 = m2.m41 * m1.m13 + m2.m42 * m1.m23 + m2.m43 * m1.m33 + m2.m44 * m1.m43,
+      m44 = m2.m41 * m1.m14 + m2.m42 * m1.m24 + m2.m43 * m1.m34 + m2.m44 * m1.m44
+
+  return new CSSMatrix(
+   [m11, m21, m31, m41,
+    m12, m22, m32, m42,
+    m13, m23, m33, m43,
+    m14, m24, m34, m44])
+}
+
+
+/**
+ * Returns a new *Float32Array* containing all 16 elements which comprise the matrix. 
+ * The elements are stored into the array as single-precision floating-point numbers 
+ * in column-major (colexographical access access or "colex") order. 
+ * 
+ * @return {Float32Array} matrix elements (m11, m21, m31, m41, m12, m22, m32, m42, m13, m23, m33, m43, m14, m24, m34, m44) 
+ */
+// toFloat32Array(){
+// 	return Float32Array.from(this.toArray())
+// }
+
+/**
+ * Returns a new Float64Array containing all 16 elements which comprise the matrix. 
+ * The elements are stored into the array as double-precision floating-point numbers 
+ * in column-major (colexographical access access or "colex") order. 
+ * 
+ * @return {Float64Array} matrix elements (m11, m21, m31, m41, m12, m22, m32, m42, m13, m23, m33, m43, m14, m24, m34, m44) 
+ */	
+// toFloat64Array(){
+// 	return Float64Array.from(this.toArray())
+// }
+
+/**
+ * Creates a new mutable `CSSMatrix` object given an existing matrix or a 
+ * `DOMMatrix` *Object* which provides the values for its properties.
+ * 
+ * @param {CSSMatrix} CSSMatrix the source `CSSMatrix` / `DOMMatrix` initialization to feed values from
+ */
+function fromMatrix(m){
+  return new CSSMatrix(
+    // DOMMatrix elements order
+   [m.m11, m.m21, m.m31, m.m41, 
+    m.m12, m.m22, m.m32, m.m42,
+    m.m13, m.m23, m.m33, m.m43,
+    m.m14, m.m24, m.m34, m.m44])
+}
+
+/**
+ * Creates a new mutable `CSSMatrix` object given an array float values.
+ *  
+ * If the array has six values, the result is a 2D matrix; if the array has 16 values, 
+ * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
+ * 
+ * @param {Array} array The source `Array` to feed values from.
+ * @return {CSSMatrix} a The source array to feed values from.
+ */
+function fromArray(a){
+  return feedFromArray(new CSSMatrix(),a)
+}
+
+/**
+ * Each create a new mutable `CSSMatrix` object given an array of single/double-precision 
+ * (32/64 bit) floating-point values.
+ *  
+ * If the array has six values, the result is a 2D matrix; if the array has 16 values, 
+ * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
+ * 
+ * @param {Float32Array|Float64Array} array The source `Float32Array` / `Float64Array` to feed values from.
+ * @return {CSSMatrix} a The source array to feed values from.
+ */
+// more of an alias for now, will update later if it's the case
+// function fromFloat32Array(a){ 
+// 	return feedFromArray(new CSSMatrix(),a)
+// }
+// function fromFloat64Array(a){ // more of an alias
+// 	return feedFromArray(new CSSMatrix(),a)
+// }
+
+/**
+ * Feed a CSSMatrix object with the values of a 6/16 values array and returns it.
+ * 
+ * @param {Array} array The source `Array` to feed values from.
+ * @return {CSSMatrix} a The source array to feed values from.
+ */
+function feedFromArray(m,array){
+  let a = Array.from(array)
+  if (a.length == 16){
+    m.m11 = m.a = a[0]; 
+    m.m21 = m.c = a[1];
+    m.m31 = a[2]; 
+    m.m41 = m.e = a[3]; 
+    m.m12 = m.b = a[4]; 
+    m.m22 = m.d = a[5]; 
+    m.m32 = a[6]; 
+    m.m42 = m.f = a[7]; 
+    m.m13 = a[8]; 
+    m.m23 = a[9]; 
+    m.m33 = a[10];
+    m.m43 = a[11]; 
+    m.m14 = a[12];
+    m.m24 = a[13];
+    m.m34 = a[14];
+    m.m44 = a[15];
+  } else if (a.length == 6) {
+    m.m11 = m.a = a[0]; 
+    m.m12 = m.b = a[1]; 
+    m.m14 = m.e = a[4]; 
+    m.m21 = m.c = a[2]; 
+    m.m22 = m.d = a[3]; 
+    m.m24 = m.f = a[5];
+  } else {
+    throw new TypeError(`CSSMatrix: expecting a 6/16 values Array`)
+  }
+  return m
+}
+
 export default class CSSMatrix {
   constructor(...args){
     this.setIdentity()
@@ -327,298 +625,13 @@ export default class CSSMatrix {
 }
 
 // Transform Functions
-// https://www.w3.org/TR/css-transforms-1/#transform-functions
-
-/**
- * Creates a new `CSSMatrix` for the translation matrix and returns it.
- * This method is equivalent to the CSS `translate3d()` function.
- * 
- * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translate3d
- *  
- * @param {Number} x the `x-axis` position.
- * @param {Number} y the `y-axis` position.
- * @param {Number} z the `z-axis` position.
- */
-CSSMatrix.Translate = function Translate(x, y, z){
-  let m = new CSSMatrix();
-  m.m41 = m.e = x;
-  m.m42 = m.f = y;
-  m.m43 = z;
-  return m
-}
-
-/**
- * Creates a new `CSSMatrix` for the rotation matrix and returns it.
- * 
- * http://en.wikipedia.org/wiki/Rotation_matrix
- * 
- * @param {Number} rx the `x-axis` rotation.
- * @param {Number} ry the `y-axis` rotation.
- * @param {Number} rz the `z-axis` rotation.
- */
-
-CSSMatrix.Rotate = function Rotate(rx, ry, rz){
-  let m = new CSSMatrix()
-
-  rx *= Math.PI / 180
-  ry *= Math.PI / 180
-  rz *= Math.PI / 180
-
-  // minus sin() because of right-handed system
-  let cosx = Math.cos(rx), sinx = -Math.sin(rx),
-      cosy = Math.cos(ry), siny = -Math.sin(ry),
-      cosz = Math.cos(rz), sinz = -Math.sin(rz);
-
-  m.m11 = m.a = cosy * cosz
-  m.m12 = m.b = -cosy * sinz
-  m.m13 = siny
-
-  m.m21 = m.c = sinx * siny * cosz + cosx * sinz
-  m.m22 = m.d = cosx * cosz - sinx * siny * sinz
-  m.m23 = -sinx * cosy
-
-  m.m31 = sinx * sinz - cosx * siny * cosz
-  m.m32 = sinx * cosz + cosx * siny * sinz
-  m.m33 = cosx * cosy
-
-  return m
-}
-
-/**
- * Creates a new `CSSMatrix` for the rotation matrix and returns it.
- * This method is equivalent to the CSS `rotate3d()` function.
- * 
- * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotate3d
- *  
- * @param {Number} x the `x-axis` vector length.
- * @param {Number} y the `y-axis` vector length.
- * @param {Number} z the `z-axis` vector length.
- * @param {Number} angle the value in degrees of the rotation.
- */
-CSSMatrix.RotateAxisAngle = function RotateAxisAngle(x, y, z, angle){
-  angle *= Math.PI / 360;
-
-  let sinA = Math.sin(angle), 
-      cosA = Math.cos(angle), 
-      sinA2 = sinA * sinA,
-      length = Math.sqrt(x * x + y * y + z * z);
-
-  if (length === 0){
-    // bad vector length, use something reasonable
-    x = 0;
-    y = 0;
-    z = 1;
-  } else {
-    x /= length;
-    y /= length;
-    z /= length;
-  }
-
-  let x2 = x * x, y2 = y * y, z2 = z * z;
-
-  let m = new CSSMatrix();
-  m.m11 = m.a = 1 - 2 * (y2 + z2) * sinA2;
-  m.m12 = m.b = 2 * (x * y * sinA2 + z * sinA * cosA);
-  m.m13 = 2 * (x * z * sinA2 - y * sinA * cosA);
-  m.m21 = m.c = 2 * (y * x * sinA2 - z * sinA * cosA);
-  m.m22 = m.d = 1 - 2 * (z2 + x2) * sinA2;
-  m.m23 = 2 * (y * z * sinA2 + x * sinA * cosA);
-  m.m31 = 2 * (z * x * sinA2 + y * sinA * cosA);
-  m.m32 = 2 * (z * y * sinA2 - x * sinA * cosA);
-  m.m33 = 1 - 2 * (x2 + y2) * sinA2;
-  m.m14 = m.m24 = m.m34 = 0;
-  m.m41 = m.e = m.m42 = m.f = m.m43 = 0;
-  m.m44 = 1;
-
-  return m
-}
-
-/**
- * Creates a new `CSSMatrix` for the scale matrix and returns it.
- * This method is equivalent to the CSS `scale3d()` function.
- * 
- * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/scale3d
- *  
- * @param {Number} x the `x-axis` scale.
- * @param {Number} y the `y-axis` scale.
- * @param {Number} z the `z-axis` scale.
- */
-CSSMatrix.Scale = function Scale(x, y, z){
-  let m = new CSSMatrix();
-  m.m11 = m.a = x;
-  m.m22 = m.d = y;
-  m.m33 = z;
-  return m
-}
-
-/**
- * Creates a new `CSSMatrix` for the shear of the `x-axis` rotation matrix and 
- * returns it. This method is equivalent to the CSS `skewX()` function.
- * 
- * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewX
- *  
- * @param {Number} angle the angle in degrees.
- */
-CSSMatrix.SkewX = function SkewX(angle){
-  angle *= Math.PI / 180;
-  let m = new CSSMatrix();
-  m.m21 = m.c = Math.tan(angle);
-  return m
-}
-
-/**
- * Creates a new `CSSMatrix` for the shear of the `y-axis` rotation matrix and 
- * returns it. This method is equivalent to the CSS `skewY()` function.
- * 
- * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewY
- *  
- * @param {Number} angle the angle in degrees.
- */
-CSSMatrix.SkewY = function SkewY(angle){
-  angle *= Math.PI / 180;
-  let m = new CSSMatrix();
-  m.m12 = m.b = Math.tan(angle);
-  return m
-}
-
-/**
- * Creates a new `CSSMatrix` resulted from the multiplication of two matrixes 
- * and returns it. Both matrixes are not changed.
- * 
- * @param {CSSMatrix} m1 the first matrix.
- * @param {CSSMatrix} m2 the second matrix.
- */
-CSSMatrix.Multiply = function Multiply(m1, m2){
-  let m11 = m2.m11 * m1.m11 + m2.m12 * m1.m21 + m2.m13 * m1.m31 + m2.m14 * m1.m41,
-      m12 = m2.m11 * m1.m12 + m2.m12 * m1.m22 + m2.m13 * m1.m32 + m2.m14 * m1.m42,
-      m13 = m2.m11 * m1.m13 + m2.m12 * m1.m23 + m2.m13 * m1.m33 + m2.m14 * m1.m43,
-      m14 = m2.m11 * m1.m14 + m2.m12 * m1.m24 + m2.m13 * m1.m34 + m2.m14 * m1.m44,
-
-      m21 = m2.m21 * m1.m11 + m2.m22 * m1.m21 + m2.m23 * m1.m31 + m2.m24 * m1.m41,
-      m22 = m2.m21 * m1.m12 + m2.m22 * m1.m22 + m2.m23 * m1.m32 + m2.m24 * m1.m42,
-      m23 = m2.m21 * m1.m13 + m2.m22 * m1.m23 + m2.m23 * m1.m33 + m2.m24 * m1.m43,
-      m24 = m2.m21 * m1.m14 + m2.m22 * m1.m24 + m2.m23 * m1.m34 + m2.m24 * m1.m44,
-
-      m31 = m2.m31 * m1.m11 + m2.m32 * m1.m21 + m2.m33 * m1.m31 + m2.m34 * m1.m41,
-      m32 = m2.m31 * m1.m12 + m2.m32 * m1.m22 + m2.m33 * m1.m32 + m2.m34 * m1.m42,
-      m33 = m2.m31 * m1.m13 + m2.m32 * m1.m23 + m2.m33 * m1.m33 + m2.m34 * m1.m43,
-      m34 = m2.m31 * m1.m14 + m2.m32 * m1.m24 + m2.m33 * m1.m34 + m2.m34 * m1.m44,
-
-      m41 = m2.m41 * m1.m11 + m2.m42 * m1.m21 + m2.m43 * m1.m31 + m2.m44 * m1.m41,
-      m42 = m2.m41 * m1.m12 + m2.m42 * m1.m22 + m2.m43 * m1.m32 + m2.m44 * m1.m42,
-      m43 = m2.m41 * m1.m13 + m2.m42 * m1.m23 + m2.m43 * m1.m33 + m2.m44 * m1.m43,
-      m44 = m2.m41 * m1.m14 + m2.m42 * m1.m24 + m2.m43 * m1.m34 + m2.m44 * m1.m44
-
-  return new CSSMatrix(
-   [m11, m21, m31, m41,
-    m12, m22, m32, m42,
-    m13, m23, m33, m43,
-    m14, m24, m34, m44])
-}
-
-
-/**
- * Returns a new *Float32Array* containing all 16 elements which comprise the matrix. 
- * The elements are stored into the array as single-precision floating-point numbers 
- * in column-major (colexographical access access or "colex") order. 
- * 
- * @return {Float32Array} matrix elements (m11, m21, m31, m41, m12, m22, m32, m42, m13, m23, m33, m43, m14, m24, m34, m44) 
- */
-// toFloat32Array(){
-// 	return Float32Array.from(this.toArray())
-// }
-
-/**
- * Returns a new Float64Array containing all 16 elements which comprise the matrix. 
- * The elements are stored into the array as double-precision floating-point numbers 
- * in column-major (colexographical access access or "colex") order. 
- * 
- * @return {Float64Array} matrix elements (m11, m21, m31, m41, m12, m22, m32, m42, m13, m23, m33, m43, m14, m24, m34, m44) 
- */	
-// toFloat64Array(){
-// 	return Float64Array.from(this.toArray())
-// }
-
-/**
- * Creates a new mutable `CSSMatrix` object given an existing matrix or a 
- * `DOMMatrix` *Object* which provides the values for its properties.
- * 
- * @param {CSSMatrix} CSSMatrix the source `CSSMatrix` / `DOMMatrix` initialization to feed values from
- */
-CSSMatrix.fromMatrix = function fromMatrix(m){
-  return new CSSMatrix(
-    // DOMMatrix elements order
-   [m.m11, m.m21, m.m31, m.m41, 
-    m.m12, m.m22, m.m32, m.m42,
-    m.m13, m.m23, m.m33, m.m43,
-    m.m14, m.m24, m.m34, m.m44])
-}
-
-/**
- * Creates a new mutable `CSSMatrix` object given an array float values.
- *  
- * If the array has six values, the result is a 2D matrix; if the array has 16 values, 
- * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
- * 
- * @param {Array} array The source `Array` to feed values from.
- * @return {CSSMatrix} a The source array to feed values from.
- */
-CSSMatrix.fromArray = function fromArray(a){
-  return feedFromArray(new CSSMatrix(),a)
-}
-
-/**
- * Each create a new mutable `CSSMatrix` object given an array of single/double-precision 
- * (32/64 bit) floating-point values.
- *  
- * If the array has six values, the result is a 2D matrix; if the array has 16 values, 
- * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
- * 
- * @param {Float32Array|Float64Array} array The source `Float32Array` / `Float64Array` to feed values from.
- * @return {CSSMatrix} a The source array to feed values from.
- */
-// more of an alias for now, will update later if it's the case
-// function fromFloat32Array(a){ 
-// 	return feedFromArray(new CSSMatrix(),a)
-// }
-// function fromFloat64Array(a){ // more of an alias
-// 	return feedFromArray(new CSSMatrix(),a)
-// }
-
-/**
- * Feed a CSSMatrix object with the values of a 6/16 values array and returns it.
- * 
- * @param {Array} array The source `Array` to feed values from.
- * @return {CSSMatrix} a The source array to feed values from.
- */
-CSSMatrix.feedFromArray = function feedFromArray(m,array){
-  let a = Array.from(array)
-  if (a.length == 16){
-    m.m11 = m.a = a[0]; 
-    m.m21 = m.c = a[1];
-    m.m31 = a[2]; 
-    m.m41 = m.e = a[3]; 
-    m.m12 = m.b = a[4]; 
-    m.m22 = m.d = a[5]; 
-    m.m32 = a[6]; 
-    m.m42 = m.f = a[7]; 
-    m.m13 = a[8]; 
-    m.m23 = a[9]; 
-    m.m33 = a[10];
-    m.m43 = a[11]; 
-    m.m14 = a[12];
-    m.m24 = a[13];
-    m.m34 = a[14];
-    m.m44 = a[15];
-  } else if (a.length == 6) {
-    m.m11 = m.a = a[0]; 
-    m.m12 = m.b = a[1]; 
-    m.m14 = m.e = a[4]; 
-    m.m21 = m.c = a[2]; 
-    m.m22 = m.d = a[3]; 
-    m.m24 = m.f = a[5];
-  } else {
-    throw new TypeError(`CSSMatrix: expecting a 6/16 values Array`)
-  }
-  return m
-}
+CSSMatrix.Translate = Translate
+CSSMatrix.Rotate = Rotate
+CSSMatrix.RotateAxisAngle = RotateAxisAngle
+CSSMatrix.Scale = Scale
+CSSMatrix.SkewX = SkewX
+CSSMatrix.SkewY = SkewY
+CSSMatrix.Multiply = Multiply
+CSSMatrix.fromMatrix = fromMatrix
+CSSMatrix.fromArray = fromArray
+CSSMatrix.feedFromArray = feedFromArray
