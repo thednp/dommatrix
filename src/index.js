@@ -315,218 +315,6 @@ export default class CSSMatrix {
   constructor(...args){
     this.setIdentity()
     return args && args.length && this.setMatrixValue(args)
-  }  
-
-  /**
-   * The `setMatrixValue` method replaces the existing matrix with one computed
-   * in the browser. EG: `matrix(1,0.25,-0.25,1,0,0)`
-   * 
-   * The method accepts *Float64Array* / *Float32Array* / any *Array* values, the result of 
-   * `DOMMatrix` / `CSSMatrix` instance method calls `toFloat64Array()` / `toFloat32Array()`.
-   * 
-   * This method expects valid *matrix()* / *matrix3d()* string values, other
-   * transform functions like *translate()* are not supported.
-   * 
-   * @param {String} source the *String* resulted from `getComputedStyle()`.
-   * @param {Array} source the *Array* resulted from `toFloat64Array()`.
-   */
-  setMatrixValue(source){
-    let m = this
-
-    if (!source || !source.length) { // no parameters or source
-      return m
-    } else if (source.length && typeof source[0] === 'string' && source[0].length) { // CSS transform String source
-      let string = String(source[0]).trim(), type = '', values = [];
-
-      if (string == 'none') return m;
-  
-      type = string.slice(0, string.indexOf('('))
-      values = string.slice((type === 'matrix' ? 7 : 9), -1).split(',')
-                    .map(n=>Math.abs(n) < 1e-6 ? 0 : +n)
-
-      if ([6,16].indexOf(values.length)>-1){
-        feedFromArray(m,values)
-      } else {
-        throw new TypeError(`CSSMatrix: expecting valid CSS matrix() / matrix3d() syntax`)
-      }
-    } else if (source[0] instanceof CSSMatrix) { // CSSMatrix instance
-      feedFromArray(m,source[0].toArray())
-    } else if (Array.isArray(source[0])) { // Float32Array,Float64Array source
-      feedFromArray(m,source[0])    
-    } else if (Array.isArray(source)) { // Arguments list come here
-      feedFromArray(m,source)  
-    }
-    return m
-  }
-  
-  /**
-   * Creates and returns a string representation of the matrix in `CSS` matrix syntax, 
-   * using the appropriate `CSS` matrix notation.
-   * 
-   * The 16 items in the array 3D matrix array are *transposed* in row-major order.
-   * 
-   * @matrix3d *matrix3d(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44)*
-   * @matrix *matrix(a, b, c, d, e, f)*
-   * 
-   * @return {String} `String` representation of the matrix
-   */
-  toString(){
-    let m = this, type = m.is2D ? 'matrix' : 'matrix3d'
-    return `${type}(${m.toArray(1).join(',')})`
-  }
-
-  /**
-   * Returns an *Array* containing all 16 elements which comprise the matrix. 
-   * The method can return either the elements in default column major order or 
-   * row major order (what we call the *transposed* matrix, used by `toString`).
-   * 
-   * Other methods make use of this method to feed their output values from this matrix.
-   * 
-   * @param {Boolean} transposed changes the order of elements in the output
-   * @return {Array} an *Array* representation of the matrix
-   */
-  toArray(transposed){
-    let m = this
-    return m.is2D ? [ m.a, m.b, m.c, m.d, m.e, m.f ]
-      : transposed
-      ?[m.m11, m.m12, m.m13, m.m14, // transposed is used by toString
-        m.m21, m.m22, m.m23, m.m24,
-        m.m31, m.m32, m.m33, m.m34,
-        m.m41, m.m42, m.m43, m.m44]
-      :[m.m11, m.m21, m.m31, m.m41, // used by constructor
-        m.m12, m.m22, m.m32, m.m42,
-        m.m13, m.m23, m.m33, m.m43,
-        m.m14, m.m24, m.m34, m.m44]
-  }
-
-  /**
-   * The Multiply method returns a new CSSMatrix which is the result of this
-   * matrix multiplied by the passed matrix, with the passed matrix to the right.
-   * This matrix is not modified.
-   *
-   * @param {CSSMatrix} m2 CSSMatrix  
-   * @return {CSSMatrix} The result matrix.
-   */
-  multiply(m2){
-    return Multiply(this,m2)
-  }
-
-  /**
-   *
-   * These methods will be implemented later into an extended version to provide 
-   * additional functionality. 
-   */
-  // inverse = function(){}
-  // determinant = function(){}
-  // transpose = function(){}
-
-  /**
-   * The translate method returns a new matrix which is this matrix post
-   * multiplied by a translation matrix containing the passed values. If the z
-   * component is undefined, a 0 value is used in its place. This matrix is not
-   * modified.
-   *
-   * @param {number} x X component of the translation value.
-   * @param {number} y Y component of the translation value.
-   * @param {number=} z Z component of the translation value.
-   * @return {CSSMatrix} The result matrix
-   */
-
-  translate(x, y, z){
-    if (z == null) z = 0
-    if (y == null) y = 0
-    return Multiply(this,Translate(x, y, z))
-  }
-
-  /**
-   * The scale method returns a new matrix which is this matrix post multiplied by
-   * a scale matrix containing the passed values. If the z component is undefined,
-   * a 1 value is used in its place. If the y component is undefined, the x
-   * component value is used in its place. This matrix is not modified.
-   *
-   * @param {number} x The X component of the scale value.
-   * @param {number=} y The Y component of the scale value.
-   * @param {number=} z The Z component of the scale value.
-   * @return {CSSMatrix} The result matrix
-   */
-
-  scale(x, y, z){
-    if (y == null) y = x;
-    if (z == null) z = x;
-    return Multiply(this,Scale(x, y, z))
-  }
-
-  /**
-   * The rotate method returns a new matrix which is this matrix post multiplied
-   * by each of 3 rotation matrices about the major axes, first X, then Y, then Z.
-   * If the y and z components are undefined, the x value is used to rotate the
-   * object about the z axis, as though the vector (0,0,x) were passed. All
-   * rotation values are in degrees. This matrix is not modified.
-   *
-   * @param {number} rx The X component of the rotation value, or the Z component if the rotateY and rotateZ parameters are undefined.
-   * @param {number=} ry The (optional) Y component of the rotation value.
-   * @param {number=} rz The (optional) Z component of the rotation value.
-   * @return {CSSMatrix} The result matrix
-   */
-
-  rotate(rx, ry, rz){
-    if (ry == null) ry = 0;
-    if (rz == null) {rz = rx; rx = 0}
-    return Multiply(this,Rotate(rx, ry, rz))
-  }
-
-  /**
-   * The rotateAxisAngle method returns a new matrix which is this matrix post
-   * multiplied by a rotation matrix with the given axis and `angle`. The right-hand
-   * rule is used to determine the direction of rotation. All rotation values are
-   * in degrees. This matrix is not modified.
-   *
-   * @param {number} x The X component of the axis vector.
-   * @param {number} y The Y component of the axis vector.
-   * @param {number} z The Z component of the axis vector.
-   * @param {number} angle The angle of rotation about the axis vector, in degrees.
-   * @return {CSSMatrix} The `CSSMatrix` result
-   */
-
-  rotateAxisAngle(x, y, z, angle){
-    if (arguments.length!==4){
-      throw new TypeError(`CSSMatrix: expecting 4 values`)
-    }
-    return Multiply(this,RotateAxisAngle(x, y, z, angle))
-  }
-
-  /**
-   * Specifies a skew transformation along the `x-axis` by the given angle.
-   * This matrix is not modified.
-   *
-   * @param {number} angle The angle amount in degrees to skew.
-   * @return {CSSMatrix} The `CSSMatrix` result
-   */
-
-  skewX(angle){
-    return Multiply(this,SkewX(angle))
-  }
-
-  /**
-   * Specifies a skew transformation along the `y-axis` by the given angle.
-   * This matrix is not modified.
-   *
-   * @param {number} angle The angle amount in degrees to skew.
-   * @return {CSSMatrix} The `CSSMatrix` result
-   */
-
-  skewY(angle){
-    return Multiply(this,SkewY(angle))
-  }
-
-  /**
-   * Set the current `CSSMatrix` instance to the identity form and returns it.
-   *
-   * @return {CSSMatrix} this `CSSMatrix` instance
-   */
-  setIdentity(){
-    let identity = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
-    return feedFromArray(this,identity)
   }
 
   /**
@@ -571,60 +359,275 @@ export default class CSSMatrix {
    */
   set is2D(value){
     this.is2D = value
-  }	
-
-  /**
-   * Transforms the specified point using the matrix, returning a new 
-   * *Object* containing the transformed point. 
-   * Neither the matrix nor the original point are altered.
-   *
-   * The method is equivalent with `transformPoint()` method 
-   * of the `DOMMatrix` constructor.
-   *  
-   * JavaScript implementation by thednp
-   * 
-   * @param {Point} point the *Object* with `x`, `y`, `z` and `w` components
-   * @return {Point} a new `{x,y,z,w}` *Object*
-   */
-  transformPoint(v){
-    let _m = this, m = Translate(v.x, v.y, v.z)
-
-    m.m44 = v.w || 1
-    m = _m.multiply(m)
-
-    return {
-      x: m.m41,
-      y: m.m42,
-      z: m.m43,
-      w: m.m44
-    }
   }
-
-	/**
-   * Transforms the specified vector using the matrix, returning a new 
-   * {x,y,z,w} *Object* comprising the transformed vector. 
-   * Neither the matrix nor the original vector are altered.
-	 *
-	 * @param {Tuple} tupple an object with x, y, z and w components
-	 * @return {Tuple} the passed tuple
-	 */
-  transform(t){
-		let m = this,
-        x = m.m11 * t.x + m.m12 * t.y + m.m13 * t.z + m.m14 * t.w,
-        y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w,
-        z = m.m31 * t.x + m.m32 * t.y + m.m33 * t.z + m.m34 * t.w,
-        w = m.m41 * t.x + m.m42 * t.y + m.m43 * t.z + m.m44 * t.w
-
-		return {
-      x: x / w,
-      y: y / w,
-      z: z / w,
-      w : w
-    }
-  }  
 }
 
-// Transform Functions
+// export proto for custom compile via Buble
+const CSSMatrixProto = CSSMatrix.prototype
+
+/**
+ * The `setMatrixValue` method replaces the existing matrix with one computed
+ * in the browser. EG: `matrix(1,0.25,-0.25,1,0,0)`
+ * 
+ * The method accepts *Float64Array* / *Float32Array* / any *Array* values, the result of 
+ * `DOMMatrix` / `CSSMatrix` instance method calls `toFloat64Array()` / `toFloat32Array()`.
+ * 
+ * This method expects valid *matrix()* / *matrix3d()* string values, other
+ * transform functions like *translate()* are not supported.
+ * 
+ * @param {String} source the *String* resulted from `getComputedStyle()`.
+ * @param {Array} source the *Array* resulted from `toFloat64Array()`.
+ */
+CSSMatrixProto.setMatrixValue = function (source){
+  let m = this
+
+  if (!source || !source.length) { // no parameters or source
+    return m
+  } else if (source.length && typeof source[0] === 'string' && source[0].length) { // CSS transform String source
+    let string = String(source[0]).trim(), type = '', values = [];
+
+    if (string == 'none') return m;
+
+    type = string.slice(0, string.indexOf('('))
+    values = string.slice((type === 'matrix' ? 7 : 9), -1).split(',')
+                  .map(n=>Math.abs(n) < 1e-6 ? 0 : +n)
+
+    if ([6,16].indexOf(values.length)>-1){
+      feedFromArray(m,values)
+    } else {
+      throw new TypeError(`CSSMatrix: expecting valid CSS matrix() / matrix3d() syntax`)
+    }
+  } else if (source[0] instanceof CSSMatrix) { // CSSMatrix instance
+    feedFromArray(m,source[0].toArray())
+  } else if (Array.isArray(source[0])) { // Float32Array,Float64Array source
+    feedFromArray(m,source[0])    
+  } else if (Array.isArray(source)) { // Arguments list come here
+    feedFromArray(m,source)  
+  }
+  return m
+}
+
+/**
+ * Creates and returns a string representation of the matrix in `CSS` matrix syntax, 
+ * using the appropriate `CSS` matrix notation.
+ * 
+ * The 16 items in the array 3D matrix array are *transposed* in row-major order.
+ * 
+ * @matrix3d *matrix3d(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44)*
+ * @matrix *matrix(a, b, c, d, e, f)*
+ * 
+ * @return {String} `String` representation of the matrix
+ */
+CSSMatrixProto.toString = function(){
+  let m = this, type = m.is2D ? 'matrix' : 'matrix3d'
+  return `${type}(${m.toArray(1).join(',')})`
+}
+
+/**
+ * Returns an *Array* containing all 16 elements which comprise the matrix. 
+ * The method can return either the elements in default column major order or 
+ * row major order (what we call the *transposed* matrix, used by `toString`).
+ * 
+ * Other methods make use of this method to feed their output values from this matrix.
+ * 
+ * @param {Boolean} transposed changes the order of elements in the output
+ * @return {Array} an *Array* representation of the matrix
+ */
+CSSMatrixProto.toArray = function(transposed){
+  let m = this
+  return m.is2D ? [ m.a, m.b, m.c, m.d, m.e, m.f ]
+    : transposed
+    ?[m.m11, m.m12, m.m13, m.m14, // transposed is used by toString
+      m.m21, m.m22, m.m23, m.m24,
+      m.m31, m.m32, m.m33, m.m34,
+      m.m41, m.m42, m.m43, m.m44]
+    :[m.m11, m.m21, m.m31, m.m41, // used by constructor
+      m.m12, m.m22, m.m32, m.m42,
+      m.m13, m.m23, m.m33, m.m43,
+      m.m14, m.m24, m.m34, m.m44]
+}
+
+/**
+ * The Multiply method returns a new CSSMatrix which is the result of this
+ * matrix multiplied by the passed matrix, with the passed matrix to the right.
+ * This matrix is not modified.
+ *
+ * @param {CSSMatrix} m2 CSSMatrix  
+ * @return {CSSMatrix} The result matrix.
+ */
+CSSMatrixProto.multiply = function(m2){
+  return Multiply(this,m2)
+}
+
+/**
+ *
+ * These methods will be implemented later into an extended version to provide 
+ * additional functionality. 
+ */
+// inverse = function(){}
+// determinant = function(){}
+// transpose = function(){}
+
+/**
+ * The translate method returns a new matrix which is this matrix post
+ * multiplied by a translation matrix containing the passed values. If the z
+ * component is undefined, a 0 value is used in its place. This matrix is not
+ * modified.
+ *
+ * @param {number} x X component of the translation value.
+ * @param {number} y Y component of the translation value.
+ * @param {number=} z Z component of the translation value.
+ * @return {CSSMatrix} The result matrix
+ */
+
+CSSMatrixProto.translate = function(x, y, z){
+  if (z == null) z = 0
+  if (y == null) y = 0
+  return Multiply(this,Translate(x, y, z))
+}
+
+/**
+ * The scale method returns a new matrix which is this matrix post multiplied by
+ * a scale matrix containing the passed values. If the z component is undefined,
+ * a 1 value is used in its place. If the y component is undefined, the x
+ * component value is used in its place. This matrix is not modified.
+ *
+ * @param {number} x The X component of the scale value.
+ * @param {number=} y The Y component of the scale value.
+ * @param {number=} z The Z component of the scale value.
+ * @return {CSSMatrix} The result matrix
+ */
+
+CSSMatrixProto.scale = function(x, y, z){
+  if (y == null) y = x;
+  if (z == null) z = x;
+  return Multiply(this,Scale(x, y, z))
+}
+
+/**
+ * The rotate method returns a new matrix which is this matrix post multiplied
+ * by each of 3 rotation matrices about the major axes, first X, then Y, then Z.
+ * If the y and z components are undefined, the x value is used to rotate the
+ * object about the z axis, as though the vector (0,0,x) were passed. All
+ * rotation values are in degrees. This matrix is not modified.
+ *
+ * @param {number} rx The X component of the rotation value, or the Z component if the rotateY and rotateZ parameters are undefined.
+ * @param {number=} ry The (optional) Y component of the rotation value.
+ * @param {number=} rz The (optional) Z component of the rotation value.
+ * @return {CSSMatrix} The result matrix
+ */
+
+CSSMatrixProto.rotate = function(rx, ry, rz){
+  if (ry == null) ry = 0;
+  if (rz == null) {rz = rx; rx = 0}
+  return Multiply(this,Rotate(rx, ry, rz))
+}
+
+/**
+ * The rotateAxisAngle method returns a new matrix which is this matrix post
+ * multiplied by a rotation matrix with the given axis and `angle`. The right-hand
+ * rule is used to determine the direction of rotation. All rotation values are
+ * in degrees. This matrix is not modified.
+ *
+ * @param {number} x The X component of the axis vector.
+ * @param {number} y The Y component of the axis vector.
+ * @param {number} z The Z component of the axis vector.
+ * @param {number} angle The angle of rotation about the axis vector, in degrees.
+ * @return {CSSMatrix} The `CSSMatrix` result
+ */
+
+CSSMatrixProto.rotateAxisAngle = function(x, y, z, angle){
+  if (arguments.length!==4){
+    throw new TypeError(`CSSMatrix: expecting 4 values`)
+  }
+  return Multiply(this,RotateAxisAngle(x, y, z, angle))
+}
+
+/**
+ * Specifies a skew transformation along the `x-axis` by the given angle.
+ * This matrix is not modified.
+ *
+ * @param {number} angle The angle amount in degrees to skew.
+ * @return {CSSMatrix} The `CSSMatrix` result
+ */
+
+CSSMatrixProto.skewX = function(angle){
+  return Multiply(this,SkewX(angle))
+}
+
+/**
+ * Specifies a skew transformation along the `y-axis` by the given angle.
+ * This matrix is not modified.
+ *
+ * @param {number} angle The angle amount in degrees to skew.
+ * @return {CSSMatrix} The `CSSMatrix` result
+ */
+
+CSSMatrixProto.skewY = function(angle){
+  return Multiply(this,SkewY(angle))
+}
+
+/**
+ * Set the current `CSSMatrix` instance to the identity form and returns it.
+ *
+ * @return {CSSMatrix} this `CSSMatrix` instance
+ */
+CSSMatrixProto.setIdentity = function(){
+  let identity = [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
+  return feedFromArray(this,identity)
+}
+
+/**
+ * Transforms the specified point using the matrix, returning a new 
+ * *Object* containing the transformed point. 
+ * Neither the matrix nor the original point are altered.
+ *
+ * The method is equivalent with `transformPoint()` method 
+ * of the `DOMMatrix` constructor.
+ *  
+ * JavaScript implementation by thednp
+ * 
+ * @param {Point} point the *Object* with `x`, `y`, `z` and `w` components
+ * @return {Point} a new `{x,y,z,w}` *Object*
+ */
+CSSMatrixProto.transformPoint = function(v){
+  let _m = this, m = Translate(v.x, v.y, v.z)
+
+  m.m44 = v.w || 1
+  m = _m.multiply(m)
+
+  return {
+    x: m.m41,
+    y: m.m42,
+    z: m.m43,
+    w: m.m44
+  }
+}
+
+/**
+ * Transforms the specified vector using the matrix, returning a new 
+ * {x,y,z,w} *Object* comprising the transformed vector. 
+ * Neither the matrix nor the original vector are altered.
+ *
+ * @param {Tuple} tupple an object with x, y, z and w components
+ * @return {Tuple} the passed tuple
+ */
+CSSMatrixProto.transform = function(t){
+  let m = this,
+      x = m.m11 * t.x + m.m12 * t.y + m.m13 * t.z + m.m14 * t.w,
+      y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w,
+      z = m.m31 * t.x + m.m32 * t.y + m.m33 * t.z + m.m34 * t.w,
+      w = m.m41 * t.x + m.m42 * t.y + m.m43 * t.z + m.m44 * t.w
+
+  return {
+    x: x / w,
+    y: y / w,
+    z: z / w,
+    w : w
+  }
+}
+
+// Add Transform Functions to CSSMatrix object
 CSSMatrix.Translate = Translate
 CSSMatrix.Rotate = Rotate
 CSSMatrix.RotateAxisAngle = RotateAxisAngle
