@@ -1,6 +1,6 @@
 {
   "name": "dommatrix",
-  "version": "0.0.4f",
+  "version": "0.0.5-alpha1",
   "description": "ES6+ shim for DOMMatrix",
   "main": "dist/dommatrix.min.js",
   "module": "dist/dommatrix.esm.js",
@@ -11,8 +11,10 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm-run-all --parallel build-*",
+    "build": "npm run fix:js && npm-run-all --parallel build-*",
     "custom-build": "rollup -c --environment",
+    "fix:js": "eslint src/*.js --config .eslintrc --fix",
+    "lint:js": "eslint src/*.js --config .eslintrc",
     "build-js": "rollup --environment FORMAT:umd,MIN:false -c",
     "build-js-min": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
@@ -34,14 +36,18 @@
     "url": "https://github.com/thednp/dommatrix/issues"
   },
   "homepage": "https://github.com/thednp/dommatrix",
-  "devDependencies": {
+  "dependencies": {
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^7.1.3",
-    "npm-run-all": "^4.1.5",
-    "rollup": "^2.28.1",
-    "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-terser": "^5.3.0"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-vue": "^7.7.0",
+    "npm-run-all": "^4.1.5",
+    "rollup": "^2.28.1"
+  }
 }
