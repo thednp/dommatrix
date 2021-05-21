@@ -8,8 +8,39 @@ An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOM
 
 The constructor is almost equivalent with the **DOMMatrix** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
 
+# Installation
+```js
+npm install dommatrix
+```
+Download the latest version and copy the `dist/dommatrix.min.js` file to your project assets folder, then load the file in your front-end:
+```html
+<script src="./assets/js/dommatrix.min.js">
+```
+
+Alternativelly you can load from CDN:
+```html
+<script src="https://cdn.jsdelivr.net/npm/dommatrix/dist/dommatrix.min.js">
+```
+
+# Usage
+In your regular day to day usage, you will find yourself writing something like this:
+```js
+import CSSMatrix from 'dommatrix';
+
+// init
+let myMatrix = new CSSMatrix('matrix(1,0.25,-0.25,1,0,0)');
+
+// apply methods
+myMatrix.translate(15);
+myMatrix.rotate(15);
+
+// apply to styling to target
+element.style.transform = myMatrix.toString();
+```
+For the complete JavaScript API, check the [JavaScript API](https://github.com/thednp/DOMMatrix/wiki/JavaScript-API) section in our wiki.
+
 # WIKI
-Head over to the [wiki pages](https://github.com/thednp/DOMMatrix/wiki) for developer guidelines.
+For more indepth guides, head over to the [wiki pages](https://github.com/thednp/DOMMatrix/wiki) for developer guidelines.
 
 # More Info
 In contrast with the [original source](https://github.com/arian/CSSMatrix/) there have been a series of changes to the prototype for consistency, performance as well as requirements to better accomodate the **DOMMatrix** interface:
