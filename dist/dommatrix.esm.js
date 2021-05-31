@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.5-alpha2 (https://github.com/thednp/dommatrix)
+* DOMMatrix v0.0.6 (https://github.com/thednp/dommatrix)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -18,64 +18,59 @@
  * @param {[m11,m21,m31,m41..]} Arguments representing the 16 elements of a 3d matrix
  */
 
-var CSSMatrix = function CSSMatrix() {
-  var args = [], len = arguments.length;
-  while ( len-- ) args[ len ] = arguments[ len ];
+class CSSMatrix {
+  constructor(...args) {
+    this.setIdentity();
+    return args && args.length && this.setMatrixValue(args);
+  }
 
-  this.setIdentity();
-  return args && args.length && this.setMatrixValue(args);
-};
+  /**
+   * A `Boolean` whose value is `true` if the matrix is the identity matrix. The identity
+   * matrix is one in which every value is 0 except those on the main diagonal from top-left
+   * to bottom-right corner (in other words, where the offsets in each direction are equal).
+   *
+   * @return {Boolean} `Boolean` the current property value
+   */
+  get isIdentity() {
+    const m = this;
+    return (m.m11 === 1 && m.m12 === 0 && m.m13 === 0 && m.m14 === 0
+            && m.m21 === 0 && m.m22 === 1 && m.m23 === 0 && m.m24 === 0
+            && m.m31 === 0 && m.m32 === 0 && m.m33 === 1 && m.m34 === 0
+            && m.m41 === 0 && m.m42 === 0 && m.m43 === 0 && m.m44 === 1);
+  }
 
-var prototypeAccessors = { isIdentity: { configurable: true },is2D: { configurable: true } };
+  /**
+   * Sets a new `Boolean` flag value for `this.isIdentity` matrix property.
+   *
+   * @param {Boolean} value sets a new `Boolean` flag for this property
+   */
+  set isIdentity(value) {
+    this.isIdentity = value;
+  }
 
-/**
- * A `Boolean` whose value is `true` if the matrix is the identity matrix. The identity
- * matrix is one in which every value is 0 except those on the main diagonal from top-left
- * to bottom-right corner (in other words, where the offsets in each direction are equal).
- *
- * @return {Boolean} `Boolean` the current property value
- */
-prototypeAccessors.isIdentity.get = function () {
-  var m = this;
-  return (m.m11 === 1 && m.m12 === 0 && m.m13 === 0 && m.m14 === 0
-          && m.m21 === 0 && m.m22 === 1 && m.m23 === 0 && m.m24 === 0
-          && m.m31 === 0 && m.m32 === 0 && m.m33 === 1 && m.m34 === 0
-          && m.m41 === 0 && m.m42 === 0 && m.m43 === 0 && m.m44 === 1);
-};
+  /**
+   * A `Boolean` flag whose value is `true` if the matrix was initialized as a 2D matrix
+   * and `false` if the matrix is 3D.
+   *
+   * @return {Boolean} `Boolean` the current property value
+   */
+  get is2D() {
+    const m = this;
+    return (m.m31 === 0 && m.m32 === 0 && m.m33 === 1 && m.m34 === 0 && m.m43 === 0 && m.m44 === 1);
+  }
 
-/**
- * Sets a new `Boolean` flag value for `this.isIdentity` matrix property.
- *
- * @param {Boolean} value sets a new `Boolean` flag for this property
- */
-prototypeAccessors.isIdentity.set = function (value) {
-  this.isIdentity = value;
-};
-
-/**
- * A `Boolean` flag whose value is `true` if the matrix was initialized as a 2D matrix
- * and `false` if the matrix is 3D.
- *
- * @return {Boolean} `Boolean` the current property value
- */
-prototypeAccessors.is2D.get = function () {
-  var m = this;
-  return (m.m31 === 0 && m.m32 === 0 && m.m33 === 1 && m.m34 === 0 && m.m43 === 0 && m.m44 === 1);
-};
-
-/**
- * Sets a new `Boolean` flag value for `this.is2D` matrix property.
- *
- * @param {Boolean} value sets a new `Boolean` flag for this property
- */
-prototypeAccessors.is2D.set = function (value) {
-  this.is2D = value;
-};
-
-Object.defineProperties( CSSMatrix.prototype, prototypeAccessors );
+  /**
+   * Sets a new `Boolean` flag value for `this.is2D` matrix property.
+   *
+   * @param {Boolean} value sets a new `Boolean` flag for this property
+   */
+  set is2D(value) {
+    this.is2D = value;
+  }
+}
 
 // export proto for custom compile via Buble
-var CSSMatrixProto = CSSMatrix.prototype;
+const CSSMatrixProto = CSSMatrix.prototype;
 
 // Transform Functions
 // https://www.w3.org/TR/css-transforms-1/#transform-functions
@@ -91,7 +86,7 @@ var CSSMatrixProto = CSSMatrix.prototype;
  * @param {Number} z the `z-axis` position.
  */
 function Translate(x, y, z) {
-  var m = new CSSMatrix();
+  const m = new CSSMatrix();
   m.m41 = x;
   m.e = x;
   m.m42 = y;
@@ -111,22 +106,22 @@ function Translate(x, y, z) {
  */
 
 function Rotate(rx, ry, rz) {
-  var m = new CSSMatrix();
+  const m = new CSSMatrix();
 
-  var radX = (rx * Math.PI) / 180;
-  var radY = (ry * Math.PI) / 180;
-  var radZ = (rz * Math.PI) / 180;
+  const radX = (rx * Math.PI) / 180;
+  const radY = (ry * Math.PI) / 180;
+  const radZ = (rz * Math.PI) / 180;
 
   // minus sin() because of right-handed system
-  var cosx = Math.cos(radX);
-  var sinx = -Math.sin(radX);
-  var cosy = Math.cos(radY);
-  var siny = -Math.sin(radY);
-  var cosz = Math.cos(radZ);
-  var sinz = -Math.sin(radZ);
+  const cosx = Math.cos(radX);
+  const sinx = -Math.sin(radX);
+  const cosy = Math.cos(radY);
+  const siny = -Math.sin(radY);
+  const cosz = Math.cos(radZ);
+  const sinz = -Math.sin(radZ);
 
-  var cycz = cosy * cosz;
-  var cysz = -cosy * sinz;
+  const cycz = cosy * cosz;
+  const cysz = -cosy * sinz;
 
   m.m11 = cycz;
   m.a = cycz;
@@ -136,11 +131,11 @@ function Rotate(rx, ry, rz) {
 
   m.m13 = siny;
 
-  var sxsy = sinx * siny * cosz + cosx * sinz;
+  const sxsy = sinx * siny * cosz + cosx * sinz;
   m.m21 = sxsy;
   m.c = sxsy;
 
-  var cxcz = cosx * cosz - sinx * siny * sinz;
+  const cxcz = cosx * cosz - sinx * siny * sinz;
   m.m22 = cxcz;
   m.d = cxcz;
 
@@ -165,15 +160,15 @@ function Rotate(rx, ry, rz) {
  * @param {Number} angle the value in degrees of the rotation.
  */
 function RotateAxisAngle(x, y, z, angle) {
-  var m = new CSSMatrix();
-  var radA = (angle * Math.PI) / 360;
-  var sinA = Math.sin(radA);
-  var cosA = Math.cos(radA);
-  var sinA2 = sinA * sinA;
-  var length = Math.sqrt(x * x + y * y + z * z);
-  var X = 0;
-  var Y = 0;
-  var Z = 1;
+  const m = new CSSMatrix();
+  const radA = (angle * Math.PI) / 360;
+  const sinA = Math.sin(radA);
+  const cosA = Math.cos(radA);
+  const sinA2 = sinA * sinA;
+  const length = Math.sqrt(x * x + y * y + z * z);
+  let X = 0;
+  let Y = 0;
+  let Z = 1;
 
   // bad vector length, use something reasonable
   if (length !== 0) {
@@ -182,25 +177,25 @@ function RotateAxisAngle(x, y, z, angle) {
     Z = z / length;
   }
 
-  var x2 = X * X;
-  var y2 = Y * Y;
-  var z2 = Z * Z;
+  const x2 = X * X;
+  const y2 = Y * Y;
+  const z2 = Z * Z;
 
-  var m11 = 1 - 2 * (y2 + z2) * sinA2;
+  const m11 = 1 - 2 * (y2 + z2) * sinA2;
   m.m11 = m11;
   m.a = m11;
 
-  var m12 = 2 * (x * y * sinA2 + z * sinA * cosA);
+  const m12 = 2 * (x * y * sinA2 + z * sinA * cosA);
   m.m12 = m12;
   m.b = m12;
 
   m.m13 = 2 * (x * z * sinA2 - y * sinA * cosA);
 
-  var m21 = 2 * (y * x * sinA2 - z * sinA * cosA);
+  const m21 = 2 * (y * x * sinA2 - z * sinA * cosA);
   m.m21 = m21;
   m.c = m21;
 
-  var m22 = 1 - 2 * (z2 + x2) * sinA2;
+  const m22 = 1 - 2 * (z2 + x2) * sinA2;
   m.m22 = m22;
   m.d = m22;
 
@@ -235,7 +230,7 @@ function RotateAxisAngle(x, y, z, angle) {
  * @param {Number} z the `z-axis` scale.
  */
 function Scale(x, y, z) {
-  var m = new CSSMatrix();
+  const m = new CSSMatrix();
   m.m11 = x;
   m.a = x;
 
@@ -255,9 +250,9 @@ function Scale(x, y, z) {
  * @param {Number} angle the angle in degrees.
  */
 function SkewX(angle) {
-  var radA = (angle * Math.PI) / 180;
-  var m = new CSSMatrix();
-  var t = Math.tan(radA);
+  const radA = (angle * Math.PI) / 180;
+  const m = new CSSMatrix();
+  const t = Math.tan(radA);
   m.m21 = t;
   m.c = t;
   return m;
@@ -272,9 +267,9 @@ function SkewX(angle) {
  * @param {Number} angle the angle in degrees.
  */
 function SkewY(angle) {
-  var radA = (angle * Math.PI) / 180;
-  var m = new CSSMatrix();
-  var t = Math.tan(radA);
+  const radA = (angle * Math.PI) / 180;
+  const m = new CSSMatrix();
+  const t = Math.tan(radA);
   m.m12 = t;
   m.b = t;
   return m;
@@ -288,31 +283,31 @@ function SkewY(angle) {
  * @param {CSSMatrix} m2 the second matrix.
  */
 function Multiply(m1, m2) {
-  var m11 = m2.m11 * m1.m11 + m2.m12 * m1.m21 + m2.m13 * m1.m31 + m2.m14 * m1.m41;
-  var m12 = m2.m11 * m1.m12 + m2.m12 * m1.m22 + m2.m13 * m1.m32 + m2.m14 * m1.m42;
-  var m13 = m2.m11 * m1.m13 + m2.m12 * m1.m23 + m2.m13 * m1.m33 + m2.m14 * m1.m43;
-  var m14 = m2.m11 * m1.m14 + m2.m12 * m1.m24 + m2.m13 * m1.m34 + m2.m14 * m1.m44;
+  const m11 = m2.m11 * m1.m11 + m2.m12 * m1.m21 + m2.m13 * m1.m31 + m2.m14 * m1.m41;
+  const m12 = m2.m11 * m1.m12 + m2.m12 * m1.m22 + m2.m13 * m1.m32 + m2.m14 * m1.m42;
+  const m13 = m2.m11 * m1.m13 + m2.m12 * m1.m23 + m2.m13 * m1.m33 + m2.m14 * m1.m43;
+  const m14 = m2.m11 * m1.m14 + m2.m12 * m1.m24 + m2.m13 * m1.m34 + m2.m14 * m1.m44;
 
-  var m21 = m2.m21 * m1.m11 + m2.m22 * m1.m21 + m2.m23 * m1.m31 + m2.m24 * m1.m41;
-  var m22 = m2.m21 * m1.m12 + m2.m22 * m1.m22 + m2.m23 * m1.m32 + m2.m24 * m1.m42;
-  var m23 = m2.m21 * m1.m13 + m2.m22 * m1.m23 + m2.m23 * m1.m33 + m2.m24 * m1.m43;
-  var m24 = m2.m21 * m1.m14 + m2.m22 * m1.m24 + m2.m23 * m1.m34 + m2.m24 * m1.m44;
+  const m21 = m2.m21 * m1.m11 + m2.m22 * m1.m21 + m2.m23 * m1.m31 + m2.m24 * m1.m41;
+  const m22 = m2.m21 * m1.m12 + m2.m22 * m1.m22 + m2.m23 * m1.m32 + m2.m24 * m1.m42;
+  const m23 = m2.m21 * m1.m13 + m2.m22 * m1.m23 + m2.m23 * m1.m33 + m2.m24 * m1.m43;
+  const m24 = m2.m21 * m1.m14 + m2.m22 * m1.m24 + m2.m23 * m1.m34 + m2.m24 * m1.m44;
 
-  var m31 = m2.m31 * m1.m11 + m2.m32 * m1.m21 + m2.m33 * m1.m31 + m2.m34 * m1.m41;
-  var m32 = m2.m31 * m1.m12 + m2.m32 * m1.m22 + m2.m33 * m1.m32 + m2.m34 * m1.m42;
-  var m33 = m2.m31 * m1.m13 + m2.m32 * m1.m23 + m2.m33 * m1.m33 + m2.m34 * m1.m43;
-  var m34 = m2.m31 * m1.m14 + m2.m32 * m1.m24 + m2.m33 * m1.m34 + m2.m34 * m1.m44;
+  const m31 = m2.m31 * m1.m11 + m2.m32 * m1.m21 + m2.m33 * m1.m31 + m2.m34 * m1.m41;
+  const m32 = m2.m31 * m1.m12 + m2.m32 * m1.m22 + m2.m33 * m1.m32 + m2.m34 * m1.m42;
+  const m33 = m2.m31 * m1.m13 + m2.m32 * m1.m23 + m2.m33 * m1.m33 + m2.m34 * m1.m43;
+  const m34 = m2.m31 * m1.m14 + m2.m32 * m1.m24 + m2.m33 * m1.m34 + m2.m34 * m1.m44;
 
-  var m41 = m2.m41 * m1.m11 + m2.m42 * m1.m21 + m2.m43 * m1.m31 + m2.m44 * m1.m41;
-  var m42 = m2.m41 * m1.m12 + m2.m42 * m1.m22 + m2.m43 * m1.m32 + m2.m44 * m1.m42;
-  var m43 = m2.m41 * m1.m13 + m2.m42 * m1.m23 + m2.m43 * m1.m33 + m2.m44 * m1.m43;
-  var m44 = m2.m41 * m1.m14 + m2.m42 * m1.m24 + m2.m43 * m1.m34 + m2.m44 * m1.m44;
+  const m41 = m2.m41 * m1.m11 + m2.m42 * m1.m21 + m2.m43 * m1.m31 + m2.m44 * m1.m41;
+  const m42 = m2.m41 * m1.m12 + m2.m42 * m1.m22 + m2.m43 * m1.m32 + m2.m44 * m1.m42;
+  const m43 = m2.m41 * m1.m13 + m2.m42 * m1.m23 + m2.m43 * m1.m33 + m2.m44 * m1.m43;
+  const m44 = m2.m41 * m1.m14 + m2.m42 * m1.m24 + m2.m43 * m1.m34 + m2.m44 * m1.m44;
 
   return new CSSMatrix(
     [m11, m21, m31, m41,
       m12, m22, m32, m42,
       m13, m23, m33, m43,
-      m14, m24, m34, m44]
+      m14, m24, m34, m44],
   );
 }
 
@@ -350,7 +345,7 @@ function fromMatrix(m) {
     [m.m11, m.m21, m.m31, m.m41,
       m.m12, m.m22, m.m32, m.m42,
       m.m13, m.m23, m.m33, m.m43,
-      m.m14, m.m24, m.m34, m.m44]
+      m.m14, m.m24, m.m34, m.m44],
   );
 }
 
@@ -361,24 +356,12 @@ function fromMatrix(m) {
  * @return {CSSMatrix} a The source array to feed values from.
  */
 function feedFromArray(m, array) {
-  var a = Array.from(array);
+  const a = Array.from(array);
   if (a.length === 16) {
-    var m11 = a[0];
-    var m21 = a[1];
-    var m31 = a[2];
-    var m41 = a[3];
-    var m12 = a[4];
-    var m22 = a[5];
-    var m32 = a[6];
-    var m42 = a[7];
-    var m13 = a[8];
-    var m23 = a[9];
-    var m33 = a[10];
-    var m43 = a[11];
-    var m14 = a[12];
-    var m24 = a[13];
-    var m34 = a[14];
-    var m44 = a[15];
+    const [m11, m21, m31, m41,
+      m12, m22, m32, m42,
+      m13, m23, m33, m43,
+      m14, m24, m34, m44] = a;
 
     m.m11 = m11;
     m.a = m11;
@@ -411,30 +394,25 @@ function feedFromArray(m, array) {
     m.m34 = m34;
     m.m44 = m44;
   } else if (a.length === 6) {
-    var m11$1 = a[0];
-    var m12$1 = a[1];
-    var m21$1 = a[2];
-    var m22$1 = a[3];
-    var m14$1 = a[4];
-    var m24$1 = a[5];
+    const [m11, m12, m21, m22, m14, m24] = a;
 
-    m.m11 = m11$1;
-    m.a = m11$1;
+    m.m11 = m11;
+    m.a = m11;
 
-    m.m12 = m12$1;
-    m.b = m12$1;
+    m.m12 = m12;
+    m.b = m12;
 
-    m.m21 = m21$1;
-    m.c = m21$1;
+    m.m21 = m21;
+    m.c = m21;
 
-    m.m22 = m22$1;
-    m.d = m22$1;
+    m.m22 = m22;
+    m.d = m22;
 
-    m.m14 = m14$1;
-    m.e = m14$1;
+    m.m14 = m14;
+    m.e = m14;
 
-    m.m24 = m24$1;
-    m.f = m24$1;
+    m.m24 = m24;
+    m.f = m24;
   } else {
     throw new TypeError('CSSMatrix: expecting a 6/16 values Array');
   }
@@ -486,20 +464,20 @@ function fromArray(a) {
  * @param {Array} source the *Array* resulted from `toFloat64Array()`.
  */
 CSSMatrixProto.setMatrixValue = function setMatrixValue(source) {
-  var m = this;
+  const m = this;
 
   if (!source || !source.length) { // no parameters or source
     return m;
   } if (source.length && typeof source[0] === 'string' && source[0].length) { // CSS transform String source
-    var string = String(source[0]).trim();
-    var type = '';
-    var values = [];
+    const string = String(source[0]).trim();
+    let type = '';
+    let values = [];
 
-    if (string === 'none') { return m; }
+    if (string === 'none') return m;
 
     type = string.slice(0, string.indexOf('('));
     values = string.slice((type === 'matrix' ? 7 : 9), -1).split(',')
-      .map(function (n) { return (Math.abs(n) < 1e-6 ? 0 : +n); });
+      .map((n) => (Math.abs(n) < 1e-6 ? 0 : +n));
 
     if ([6, 16].indexOf(values.length) > -1) {
       feedFromArray(m, values);
@@ -528,10 +506,10 @@ CSSMatrixProto.setMatrixValue = function setMatrixValue(source) {
  * @return {String} `String` representation of the matrix
  */
 CSSMatrixProto.toString = function toString() {
-  var m = this;
-  var type = m.is2D ? 'matrix' : 'matrix3d';
+  const m = this;
+  const type = m.is2D ? 'matrix' : 'matrix3d';
 
-  return (type + "(" + (m.toArray(1).join(',')) + ")");
+  return `${type}(${m.toArray(1).join(',')})`;
 };
 
 /**
@@ -545,8 +523,8 @@ CSSMatrixProto.toString = function toString() {
  * @return {Array} an *Array* representation of the matrix
  */
 CSSMatrixProto.toArray = function toArray(transposed) {
-  var m = this;
-  var result;
+  const m = this;
+  let result;
 
   if (m.is2D) {
     result = [m.a, m.b, m.c, m.d, m.e, m.f];
@@ -598,11 +576,11 @@ CSSMatrixProto.multiply = function multiply(m2) {
  */
 
 CSSMatrixProto.translate = function translate(x, y, z) {
-  var X = x;
-  var Y = y;
-  var Z = z;
-  if (Z == null) { Z = 0; }
-  if (Y == null) { Y = 0; }
+  const X = x;
+  let Y = y;
+  let Z = z;
+  if (Z == null) Z = 0;
+  if (Y == null) Y = 0;
   return Multiply(this, Translate(X, Y, Z));
 };
 
@@ -618,11 +596,11 @@ CSSMatrixProto.translate = function translate(x, y, z) {
  * @return {CSSMatrix} The result matrix
  */
 CSSMatrixProto.scale = function scale(x, y, z) {
-  var X = x;
-  var Y = y;
-  var Z = z;
-  if (Y == null) { Y = x; }
-  if (Z == null) { Z = x; }
+  const X = x;
+  let Y = y;
+  let Z = z;
+  if (Y == null) Y = x;
+  if (Z == null) Z = x;
 
   return Multiply(this, Scale(X, Y, Z));
 };
@@ -640,10 +618,10 @@ CSSMatrixProto.scale = function scale(x, y, z) {
  * @return {CSSMatrix} The result matrix
  */
 CSSMatrixProto.rotate = function rotate(rx, ry, rz) {
-  var RX = rx;
-  var RY = ry;
-  var RZ = rz;
-  if (RY == null) { RY = 0; }
+  let RX = rx;
+  let RY = ry;
+  let RZ = rz;
+  if (RY == null) RY = 0;
   if (RZ == null) { RZ = RX; RX = 0; }
   return Multiply(this, Rotate(RX, RY, RZ));
 };
@@ -698,7 +676,7 @@ CSSMatrixProto.skewY = function skewY(angle) {
  * @return {CSSMatrix} this `CSSMatrix` instance
  */
 CSSMatrixProto.setIdentity = function setIdentity() {
-  var identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+  const identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
   return feedFromArray(this, identity);
 };
 
@@ -716,8 +694,8 @@ CSSMatrixProto.setIdentity = function setIdentity() {
  * @return {Point} a new `{x,y,z,w}` *Object*
  */
 CSSMatrixProto.transformPoint = function transformPoint(v) {
-  var M = this;
-  var m = Translate(v.x, v.y, v.z);
+  const M = this;
+  let m = Translate(v.x, v.y, v.z);
 
   m.m44 = v.w || 1;
   m = M.multiply(m);
@@ -739,17 +717,17 @@ CSSMatrixProto.transformPoint = function transformPoint(v) {
  * @return {Tuple} the passed tuple
  */
 CSSMatrixProto.transform = function transform(t) {
-  var m = this;
-  var x = m.m11 * t.x + m.m12 * t.y + m.m13 * t.z + m.m14 * t.w;
-  var y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w;
-  var z = m.m31 * t.x + m.m32 * t.y + m.m33 * t.z + m.m34 * t.w;
-  var w = m.m41 * t.x + m.m42 * t.y + m.m43 * t.z + m.m44 * t.w;
+  const m = this;
+  const x = m.m11 * t.x + m.m12 * t.y + m.m13 * t.z + m.m14 * t.w;
+  const y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w;
+  const z = m.m31 * t.x + m.m32 * t.y + m.m33 * t.z + m.m34 * t.w;
+  const w = m.m41 * t.x + m.m42 * t.y + m.m43 * t.z + m.m44 * t.w;
 
   return {
     x: x / w,
     y: y / w,
     z: z / w,
-    w: w,
+    w,
   };
 };
 

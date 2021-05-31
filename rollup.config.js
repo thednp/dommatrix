@@ -30,8 +30,11 @@ const OUTPUT = {
 
 const PLUGINS = [
   json(),
-  buble(),
 ];
+
+if (FORMAT!=='esm') {
+  PLUGINS.push(buble());
+}
 
 if (MIN) {
   PLUGINS.push(terser({ output: { preamble: miniBannerJS } }));
