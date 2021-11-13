@@ -1,8 +1,3 @@
-/*!
-* DOMMatrix v0.0.8 (https://github.com/thednp/dommatrix)
-* Copyright 2021 © thednp
-* Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
-*/
 /**
  * DOMMatrix shim - CSSMatrix
  *
@@ -743,4 +738,4 @@ CSSMatrix.fromMatrix = fromMatrix;
 CSSMatrix.fromArray = fromArray;
 CSSMatrix.feedFromArray = feedFromArray;
 
-export { CSSMatrix as default };
+export default CSSMatrix;
