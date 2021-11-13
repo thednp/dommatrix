@@ -1,12 +1,14 @@
 {
   "name": "dommatrix",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "ES6+ shim for DOMMatrix",
   "main": "dist/dommatrix.min.js",
   "module": "dist/dommatrix.esm.js",
+  "types": "types/index.d.ts",
   "jsnext": "src/index.js",
   "files": [
     "dist/*.{js,map}",
+    "types/*.{ts,map}",
     "src/*.{js,map}"
   ],
   "scripts": {
@@ -15,6 +17,7 @@
     "custom-build": "rollup -c --environment",
     "fix:js": "eslint src/*.js --config .eslintrc --fix",
     "lint:js": "eslint src/*.js --config .eslintrc",
+    "build-ts": "tsc -d",
     "build-js": "rollup --environment FORMAT:umd,MIN:false -c",
     "build-js-min": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
@@ -48,6 +51,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-vue": "^7.7.0",
     "npm-run-all": "^4.1.5",
-    "rollup": "^2.28.1"
+    "rollup": "^2.28.1",
+    "typescript": "^4.4.4"
   }
 }

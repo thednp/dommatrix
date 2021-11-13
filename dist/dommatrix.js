@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.6 (https://github.com/thednp/dommatrix)
+* DOMMatrix v0.0.7 (https://github.com/thednp/dommatrix)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -7,7 +7,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.CSSMatrix = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   /**
    * DOMMatrix shim - CSSMatrix
@@ -773,4 +773,4 @@
 
   return CSSMatrix;
 
-})));
+}));

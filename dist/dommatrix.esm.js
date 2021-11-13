@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.6 (https://github.com/thednp/dommatrix)
+* DOMMatrix v0.0.7 (https://github.com/thednp/dommatrix)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -743,4 +743,4 @@ CSSMatrix.fromMatrix = fromMatrix;
 CSSMatrix.fromArray = fromArray;
 CSSMatrix.feedFromArray = feedFromArray;
 
-export default CSSMatrix;
+export { CSSMatrix as default };
