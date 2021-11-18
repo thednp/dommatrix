@@ -39,7 +39,7 @@
   "bugs": {
     "url": "https://github.com/thednp/dommatrix/issues"
   },
-  "homepage": "https://thednp.github.io/dommatrix",
+  "homepage": "https://thednp.github.io/DOMMatrix/",
   "dependencies": {
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-json": "^4.1.0",
