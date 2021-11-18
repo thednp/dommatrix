@@ -1,6 +1,6 @@
 {
   "name": "dommatrix",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "ES6+ shim for DOMMatrix",
   "main": "dist/dommatrix.min.js",
   "module": "dist/dommatrix.esm.js",
@@ -19,6 +19,7 @@
     "lint:js": "eslint src/*.js --config .eslintrc",
     "build-ts": "tsc -d",
     "build-js": "rollup --environment FORMAT:umd,MIN:false -c",
+    "build-test": "rollup --environment FORMAT:iife,MIN:false,OUTPUTFILE:test/dommatrix.min.js -c",
     "build-js-min": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
     "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c"
@@ -38,7 +39,7 @@
   "bugs": {
     "url": "https://github.com/thednp/dommatrix/issues"
   },
-  "homepage": "https://github.com/thednp/dommatrix",
+  "homepage": "https://thednp.github.io/dommatrix",
   "dependencies": {
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-json": "^4.1.0",

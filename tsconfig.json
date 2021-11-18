@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "resolveJsonModule": true,
+    // "resolveJsonModule": true,
     "emitDeclarationOnly": true,
+    "moduleResolution": "Node",
     "strict": true,
     "allowJs": true,
-    // "outFile": "types/index.d.ts"
+    "checkJs": true,
+    "target": "ESNext",
     "outDir": "types"
   },
-  // "types": [],
-  // "files": ["src/index.js"],
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "types", "assets"]
+  "exclude": ["node_modules", "dist", "types", "assets", "experiments", "test"]
 }

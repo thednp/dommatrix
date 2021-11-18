@@ -8,6 +8,10 @@ An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOM
 
 The constructor is almost equivalent with the **DOMMatrix** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
 
+# Demo
+[Click me](https://thednp.github.io/DOMMatrix) to be happy.
+
+
 # Installation
 ```js
 npm install dommatrix
@@ -45,21 +49,24 @@ For more indepth guides, head over to the [wiki pages](https://github.com/thednp
 # More Info
 In contrast with the [original source](https://github.com/arian/CSSMatrix/) there have been a series of changes to the prototype for consistency, performance as well as requirements to better accomodate the **DOMMatrix** interface:
 
-* **changed** the order of the initialization parameters of a 3D matrix, now uses the column major order, as described in the specification pages; this change is to accommodate outputs of `toFloat64Array()` of the DOMMatrix constructor (which also returns items in the expected order);
 * **changed** how the constructor determines if the matrix is 2D, based on a [more accurate method](https://github.com/jsidea/jsidea/blob/2b4486c131d5cca2334293936fa13454b34fcdef/ts/jsidea/geom/Matrix3D.ts#L788) which is actually checking the designated values of the 3D space; in contrast, the old *CSSMatrix* constructor sets `afine` property at initialization only and based on the number of arguments or the type of the input CSS transform syntax; 
 * **fixed** the `translate()`, `scale()` and `rotate()` instance methods to work with one axis transformation, also inline with **DOMMatrix**;
 * **changed** `toString()` instance method to utilize the new method `toArray()` described below;
 * **changed** `setMatrixValue()` instance method to do all the heavy duty work with parameters;
-* *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
-* *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
-* *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
 * **added** `is2D` (*getter* and *setter*) property;
 * **added** `isIdentity` (*getter* and *setter*) property;
-* **added** `feedFromArray` static method, not present in the constructor prototype;
 * **added** `fromMatrix` static method, not present in the constructor prototype;
-* **added** `fromArray()`, `fromFloat64Array()` and `fromFloat32Array()` static methods, not present in the constructor prototype, the last 2 are not published since `fromArray()` can also process *Float32Array* / *Float64Array* via `Array.from()`;
-* **added** `toArray()`, `toFloat64Array()` and `toFloat32Array()` instance methods, the last two are not present in the constructor prototype;
+* **added** `fromString` static method, not present in the constructor prototype;
+* **added** `fromArray()` static method, not present in the constructor prototype, should also process *Float32Array* / *Float64Array* via `Array.from()`;
+* **added** `toArray()` instance method, a very convenient way to export your matrix;
 * **added** `transformPoint()` instance method which works like the original.
+* *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
+* *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
+* *removed* `setIdentity()` instance method due to code rework for enabling better TypeScript definitions;
+* *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
+* *removed* `feedFromArray` static method, not present in the constructor prototype, `fromArray()` will cover that;
+* *not supported* `toFloat64Array()` and `toFloat32Array()` instance methods are not supported, a quick `FromFloat32Array(myMatrix.toArray())` should achieve just that;
+* *not supported* `fromFloat64Array()` and `fromFloat32Array()` static methods are not supported since `fromArray()` should handle them just as well,
 
 
 # Thanks
