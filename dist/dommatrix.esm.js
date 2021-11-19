@@ -60,6 +60,7 @@ function fromArray(array) {
     m.m44 = m44;
   } else if (a.length === 6) {
     const [m11, m12, m21, m22, m41, m42] = a;
+
     m.m11 = m11;
     m.a = m11;
 
