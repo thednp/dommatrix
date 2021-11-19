@@ -1,13 +1,13 @@
 /*!
-* DOMMatrix v0.0.9 (https://thednp.github.io/dommatrix)
+* DOMMatrix v0.0.10 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
 // DOMMatrix Static methods
-// * `fromFloat64Array` and `fromFloat32Array` methods are not supported
-// * `fromArray` a much more friendly implementation, should also accept float32Array/ float64Array
-// * `fromMatrix` is also implemented to facilitate easy instance cloning capability
-// * `fromString` is a very helpful utility
+// * `fromFloat64Array` and `fromFloat32Array` methods are not supported;
+// * `fromArray` a more simple implementation, should also accept float[32/64]Array;
+// * `fromMatrix` load values from another CSSMatrix/DOMMatrix instance;
+// * `fromString` parses and loads values from any valid CSS transform string.
 
 /**
  * Creates a new mutable `CSSMatrix` object given an array float values.
@@ -15,11 +15,11 @@
  * If the array has six values, the result is a 2D matrix; if the array has 16 values,
  * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
  *
- * @param {CSSMatrix} m identity matrix.
  * @param {Number[]} array an `Array` to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
-function fromArray(m, array) {
+function fromArray(array) {
+  const m = new CSSMatrix();
   const a = Array.from(array);
 
   if (a.length === 16) {
@@ -59,8 +59,7 @@ function fromArray(m, array) {
     m.m34 = m34;
     m.m44 = m44;
   } else if (a.length === 6) {
-    const [m11, m12, m21, m22, m14, m24] = a;
-
+    const [m11, m12, m21, m22, m41, m42] = a;
     m.m11 = m11;
     m.a = m11;
 
@@ -73,11 +72,11 @@ function fromArray(m, array) {
     m.m22 = m22;
     m.d = m22;
 
-    m.m14 = m14;
-    m.e = m14;
+    m.m41 = m41;
+    m.e = m41;
 
-    m.m24 = m24;
-    m.f = m24;
+    m.m42 = m42;
+    m.f = m42;
   } else {
     throw new TypeError('CSSMatrix: expecting a 6/16 values Array');
   }
@@ -88,16 +87,16 @@ function fromArray(m, array) {
  * Creates a new mutable `CSSMatrix` object given an existing matrix or a
  * `DOMMatrix` *Object* which provides the values for its properties.
  *
- * @param {CSSMatrix} target the identity matrix.
- * @param {CSSMatrix} m the source `CSSMatrix` initialization to feed values from.
+ * @param {CSSMatrix | DOMMatrix} m the source matrix to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
-function fromMatrix(target, m) {
-  return fromArray(target,
+function fromMatrix(m) {
+  return fromArray(
     [m.m11, m.m12, m.m13, m.m14,
       m.m21, m.m22, m.m23, m.m24,
       m.m31, m.m32, m.m33, m.m34,
-      m.m41, m.m42, m.m43, m.m44]);
+      m.m41, m.m42, m.m43, m.m44],
+  );
 }
 
 /**
@@ -106,72 +105,78 @@ function fromMatrix(target, m) {
  * * matrix3d(m11, m12, m13, ...m44) - valid matrix3d() transform function
  * * translate(tx, ty) rotateX(alpha) - any valid transform function(s)
  *
- * @param {CSSMatrix} target identity matrix.
  * @param {string} source valid CSS transform string syntax.
  * @return {CSSMatrix} the resulted matrix.
  */
-function fromString(target, source) {
-  const str = String(source).trim();
-  const deg = 180 / Math.PI;
-  const identity = Object.assign(Object.create(target), target);
-  let m = Object.assign(Object.create(target), target);
-  const tramsformObject = str.replace(/\s/g, '').split(')').filter((f) => f);
+function fromString(source) {
+  const str = String(source).replace(/\s/g, '');
+  let m = new CSSMatrix();
+  let is2D = true;
+  const tramsformObject = str.split(')').filter((f) => f).map((fn) => {
+    const [prop, value] = fn.split('(');
+    const components = value.split(',')
+      .map((n) => (n.includes('rad') ? parseFloat(n) * (180 / Math.PI) : parseFloat(n)));
+    const [x, y, z, a] = components;
+
+    // don't add perspective if is2D
+    if (prop === 'matrix3d'
+        || (prop === 'rotate3d' && [x, y].every((n) => !Number.isNaN(+n) && n !== 0) && a)
+        || (['rotateX', 'rotateY'].includes(prop) && x)
+        || (prop === 'translate3d' && [x, y, z].every((n) => !Number.isNaN(+n)) && z)
+        || (prop === 'scale3d' && [x, y, z].every((n) => !Number.isNaN(+n) && n !== x))
+    ) {
+      is2D = false;
+    }
+    return { prop, components };
+  });
 
   tramsformObject.forEach((tf) => {
-    const [prop, value] = tf.split('(');
-    const [x, y, z, a] = value.split(',')
-      .map((n) => (n.includes('rad') ? parseFloat(n) * deg : parseFloat(n)));
+    const { prop, components } = tf;
+    const [x, y, z, a] = components;
     const xyz = [x, y, z];
     const xyza = [x, y, z, a];
 
-    if (prop === 'perspective') {
+    if (prop === 'perspective' && !is2D) {
       m.m34 = -1 / x;
     } else if (prop.includes('matrix')) {
-      const values = value.split(',').map(parseFloat)
-        .map((n) => (Math.abs(n) < 1e-6 ? 0 : n));
-
-      if ([6, 16].indexOf(values.length) > -1) {
-        m = m.multiply(fromArray(identity, values));
+      const values = components.map((n) => (Math.abs(n) < 1e-6 ? 0 : n));
+      if ([6, 16].includes(values.length)) {
+        m = m.multiply(fromArray(values));
       }
     } else if (['translate', 'translate3d'].some((p) => prop === p) && x) {
       m = m.translate(x, y || 0, z || 0);
-    } else if (prop === 'rotate3d' && xyza.every((n) => typeof n === 'number') && a) {
+    } else if (prop === 'rotate3d' && xyza.every((n) => !Number.isNaN(+n)) && a) {
       m = m.rotateAxisAngle(x, y, z, a);
-    } else if (prop === 'scale3d' && xyz.every((n) => typeof n === 'number') && xyz.some((n) => n !== 1)) {
-      const s3x = x !== 1 ? x : 1;
-      const s3y = y !== 1 ? y : 1;
-      const s3z = z !== 1 ? z : 1;
-      m = m.scale(s3x, s3y, s3z);
+    } else if (prop === 'scale3d' && xyz.every((n) => !Number.isNaN(+n)) && xyz.some((n) => n !== 1)) {
+      m = m.scale(x, y, z);
     } else if (prop === 'rotate' && x) {
       m = m.rotate(0, 0, x);
-    } else if (prop === 'scale' && typeof x === 'number' && x !== 1) {
-      const nosy = typeof y === 'undefined';
-      const sx = x === 1 ? 1 : x;
-      let sy = nosy ? sx : y;
-      sy = sy === 1 ? 1 : sy;
-      const sz = nosy ? sx : 1;
-      m = m.scale(sx, sy, sz);
+    } else if (prop === 'scale' && !Number.isNaN(x) && x !== 1) {
+      const nosy = Number.isNaN(+y);
+      const sy = nosy ? x : y;
+      m = m.scale(x, sy, 1);
     } else if (prop === 'skew' && (x || y)) {
       m = x ? m.skewX(x) : m;
       m = y ? m.skewY(y) : m;
     } else if (/[XYZ]/.test(prop) && x) {
       if (prop.includes('skew')) {
+        // @ts-ignore unfortunately
         m = m[prop](x);
       } else {
         const fn = prop.replace(/[XYZ]/, '');
-        const axes3d = ['X', 'Y', 'Z'];
         const axis = prop.replace(fn, '');
-        const idx = axes3d.indexOf(axis);
-        const components = [
+        const idx = ['X', 'Y', 'Z'].indexOf(axis);
+        const axeValues = [
           idx === 0 ? x : 0,
           idx === 1 ? x : 0,
           idx === 2 ? x : 0];
-        m = m[fn](...components);
+        // @ts-ignore unfortunately
+        m = m[fn](...axeValues);
       }
     }
   });
 
-  return fromMatrix(target, m);
+  return m;
 }
 
 // Transform Functions
@@ -183,13 +188,13 @@ function fromString(target, source) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translate3d
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} x the `x-axis` position.
  * @param {Number} y the `y-axis` position.
  * @param {Number} z the `z-axis` position.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Translate(m, x, y, z) {
+function Translate(x, y, z) {
+  const m = new CSSMatrix();
   m.m41 = x;
   m.e = x;
   m.m42 = y;
@@ -203,13 +208,13 @@ function Translate(m, x, y, z) {
  *
  * http://en.wikipedia.org/wiki/Rotation_matrix
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} rx the `x-axis` rotation.
  * @param {Number} ry the `y-axis` rotation.
  * @param {Number} rz the `z-axis` rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Rotate(m, rx, ry, rz) {
+function Rotate(rx, ry, rz) {
+  const m = new CSSMatrix();
   const degToRad = Math.PI / 180;
   const radX = rx * degToRad;
   const radY = ry * degToRad;
@@ -257,14 +262,14 @@ function Rotate(m, rx, ry, rz) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotate3d
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} x the `x-axis` vector length.
  * @param {Number} y the `y-axis` vector length.
  * @param {Number} z the `z-axis` vector length.
  * @param {Number} alpha the value in degrees of the rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
-function RotateAxisAngle(m, x, y, z, alpha) {
+function RotateAxisAngle(x, y, z, alpha) {
+  const m = new CSSMatrix();
   const angle = alpha * (Math.PI / 360);
   const sinA = Math.sin(angle);
   const cosA = Math.cos(angle);
@@ -321,13 +326,13 @@ function RotateAxisAngle(m, x, y, z, alpha) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/scale3d
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} x the `x-axis` scale.
  * @param {Number} y the `y-axis` scale.
  * @param {Number} z the `z-axis` scale.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Scale(m, x, y, z) {
+function Scale(x, y, z) {
+  const m = new CSSMatrix();
   m.m11 = x;
   m.a = x;
 
@@ -344,11 +349,11 @@ function Scale(m, x, y, z) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewX
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
-function SkewX(m, angle) {
+function SkewX(angle) {
+  const m = new CSSMatrix();
   const radA = (angle * Math.PI) / 180;
   const t = Math.tan(radA);
   m.m21 = t;
@@ -362,11 +367,11 @@ function SkewX(m, angle) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewY
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
-function SkewY(m, angle) {
+function SkewY(angle) {
+  const m = new CSSMatrix();
   const radA = (angle * Math.PI) / 180;
   const t = Math.tan(radA);
   m.m12 = t;
@@ -378,12 +383,11 @@ function SkewY(m, angle) {
  * Creates a new `CSSMatrix` resulted from the multiplication of two matrixes
  * and returns it. Both matrixes are not changed.
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {CSSMatrix} m1 the first matrix.
  * @param {CSSMatrix} m2 the second matrix.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Multiply(m, m1, m2) {
+function Multiply(m1, m2) {
   const m11 = m2.m11 * m1.m11 + m2.m12 * m1.m21 + m2.m13 * m1.m31 + m2.m14 * m1.m41;
   const m12 = m2.m11 * m1.m12 + m2.m12 * m1.m22 + m2.m13 * m1.m32 + m2.m14 * m1.m42;
   const m13 = m2.m11 * m1.m13 + m2.m12 * m1.m23 + m2.m13 * m1.m33 + m2.m14 * m1.m43;
@@ -404,11 +408,12 @@ function Multiply(m, m1, m2) {
   const m43 = m2.m41 * m1.m13 + m2.m42 * m1.m23 + m2.m43 * m1.m33 + m2.m44 * m1.m43;
   const m44 = m2.m41 * m1.m14 + m2.m42 * m1.m24 + m2.m43 * m1.m34 + m2.m44 * m1.m44;
 
-  return fromArray(m,
+  return fromArray(
     [m11, m12, m13, m14,
       m21, m22, m23, m24,
       m31, m32, m33, m34,
-      m41, m42, m43, m44]);
+      m41, m42, m43, m44],
+  );
 }
 
 /**
@@ -422,9 +427,11 @@ function Multiply(m, m1, m2) {
 class CSSMatrix {
   /**
    * @constructor
-   * @param {any} args
-   * accepts valid CSS transform string, CSSMatrix/DOMMatrix instance or an *Array*
-   * number[] | string | CSSMatrix | DOMMatrix | undefined
+   * @param {any} args accepts all possible parameter configuration:
+   * * Types: number[] | string | CSSMatrix | DOMMatrix | undefined
+   * * valid CSS transform string,
+   * * CSSMatrix/DOMMatrix instance
+   * * a 6/16 elements *Array*
    */
   constructor(...args) {
     const m = this;
@@ -448,7 +455,7 @@ class CSSMatrix {
           [ARGS] = args;
         }
       }
-      m.setMatrixValue(ARGS);
+      return m.setMatrixValue(ARGS);
     }
     return m;
   }
@@ -509,6 +516,7 @@ class CSSMatrix {
    * as other transform functions like *translateX(10px)*.
    *
    * @param {String[] | Number[] | String | CSSMatrix | DOMMatrix} source
+   * @return {CSSMatrix} a new matrix
    * can be one of the following
    * * valid CSS matrix string,
    * * 6/16 elements *Array*,
@@ -520,14 +528,14 @@ class CSSMatrix {
     // new CSSMatrix(CSSMatrix | DOMMatrix)
     if ([DOMMatrix, CSSMatrix].some((x) => source instanceof x)) {
       // @ts-ignore
-      fromMatrix(m, source);
+      return fromMatrix(source);
     // CSS transform string source
     } if (typeof source === 'string' && source.length && source !== 'none') {
-      fromString(m, source);
+      return fromString(source);
     // [Arguments list | Array] come here
     } if (Array.isArray(source)) {
       // @ts-ignore
-      fromArray(m, source);
+      return fromArray(source);
     }
     return m;
   }
@@ -577,6 +585,20 @@ class CSSMatrix {
   }
 
   /**
+   * Returns a JSON representation of the `CSSMatrix` object, a standard *Object*
+   * that includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and
+   * excludes `is2D` & `isIdentity` properties.
+   *
+   * The result can also be used as a second parameter for the `fromMatrix` static method
+   * to load values into a matrix instance.
+   *
+   * @return {Object} an *Object* with all matrix values.
+   */
+  toJSON() {
+    return JSON.parse(JSON.stringify(this));
+  }
+
+  /**
    * The Multiply method returns a new CSSMatrix which is the result of this
    * matrix multiplied by the passed matrix, with the passed matrix to the right.
    * This matrix is not modified.
@@ -585,8 +607,7 @@ class CSSMatrix {
    * @return {CSSMatrix} The result matrix.
    */
   multiply(m2) {
-    const identity = new CSSMatrix();
-    return Multiply(identity, this, m2);
+    return Multiply(this, m2);
   }
 
   /**
@@ -601,14 +622,12 @@ class CSSMatrix {
    * @return {CSSMatrix} The result matrix
    */
   translate(x, y, z) {
-    const identity = new CSSMatrix();
-    const translate = new CSSMatrix();
     const X = x;
     let Y = y;
     let Z = z;
     if (Z == null) Z = 0;
     if (Y == null) Y = 0;
-    return Multiply(identity, this, Translate(translate, X, Y, Z));
+    return Multiply(this, Translate(X, Y, Z));
   }
 
   /**
@@ -623,15 +642,13 @@ class CSSMatrix {
    * @return {CSSMatrix} The result matrix
    */
   scale(x, y, z) {
-    const identity = new CSSMatrix();
-    const scale = new CSSMatrix();
     const X = x;
     let Y = y;
     let Z = z;
     if (Y == null) Y = x;
     if (Z == null) Z = x;
 
-    return Multiply(identity, this, Scale(scale, X, Y, Z));
+    return Multiply(this, Scale(X, Y, Z));
   }
 
   /**
@@ -647,14 +664,12 @@ class CSSMatrix {
    * @return {CSSMatrix} The result matrix
    */
   rotate(rx, ry, rz) {
-    const identity = new CSSMatrix();
-    const rotation = new CSSMatrix();
     let RX = rx;
     let RY = ry;
     let RZ = rz;
     if (RY == null) RY = 0;
     if (RZ == null) { RZ = RX; RX = 0; }
-    return Multiply(identity, this, Rotate(rotation, RX, RY, RZ));
+    return Multiply(this, Rotate(RX, RY, RZ));
   }
 
   /**
@@ -673,9 +688,7 @@ class CSSMatrix {
     if (arguments.length !== 4) {
       throw new TypeError('CSSMatrix: expecting 4 values');
     }
-    const identity = new CSSMatrix();
-    const arx = new CSSMatrix();
-    return Multiply(identity, this, RotateAxisAngle(arx, x, y, z, angle));
+    return Multiply(this, RotateAxisAngle(x, y, z, angle));
   }
 
   /**
@@ -686,9 +699,7 @@ class CSSMatrix {
    * @return {CSSMatrix} The `CSSMatrix` result
    */
   skewX(angle) {
-    const identity = new CSSMatrix();
-    const skx = new CSSMatrix();
-    return Multiply(identity, this, SkewX(skx, angle));
+    return Multiply(this, SkewX(angle));
   }
 
   /**
@@ -699,9 +710,7 @@ class CSSMatrix {
    * @return {CSSMatrix} The `CSSMatrix` result
    */
   skewY(angle) {
-    const identity = new CSSMatrix();
-    const sky = new CSSMatrix();
-    return Multiply(identity, this, SkewY(sky, angle));
+    return Multiply(this, SkewY(angle));
   }
 
   /**
@@ -718,9 +727,8 @@ class CSSMatrix {
    * @return {{x: number, y: number, z: number, w: number}} the resulting Tuple
    */
   transformPoint(v) {
-    const identity = new CSSMatrix();
     const M = this;
-    let m = Translate(identity, v.x, v.y, v.z);
+    let m = Translate(v.x, v.y, v.z);
 
     m.m44 = v.w || 1;
     m = M.multiply(m);

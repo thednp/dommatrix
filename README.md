@@ -9,7 +9,7 @@ An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOM
 The constructor is almost equivalent with the **DOMMatrix** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
 
 # Demo
-[Click me](https://thednp.github.io/DOMMatrix) to be happy.
+See DOMMatrix shim in action, [click me](https://thednp.github.io/DOMMatrix) and start transforming.
 
 
 # Installation
@@ -58,7 +58,8 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * **added** `fromMatrix` static method, not present in the constructor prototype;
 * **added** `fromString` static method, not present in the constructor prototype;
 * **added** `fromArray()` static method, not present in the constructor prototype, should also process *Float32Array* / *Float64Array* via `Array.from()`;
-* **added** `toArray()` instance method, a very convenient way to export your matrix;
+* **added** `toArray()` instance method, normalizes values and is used by the `toString()` instance method;
+* **added** `toJSON()` instance method will generate a standard *Object* which includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and excludes `is2D` & `isIdentity` properties;
 * **added** `transformPoint()` instance method which works like the original.
 * *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
 * *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
@@ -66,7 +67,9 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
 * *removed* `feedFromArray` static method, not present in the constructor prototype, `fromArray()` will cover that;
 * *not supported* `toFloat64Array()` and `toFloat32Array()` instance methods are not supported, a quick `FromFloat32Array(myMatrix.toArray())` should achieve just that;
-* *not supported* `fromFloat64Array()` and `fromFloat32Array()` static methods are not supported since `fromArray()` should handle them just as well,
+* *not supported* `fromFloat64Array()` and `fromFloat32Array()` static methods are not supported since `fromArray()` should handle them just as well;
+* *not supported* `flipX()` or `flipY()` instance methods of the *DOMMatrixReadOnly* prototype are not supported,
+* *not supported* `translateSelf()` or `rotateSelf()` instance methods of the *DOMMatrix* prototype are not supported, instead we only implemented the most used *DOMMatrixReadOnly* instance methods.
 
 
 # Thanks

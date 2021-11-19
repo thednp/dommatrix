@@ -9,9 +9,11 @@ export default CSSMatrix;
 declare class CSSMatrix {
     /**
      * @constructor
-     * @param {any} args
-     * accepts valid CSS transform string, CSSMatrix/DOMMatrix instance or an *Array*
-     * number[] | string | CSSMatrix | DOMMatrix | undefined
+     * @param {any} args accepts all possible parameter configuration:
+     * * Types: number[] | string | CSSMatrix | DOMMatrix | undefined
+     * * valid CSS transform string,
+     * * CSSMatrix/DOMMatrix instance
+     * * a 6/16 elements *Array*
      */
     constructor(...args: any);
     a: number;
@@ -75,6 +77,7 @@ declare class CSSMatrix {
      * as other transform functions like *translateX(10px)*.
      *
      * @param {String[] | Number[] | String | CSSMatrix | DOMMatrix} source
+     * @return {CSSMatrix} a new matrix
      * can be one of the following
      * * valid CSS matrix string,
      * * 6/16 elements *Array*,
@@ -102,6 +105,17 @@ declare class CSSMatrix {
      * @return {Number[]} an *Array* representation of the matrix
      */
     toArray(): number[];
+    /**
+     * Returns a JSON representation of the `CSSMatrix` object, a standard *Object*
+     * that includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and
+     * excludes `is2D` & `isIdentity` properties.
+     *
+     * The result can also be used as a second parameter for the `fromMatrix` static method
+     * to load values into a matrix instance.
+     *
+     * @return {Object} an *Object* with all matrix values.
+     */
+    toJSON(): Object;
     /**
      * The Multiply method returns a new CSSMatrix which is the result of this
      * matrix multiplied by the passed matrix, with the passed matrix to the right.
@@ -239,112 +253,102 @@ declare namespace CSSMatrix {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translate3d
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} x the `x-axis` position.
  * @param {Number} y the `y-axis` position.
  * @param {Number} z the `z-axis` position.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function Translate(m: CSSMatrix, x: number, y: number, z: number): CSSMatrix;
+declare function Translate(x: number, y: number, z: number): CSSMatrix;
 /**
  * Creates a new `CSSMatrix` for the rotation matrix and returns it.
  *
  * http://en.wikipedia.org/wiki/Rotation_matrix
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} rx the `x-axis` rotation.
  * @param {Number} ry the `y-axis` rotation.
  * @param {Number} rz the `z-axis` rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function Rotate(m: CSSMatrix, rx: number, ry: number, rz: number): CSSMatrix;
+declare function Rotate(rx: number, ry: number, rz: number): CSSMatrix;
 /**
  * Creates a new `CSSMatrix` for the rotation matrix and returns it.
  * This method is equivalent to the CSS `rotate3d()` function.
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotate3d
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} x the `x-axis` vector length.
  * @param {Number} y the `y-axis` vector length.
  * @param {Number} z the `z-axis` vector length.
  * @param {Number} alpha the value in degrees of the rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function RotateAxisAngle(m: CSSMatrix, x: number, y: number, z: number, alpha: number): CSSMatrix;
+declare function RotateAxisAngle(x: number, y: number, z: number, alpha: number): CSSMatrix;
 /**
  * Creates a new `CSSMatrix` for the scale matrix and returns it.
  * This method is equivalent to the CSS `scale3d()` function.
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/scale3d
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} x the `x-axis` scale.
  * @param {Number} y the `y-axis` scale.
  * @param {Number} z the `z-axis` scale.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function Scale(m: CSSMatrix, x: number, y: number, z: number): CSSMatrix;
+declare function Scale(x: number, y: number, z: number): CSSMatrix;
 /**
  * Creates a new `CSSMatrix` for the shear of the `x-axis` rotation matrix and
  * returns it. This method is equivalent to the CSS `skewX()` function.
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewX
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function SkewX(m: CSSMatrix, angle: number): CSSMatrix;
+declare function SkewX(angle: number): CSSMatrix;
 /**
  * Creates a new `CSSMatrix` for the shear of the `y-axis` rotation matrix and
  * returns it. This method is equivalent to the CSS `skewY()` function.
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewY
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {Number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function SkewY(m: CSSMatrix, angle: number): CSSMatrix;
+declare function SkewY(angle: number): CSSMatrix;
 /**
  * Creates a new `CSSMatrix` resulted from the multiplication of two matrixes
  * and returns it. Both matrixes are not changed.
  *
- * @param {CSSMatrix} m the identity matrix.
  * @param {CSSMatrix} m1 the first matrix.
  * @param {CSSMatrix} m2 the second matrix.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function Multiply(m: CSSMatrix, m1: CSSMatrix, m2: CSSMatrix): CSSMatrix;
+declare function Multiply(m1: CSSMatrix, m2: CSSMatrix): CSSMatrix;
 /**
  * Creates a new mutable `CSSMatrix` object given an array float values.
  *
  * If the array has six values, the result is a 2D matrix; if the array has 16 values,
  * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
  *
- * @param {CSSMatrix} m identity matrix.
  * @param {Number[]} array an `Array` to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function fromArray(m: CSSMatrix, array: number[]): CSSMatrix;
+declare function fromArray(array: number[]): CSSMatrix;
 /**
  * Creates a new mutable `CSSMatrix` object given an existing matrix or a
  * `DOMMatrix` *Object* which provides the values for its properties.
  *
- * @param {CSSMatrix} target the identity matrix.
- * @param {CSSMatrix} m the source `CSSMatrix` initialization to feed values from.
+ * @param {CSSMatrix | DOMMatrix} m the source matrix to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function fromMatrix(target: CSSMatrix, m: CSSMatrix): CSSMatrix;
+declare function fromMatrix(m: CSSMatrix | DOMMatrix): CSSMatrix;
 /**
  * Feed a CSSMatrix object with a valid CSS transform value.
  * * matrix(a, b, c, d, e, f) - valid matrix() transform function
  * * matrix3d(m11, m12, m13, ...m44) - valid matrix3d() transform function
  * * translate(tx, ty) rotateX(alpha) - any valid transform function(s)
  *
- * @param {CSSMatrix} target identity matrix.
  * @param {string} source valid CSS transform string syntax.
  * @return {CSSMatrix} the resulted matrix.
  */
-declare function fromString(target: CSSMatrix, source: string): CSSMatrix;
+declare function fromString(source: string): CSSMatrix;

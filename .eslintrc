@@ -19,6 +19,8 @@
   "rules": {
     // Disable no-params-reassign for properties
     "no-param-reassign": ["error", { "props": false }],
+    // Impossible to satisfy ESLint here
+    "no-use-before-define": ["error", { "classes": false }],
     // Allow strict mode (we are not dealing with modules)
     "strict": [0],
     // Disable alert rule till we have a CE in place
