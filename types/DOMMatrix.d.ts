@@ -10,10 +10,10 @@ declare class CSSMatrix {
     /**
      * @constructor
      * @param {any} args accepts all possible parameter configuration:
-     * * Types: number[] | string | CSSMatrix | DOMMatrix | undefined
+     *
      * * valid CSS transform string,
-     * * CSSMatrix/DOMMatrix instance
-     * * a 6/16 elements *Array*
+     * * CSSMatrix/DOMMatrix instance,
+     * * a 6/16 elements *Array*.
      */
     constructor(...args: any);
     a: number;
@@ -76,14 +76,14 @@ declare class CSSMatrix {
      * This method expects valid *matrix()* / *matrix3d()* string values, as well
      * as other transform functions like *translateX(10px)*.
      *
-     * @param {String[] | Number[] | String | CSSMatrix | DOMMatrix} source
+     * @param {String | Number[] | CSSMatrix | DOMMatrix} source
      * @return {CSSMatrix} a new matrix
      * can be one of the following
      * * valid CSS matrix string,
      * * 6/16 elements *Array*,
      * * CSSMatrix | DOMMatrix instance.
      */
-    setMatrixValue(source: string[] | number[] | string | CSSMatrix | DOMMatrix): CSSMatrix;
+    setMatrixValue(source: string | number[] | CSSMatrix | DOMMatrix): CSSMatrix;
     /**
      * Creates and returns a string representation of the matrix in `CSS` matrix syntax,
      * using the appropriate `CSS` matrix notation.
@@ -121,10 +121,10 @@ declare class CSSMatrix {
      * matrix multiplied by the passed matrix, with the passed matrix to the right.
      * This matrix is not modified.
      *
-     * @param {CSSMatrix} m2 CSSMatrix
+     * @param {CSSMatrix | DOMMatrix} m2 CSSMatrix
      * @return {CSSMatrix} The result matrix.
      */
-    multiply(m2: CSSMatrix): CSSMatrix;
+    multiply(m2: CSSMatrix | DOMMatrix): CSSMatrix;
     /**
      * The translate method returns a new matrix which is this matrix post
      * multiplied by a translation matrix containing the passed values. If the z
@@ -174,7 +174,7 @@ declare class CSSMatrix {
      * @param {number} angle The angle of rotation about the axis vector, in degrees.
      * @return {CSSMatrix} The `CSSMatrix` result
      */
-    rotateAxisAngle(x: number, y: number, z: number, angle: number, ...args: any[]): CSSMatrix;
+    rotateAxisAngle(x: number, y: number, z: number, angle: number): CSSMatrix;
     /**
      * Specifies a skew transformation along the `x-axis` by the given angle.
      * This matrix is not modified.
@@ -192,7 +192,16 @@ declare class CSSMatrix {
      */
     skewY(angle: number): CSSMatrix;
     /**
-     * Transforms the specified point using the matrix, returning a new
+   * @typedef Tuple
+   * @type {Object}
+   * @property {Number} x
+   * @property {Number} y
+   * @property {Number} z
+   * @property {Number} w
+   *
+   */
+    /**
+     * Transforms a specified point using the matrix, returning a new
      * Tuple *Object* comprising of the transformed point.
      * Neither the matrix nor the original point are altered.
      *
@@ -201,10 +210,10 @@ declare class CSSMatrix {
      *
      * JavaScript implementation by thednp
      *
-     * @param {{x: number, y: number, z: number, w: number}} v Tuple with `{x,y,z,w}` components
-     * @return {{x: number, y: number, z: number, w: number}} the resulting Tuple
+     * @param {Tuple | DOMPoint} v Tuple with `{x,y,z,w}` components
+     * @return {Tuple} the resulting Tuple
      */
-    transformPoint(v: {
+    transformPoint(v: DOMPoint | {
         x: number;
         y: number;
         z: number;
@@ -216,12 +225,12 @@ declare class CSSMatrix {
         w: number;
     };
     /**
-     * Transforms the specified vector using the matrix, returning a new
+     * Transforms a specified vector using the matrix, returning a new
      * {x,y,z,w} Tuple *Object* comprising the transformed vector.
      * Neither the matrix nor the original vector are altered.
      *
-     * @param {{x: number, y: number, z: number, w: number}} t Tuple with `{x,y,z,w}` components
-     * @return {{x: number, y: number, z: number, w: number}} the resulting Tuple
+     * @param {Tuple} t Tuple with `{x,y,z,w}` components
+     * @return {Tuple} the resulting Tuple
      */
     transform(t: {
         x: number;

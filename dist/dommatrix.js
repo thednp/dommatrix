@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.10 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.12 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -545,7 +545,7 @@
    * This method expects valid *matrix()* / *matrix3d()* string values, as well
    * as other transform functions like *translateX(10px)*.
    *
-   * @param {String[] | Number[] | String | CSSMatrix | DOMMatrix} source
+   * @param {String | Number[] | CSSMatrix | DOMMatrix} source
    * @return {CSSMatrix} a new matrix
    * can be one of the following
    * * valid CSS matrix string,
@@ -564,7 +564,6 @@
       return fromString(source);
     // [Arguments list | Array] come here
     } if (Array.isArray(source)) {
-      // @ts-ignore
       return fromArray(source);
     }
     return m;
@@ -633,10 +632,11 @@
    * matrix multiplied by the passed matrix, with the passed matrix to the right.
    * This matrix is not modified.
    *
-   * @param {CSSMatrix} m2 CSSMatrix
+   * @param {CSSMatrix | DOMMatrix} m2 CSSMatrix
    * @return {CSSMatrix} The result matrix.
    */
   CSSMatrix.prototype.multiply = function multiply (m2) {
+    // @ts-ignore - we only access [m11, m12, ... m44] values
     return Multiply(this, m2);
   };
 
@@ -715,7 +715,7 @@
    * @return {CSSMatrix} The `CSSMatrix` result
    */
   CSSMatrix.prototype.rotateAxisAngle = function rotateAxisAngle (x, y, z, angle) {
-    if (arguments.length !== 4) {
+    if ([x, y, z, angle].some(function (n) { return Number.isNaN(n); })) {
       throw new TypeError('CSSMatrix: expecting 4 values');
     }
     return Multiply(this, RotateAxisAngle(x, y, z, angle));
@@ -744,7 +744,16 @@
   };
 
   /**
-   * Transforms the specified point using the matrix, returning a new
+   * @typedef Tuple
+   * @type {Object}
+   * @property {Number} x
+   * @property {Number} y
+   * @property {Number} z
+   * @property {Number} w
+   *
+   */
+  /**
+   * Transforms a specified point using the matrix, returning a new
    * Tuple *Object* comprising of the transformed point.
    * Neither the matrix nor the original point are altered.
    *
@@ -753,8 +762,8 @@
    *
    * JavaScript implementation by thednp
    *
-   * @param {{x: number, y: number, z: number, w: number}} v Tuple with `{x,y,z,w}` components
-   * @return {{x: number, y: number, z: number, w: number}} the resulting Tuple
+   * @param {Tuple | DOMPoint} v Tuple with `{x,y,z,w}` components
+   * @return {Tuple} the resulting Tuple
    */
   CSSMatrix.prototype.transformPoint = function transformPoint (v) {
     var M = this;
@@ -772,12 +781,12 @@
   };
 
   /**
-   * Transforms the specified vector using the matrix, returning a new
+   * Transforms a specified vector using the matrix, returning a new
    * {x,y,z,w} Tuple *Object* comprising the transformed vector.
    * Neither the matrix nor the original vector are altered.
    *
-   * @param {{x: number, y: number, z: number, w: number}} t Tuple with `{x,y,z,w}` components
-   * @return {{x: number, y: number, z: number, w: number}} the resulting Tuple
+   * @param {Tuple} t Tuple with `{x,y,z,w}` components
+   * @return {Tuple} the resulting Tuple
    */
   CSSMatrix.prototype.transform = function transform (t) {
     var m = this;
