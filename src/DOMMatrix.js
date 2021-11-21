@@ -423,7 +423,7 @@ function Multiply(m1, m2) {
 class CSSMatrix {
   /**
    * @constructor
-   * @param {any} args accepts all possible parameter configuration:
+   * @param {any} args accepts all parameter configurations:
    *
    * * valid CSS transform string,
    * * CSSMatrix/DOMMatrix instance,
@@ -512,11 +512,7 @@ class CSSMatrix {
    * as other transform functions like *translateX(10px)*.
    *
    * @param {String | Number[] | CSSMatrix | DOMMatrix} source
-   * @return {CSSMatrix} a new matrix
-   * can be one of the following
-   * * valid CSS matrix string,
-   * * 6/16 elements *Array*,
-   * * CSSMatrix | DOMMatrix instance.
+   * @return {CSSMatrix} the matrix instance
    */
   setMatrixValue(source) {
     const m = this;
@@ -538,8 +534,6 @@ class CSSMatrix {
   /**
    * Creates and returns a string representation of the matrix in `CSS` matrix syntax,
    * using the appropriate `CSS` matrix notation.
-   *
-   * The 16 items in the array 3D matrix array are *transposed* in row-major order.
    *
    * matrix3d *matrix3d(m11, m12, m13, m14, m21, ...)*
    * matrix *matrix(a, b, c, d, e, f)*
@@ -575,7 +569,7 @@ class CSSMatrix {
         m.m41, m.m42, m.m43, m.m44];
     }
     // clean up the numbers
-    // eslint-disable-next-line
+    // eslint-disable-next-line -- no-bitwise
     return result.map((n) => (Math.abs(n) < 1e-6 ? 0 : ((n * pow6) >> 0) / pow6));
   }
 
@@ -599,7 +593,7 @@ class CSSMatrix {
    * This matrix is not modified.
    *
    * @param {CSSMatrix | DOMMatrix} m2 CSSMatrix
-   * @return {CSSMatrix} The result matrix.
+   * @return {CSSMatrix} The resulted matrix.
    */
   multiply(m2) {
     // @ts-ignore - we only access [m11, m12, ... m44] values
@@ -615,7 +609,7 @@ class CSSMatrix {
    * @param {number} x X component of the translation value.
    * @param {number} y Y component of the translation value.
    * @param {number} z Z component of the translation value.
-   * @return {CSSMatrix} The result matrix
+   * @return {CSSMatrix} The resulted matrix
    */
   translate(x, y, z) {
     const X = x;
@@ -635,7 +629,7 @@ class CSSMatrix {
    * @param {number} x The X component of the scale value.
    * @param {number} y The Y component of the scale value.
    * @param {number} z The Z component of the scale value.
-   * @return {CSSMatrix} The result matrix
+   * @return {CSSMatrix} The resulted matrix
    */
   scale(x, y, z) {
     const X = x;
@@ -657,7 +651,7 @@ class CSSMatrix {
    * @param {number} rx The X component of the rotation, or Z if Y and Z are null.
    * @param {number} ry The (optional) Y component of the rotation value.
    * @param {number} rz The (optional) Z component of the rotation value.
-   * @return {CSSMatrix} The result matrix
+   * @return {CSSMatrix} The resulted matrix
    */
   rotate(rx, ry, rz) {
     let RX = rx;
@@ -678,7 +672,7 @@ class CSSMatrix {
    * @param {number} y The Y component of the axis vector.
    * @param {number} z The Z component of the axis vector.
    * @param {number} angle The angle of rotation about the axis vector, in degrees.
-   * @return {CSSMatrix} The `CSSMatrix` result
+   * @return {CSSMatrix} The resulted matrix
    */
   rotateAxisAngle(x, y, z, angle) {
     if ([x, y, z, angle].some((n) => Number.isNaN(n))) {
@@ -692,7 +686,7 @@ class CSSMatrix {
    * This matrix is not modified.
    *
    * @param {number} angle The angle amount in degrees to skew.
-   * @return {CSSMatrix} The `CSSMatrix` result
+   * @return {CSSMatrix} The resulted matrix
    */
   skewX(angle) {
     return Multiply(this, SkewX(angle));
@@ -703,7 +697,7 @@ class CSSMatrix {
    * This matrix is not modified.
    *
    * @param {number} angle The angle amount in degrees to skew.
-   * @return {CSSMatrix} The `CSSMatrix` result
+   * @return {CSSMatrix} The resulted matrix
    */
   skewY(angle) {
     return Multiply(this, SkewY(angle));
