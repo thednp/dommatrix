@@ -10,6 +10,6 @@
     "target": "ESNext",
     "outDir": "types"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "types/types.d.ts"],
   "exclude": ["node_modules", "dist", "types", "assets", "experiments", "test"]
 }

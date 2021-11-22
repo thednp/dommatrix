@@ -704,14 +704,13 @@ class CSSMatrix {
   }
 
   /**
- * @typedef Tuple
- * @type {Object}
- * @property {Number} x
- * @property {Number} y
- * @property {Number} z
- * @property {Number} w
- *
- */
+   * @typedef {Object} Tuple
+   * @property {number} x the `x-axis` component
+   * @property {number} y the `y-axis` component
+   * @property {number} z the `z-axis` component
+   * @property {number} w the `w` component
+   */
+
   /**
    * Transforms a specified point using the matrix, returning a new
    * Tuple *Object* comprising of the transformed point.
@@ -720,9 +719,9 @@ class CSSMatrix {
    * The method is equivalent with `transformPoint()` method
    * of the `DOMMatrix` constructor.
    *
-   * JavaScript implementation by thednp
+   * Copyright @ thednp
    *
-   * @param {Tuple | DOMPoint} v Tuple with `{x,y,z,w}` components
+   * @param {Tuple | DOMPoint} v Tuple or DOMPoint
    * @return {Tuple} the resulting Tuple
    */
   transformPoint(v) {

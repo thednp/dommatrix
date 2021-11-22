@@ -1,2 +1,2 @@
 export default CSSMatrix;
-import CSSMatrix from "./DOMMatrix.js";
+import CSSMatrix from "./DOMMatrix";
