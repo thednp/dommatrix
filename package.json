@@ -1,8 +1,8 @@
 {
   "name": "dommatrix",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "ES6+ shim for DOMMatrix",
-  "main": "dist/dommatrix.min.js",
+  "main": "dist/dommatrix.js",
   "module": "dist/dommatrix.esm.js",
   "types": "types/index.d.ts",
   "jsnext": "src/index.js",

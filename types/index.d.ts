@@ -1,4 +1,4 @@
-declare module "DOMMatrix" {
+declare module "dommatrix" {
     export default CSSMatrix;
     /**
      * Creates and returns a new `DOMMatrix` compatible *Object*
@@ -480,5 +480,5 @@ declare module "DOMMatrix" {
 }
 declare module "index" {
     export default CSSMatrix;
-    import CSSMatrix from "DOMMatrix";
+    import CSSMatrix from "dommatrix";
 }

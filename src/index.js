@@ -1,3 +1,3 @@
-import CSSMatrix from './DOMMatrix';
+import CSSMatrix from './dommatrix';
 
 export default CSSMatrix;
