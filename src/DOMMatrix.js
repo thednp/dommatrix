@@ -5,15 +5,20 @@
 // * `fromString` parses and loads values from any valid CSS transform string.
 
 /**
- * Creates a new mutable `CSSMatrix` object given an array float values.
+ * Creates a new mutable `CSSMatrix` object given an array of floating point values.
+ *
+ * This static method invalidates arrays that contain non-number elements.
  *
  * If the array has six values, the result is a 2D matrix; if the array has 16 values,
  * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
  *
- * @param {Number[]} array an `Array` to feed values from.
+ * @param {number[]} array an `Array` to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
 function fromArray(array) {
+  if (!array.every((n) => !Number.isNaN(n))) {
+    throw TypeError(`CSSMatrix: "${array}" must only have numbers.`);
+  }
   const m = new CSSMatrix();
   const a = Array.from(array);
 
@@ -74,19 +79,22 @@ function fromArray(array) {
     m.m42 = m42;
     m.f = m42;
   } else {
-    throw new TypeError('CSSMatrix: expecting a 6/16 values Array');
+    throw new TypeError('CSSMatrix: expecting an Array of 6/16 values.');
   }
   return m;
 }
 
 /**
- * Creates a new mutable `CSSMatrix` object given an existing matrix or a
- * `DOMMatrix` *Object* which provides the values for its properties.
+ * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
+ * `DOMMatrix` instance which provides the values for its properties.
  *
- * @param {CSSMatrix | DOMMatrix} m the source matrix to feed values from.
+ * @param {CSSMatrix | DOMMatrix | jsonMatrix} m the source matrix to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
 function fromMatrix(m) {
+  if (![CSSMatrix, DOMMatrix, Object].some((x) => m instanceof x)) {
+    throw TypeError(`CSSMatrix: "${m}" is not a DOMMatrix / CSSMatrix compatible object.`);
+  }
   return fromArray(
     [m.m11, m.m12, m.m13, m.m14,
       m.m21, m.m22, m.m23, m.m24,
@@ -96,15 +104,21 @@ function fromMatrix(m) {
 }
 
 /**
- * Feed a CSSMatrix object with a valid CSS transform value.
- * * matrix(a, b, c, d, e, f) - valid matrix() transform function
- * * matrix3d(m11, m12, m13, ...m44) - valid matrix3d() transform function
- * * translate(tx, ty) rotateX(alpha) - any valid transform function(s)
+ * Creates a new mutable `CSSMatrix` instance given any valid CSS transform string.
+ *
+ * * `matrix(a, b, c, d, e, f)` - valid matrix() transform function
+ * * `matrix3d(m11, m12, m13, ...m44)` - valid matrix3d() transform function
+ * * `translate(tx, ty) rotateX(alpha)` - any valid transform function(s)
+ *
+ * @copyright thednp © 2021
  *
  * @param {string} source valid CSS transform string syntax.
  * @return {CSSMatrix} the resulted matrix.
  */
 function fromString(source) {
+  if (typeof source !== 'string') {
+    throw TypeError(`CSSMatrix: "${source}" is not a string.`);
+  }
   const str = String(source).replace(/\s/g, '');
   let m = new CSSMatrix();
   let is2D = true;
@@ -115,12 +129,12 @@ function fromString(source) {
     const [x, y, z, a] = components;
 
     // don't add perspective if is2D
-    if (prop === 'matrix3d'
+    if (!is2D && (prop === 'matrix3d' // only modify is2D once
         || (prop === 'rotate3d' && [x, y].every((n) => !Number.isNaN(+n) && n !== 0) && a)
         || (['rotateX', 'rotateY'].includes(prop) && x)
         || (prop === 'translate3d' && [x, y, z].every((n) => !Number.isNaN(+n)) && z)
         || (prop === 'scale3d' && [x, y, z].every((n) => !Number.isNaN(+n) && n !== x))
-    ) {
+    )) {
       is2D = false;
     }
     return { prop, components };
@@ -184,9 +198,9 @@ function fromString(source) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translate3d
  *
- * @param {Number} x the `x-axis` position.
- * @param {Number} y the `y-axis` position.
- * @param {Number} z the `z-axis` position.
+ * @param {number} x the `x-axis` position.
+ * @param {number} y the `y-axis` position.
+ * @param {number} z the `z-axis` position.
  * @return {CSSMatrix} the resulted matrix.
  */
 function Translate(x, y, z) {
@@ -204,9 +218,9 @@ function Translate(x, y, z) {
  *
  * http://en.wikipedia.org/wiki/Rotation_matrix
  *
- * @param {Number} rx the `x-axis` rotation.
- * @param {Number} ry the `y-axis` rotation.
- * @param {Number} rz the `z-axis` rotation.
+ * @param {number} rx the `x-axis` rotation.
+ * @param {number} ry the `y-axis` rotation.
+ * @param {number} rz the `z-axis` rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
 function Rotate(rx, ry, rz) {
@@ -258,10 +272,10 @@ function Rotate(rx, ry, rz) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/rotate3d
  *
- * @param {Number} x the `x-axis` vector length.
- * @param {Number} y the `y-axis` vector length.
- * @param {Number} z the `z-axis` vector length.
- * @param {Number} alpha the value in degrees of the rotation.
+ * @param {number} x the `x-axis` vector length.
+ * @param {number} y the `y-axis` vector length.
+ * @param {number} z the `z-axis` vector length.
+ * @param {number} alpha the value in degrees of the rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
 function RotateAxisAngle(x, y, z, alpha) {
@@ -322,9 +336,9 @@ function RotateAxisAngle(x, y, z, alpha) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/scale3d
  *
- * @param {Number} x the `x-axis` scale.
- * @param {Number} y the `y-axis` scale.
- * @param {Number} z the `z-axis` scale.
+ * @param {number} x the `x-axis` scale.
+ * @param {number} y the `y-axis` scale.
+ * @param {number} z the `z-axis` scale.
  * @return {CSSMatrix} the resulted matrix.
  */
 function Scale(x, y, z) {
@@ -345,7 +359,7 @@ function Scale(x, y, z) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewX
  *
- * @param {Number} angle the angle in degrees.
+ * @param {number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
 function SkewX(angle) {
@@ -363,7 +377,7 @@ function SkewX(angle) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skewY
  *
- * @param {Number} angle the angle in degrees.
+ * @param {number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
 function SkewY(angle) {
@@ -511,7 +525,7 @@ class CSSMatrix {
    * This method expects valid *matrix()* / *matrix3d()* string values, as well
    * as other transform functions like *translateX(10px)*.
    *
-   * @param {String | Number[] | CSSMatrix | DOMMatrix} source
+   * @param {string | number[] | CSSMatrix | DOMMatrix} source
    * @return {CSSMatrix} the matrix instance
    */
   setMatrixValue(source) {
@@ -538,7 +552,7 @@ class CSSMatrix {
    * matrix3d *matrix3d(m11, m12, m13, m14, m21, ...)*
    * matrix *matrix(a, b, c, d, e, f)*
    *
-   * @return {String} a string representation of the matrix
+   * @return {string} a string representation of the matrix
    */
   toString() {
     const m = this;
@@ -553,7 +567,7 @@ class CSSMatrix {
    *
    * Other methods make use of this method to feed their output values from this matrix.
    *
-   * @return {Number[]} an *Array* representation of the matrix
+   * @return {number[]} an *Array* representation of the matrix
    */
   toArray() {
     const m = this;
@@ -572,16 +586,35 @@ class CSSMatrix {
     // eslint-disable-next-line -- no-bitwise
     return result.map((n) => (Math.abs(n) < 1e-6 ? 0 : ((n * pow6) >> 0) / pow6));
   }
+  /**
+   * @typedef {object} jsonMatrix
+   * @property {number} m11
+   * @property {number} m12
+   * @property {number} m13
+   * @property {number} m14
+   * @property {number} m21
+   * @property {number} m22
+   * @property {number} m23
+   * @property {number} m24
+   * @property {number} m31
+   * @property {number} m32
+   * @property {number} m33
+   * @property {number} m34
+   * @property {number} m41
+   * @property {number} m42
+   * @property {number} m43
+   * @property {number} m44
+   */
 
   /**
-   * Returns a JSON representation of the `CSSMatrix` object, a standard *Object*
+   * Returns a JSON representation of the `CSSMatrix` instance, a standard *Object*
    * that includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and
    * excludes `is2D` & `isIdentity` properties.
    *
    * The result can also be used as a second parameter for the `fromMatrix` static method
    * to load values into a matrix instance.
    *
-   * @return {Object} an *Object* with all matrix values.
+   * @return {jsonMatrix} an *Object* with all matrix values.
    */
   toJSON() {
     return JSON.parse(JSON.stringify(this));
@@ -592,7 +625,7 @@ class CSSMatrix {
    * matrix multiplied by the passed matrix, with the passed matrix to the right.
    * This matrix is not modified.
    *
-   * @param {CSSMatrix | DOMMatrix} m2 CSSMatrix
+   * @param {CSSMatrix | DOMMatrix | jsonMatrix} m2 CSSMatrix
    * @return {CSSMatrix} The resulted matrix.
    */
   multiply(m2) {
@@ -719,7 +752,7 @@ class CSSMatrix {
    * The method is equivalent with `transformPoint()` method
    * of the `DOMMatrix` constructor.
    *
-   * Copyright @ thednp
+   * @copyright thednp © 2021
    *
    * @param {Tuple | DOMPoint} v Tuple or DOMPoint
    * @return {Tuple} the resulting Tuple
