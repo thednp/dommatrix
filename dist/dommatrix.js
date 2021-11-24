@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.15 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.16alpha4 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -8,6 +8,16 @@
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.CSSMatrix = factory());
 })(this, (function () { 'use strict';
+
+  var version = "0.0.16alpha4";
+
+  // @ts-ignore
+
+  /**
+   * A global namespace for library version.
+   * @type {string}
+   */
+  var DMVersion = version;
 
   // DOMMatrix Static methods
   // * `fromFloat64Array` and `fromFloat32Array` methods are not supported;
@@ -116,19 +126,25 @@
    * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
    * `DOMMatrix` instance which provides the values for its properties.
    *
-   * @param {CSSMatrix | DOMMatrix | jsonMatrix} m the source matrix to feed values from.
+   * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m the source matrix to feed values from.
    * @return {CSSMatrix} the resulted matrix.
    */
   function fromMatrix(m) {
-    if (![CSSMatrix, DOMMatrix, Object].some(function (x) { return m instanceof x; })) {
-      throw TypeError(("CSSMatrix: \"" + m + "\" is not a DOMMatrix / CSSMatrix compatible object."));
+    var keys = [
+      'm11', 'm12', 'm13', 'm14',
+      'm21', 'm22', 'm23', 'm24',
+      'm31', 'm32', 'm33', 'm34',
+      'm41', 'm42', 'm43', 'm44'];
+    if ([CSSMatrix, DOMMatrix].some(function (x) { return m instanceof x; })
+      || (typeof m === 'object' && keys.every(function (k) { return k in m; }))) {
+      return fromArray(
+        [m.m11, m.m12, m.m13, m.m14,
+          m.m21, m.m22, m.m23, m.m24,
+          m.m31, m.m32, m.m33, m.m34,
+          m.m41, m.m42, m.m43, m.m44]
+      );
     }
-    return fromArray(
-      [m.m11, m.m12, m.m13, m.m14,
-        m.m21, m.m22, m.m23, m.m24,
-        m.m31, m.m32, m.m33, m.m34,
-        m.m41, m.m42, m.m43, m.m44]
-    );
+    throw TypeError(("CSSMatrix: \"" + m + "\" is not a DOMMatrix / CSSMatrix compatible object."));
   }
 
   /**
@@ -156,10 +172,20 @@
       var value = ref[1];
       var components = value.split(',')
         .map(function (n) { return (n.includes('rad') ? parseFloat(n) * (180 / Math.PI) : parseFloat(n)); });
-      components[0];
-      components[1];
-      components[2];
-      components[3];
+      var x = components[0];
+      var y = components[1];
+      var z = components[2];
+      var a = components[3];
+
+      // don't add perspective if is2D
+      if (is2D && (prop === 'matrix3d' // only modify is2D once
+          || (prop === 'rotate3d' && [x, y].every(function (n) { return !Number.isNaN(+n) && n !== 0; }) && a)
+          || (['rotateX', 'rotateY'].includes(prop) && x)
+          || (prop === 'translate3d' && [x, y, z].every(function (n) { return !Number.isNaN(+n); }) && z)
+          || (prop === 'scale3d' && [x, y, z].every(function (n) { return !Number.isNaN(+n) && n !== x; }))
+      )) {
+        is2D = false;
+      }
       return { prop: prop, components: components };
     });
 
@@ -610,25 +636,6 @@
     // eslint-disable-next-line -- no-bitwise
     return result.map(function (n) { return (Math.abs(n) < 1e-6 ? 0 : ((n * pow6) >> 0) / pow6); });
   };
-  /**
-   * @typedef {object} jsonMatrix
-   * @property {number} m11
-   * @property {number} m12
-   * @property {number} m13
-   * @property {number} m14
-   * @property {number} m21
-   * @property {number} m22
-   * @property {number} m23
-   * @property {number} m24
-   * @property {number} m31
-   * @property {number} m32
-   * @property {number} m33
-   * @property {number} m34
-   * @property {number} m41
-   * @property {number} m42
-   * @property {number} m43
-   * @property {number} m44
-   */
 
   /**
    * Returns a JSON representation of the `CSSMatrix` instance, a standard *Object*
@@ -638,7 +645,7 @@
    * The result can also be used as a second parameter for the `fromMatrix` static method
    * to load values into a matrix instance.
    *
-   * @return {jsonMatrix} an *Object* with all matrix values.
+   * @return {DMNS.jsonMatrix} an *Object* with all matrix values.
    */
   CSSMatrix.prototype.toJSON = function toJSON () {
     return JSON.parse(JSON.stringify(this));
@@ -649,7 +656,7 @@
    * matrix multiplied by the passed matrix, with the passed matrix to the right.
    * This matrix is not modified.
    *
-   * @param {CSSMatrix | DOMMatrix | jsonMatrix} m2 CSSMatrix
+   * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m2 CSSMatrix
    * @return {CSSMatrix} The resulted matrix.
    */
   CSSMatrix.prototype.multiply = function multiply (m2) {
@@ -664,8 +671,8 @@
    * modified.
    *
    * @param {number} x X component of the translation value.
-   * @param {number} y Y component of the translation value.
-   * @param {number} z Z component of the translation value.
+   * @param {number | null} y Y component of the translation value.
+   * @param {number | null} z Z component of the translation value.
    * @return {CSSMatrix} The resulted matrix
    */
   CSSMatrix.prototype.translate = function translate (x, y, z) {
@@ -684,8 +691,8 @@
    * component value is used in its place. This matrix is not modified.
    *
    * @param {number} x The X component of the scale value.
-   * @param {number} y The Y component of the scale value.
-   * @param {number} z The Z component of the scale value.
+   * @param {number | null} y The Y component of the scale value.
+   * @param {number | null} z The Z component of the scale value.
    * @return {CSSMatrix} The resulted matrix
    */
   CSSMatrix.prototype.scale = function scale (x, y, z) {
@@ -706,8 +713,8 @@
    * rotation values are in degrees. This matrix is not modified.
    *
    * @param {number} rx The X component of the rotation, or Z if Y and Z are null.
-   * @param {number} ry The (optional) Y component of the rotation value.
-   * @param {number} rz The (optional) Z component of the rotation value.
+   * @param {number | null} ry The (optional) Y component of the rotation value.
+   * @param {number | null} rz The (optional) Z component of the rotation value.
    * @return {CSSMatrix} The resulted matrix
    */
   CSSMatrix.prototype.rotate = function rotate (rx, ry, rz) {
@@ -761,14 +768,6 @@
   };
 
   /**
-   * @typedef {Object} Tuple
-   * @property {number} x the `x-axis` component
-   * @property {number} y the `y-axis` component
-   * @property {number} z the `z-axis` component
-   * @property {number} w the `w` component
-   */
-
-  /**
    * Transforms a specified point using the matrix, returning a new
    * Tuple *Object* comprising of the transformed point.
    * Neither the matrix nor the original point are altered.
@@ -778,8 +777,8 @@
    *
    * @copyright thednp © 2021
    *
-   * @param {Tuple | DOMPoint} v Tuple or DOMPoint
-   * @return {Tuple} the resulting Tuple
+   * @param {DMNS.PointTuple | DOMPoint} v Tuple or DOMPoint
+   * @return {DMNS.PointTuple} the resulting Tuple
    */
   CSSMatrix.prototype.transformPoint = function transformPoint (v) {
     var M = this;
@@ -801,8 +800,8 @@
    * {x,y,z,w} Tuple *Object* comprising the transformed vector.
    * Neither the matrix nor the original vector are altered.
    *
-   * @param {Tuple} t Tuple with `{x,y,z,w}` components
-   * @return {Tuple} the resulting Tuple
+   * @param {DMNS.PointTuple} t Tuple with `{x,y,z,w}` components
+   * @return {DMNS.PointTuple} the resulting Tuple
    */
   CSSMatrix.prototype.transform = function transform (t) {
     var m = this;
@@ -832,6 +831,7 @@
   CSSMatrix.fromArray = fromArray;
   CSSMatrix.fromMatrix = fromMatrix;
   CSSMatrix.fromString = fromString;
+  CSSMatrix.Version = DMVersion;
 
   return CSSMatrix;
 

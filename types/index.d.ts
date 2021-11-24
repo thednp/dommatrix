@@ -1,3 +1,11 @@
+declare module "version" {
+    export default DMVersion;
+    /**
+     * A global namespace for library version.
+     * @type {string}
+     */
+    const DMVersion: string;
+}
 declare module "dommatrix" {
     export default CSSMatrix;
     /**
@@ -101,25 +109,6 @@ declare module "dommatrix" {
          */
         toArray(): number[];
         /**
-         * @typedef {object} jsonMatrix
-         * @property {number} m11
-         * @property {number} m12
-         * @property {number} m13
-         * @property {number} m14
-         * @property {number} m21
-         * @property {number} m22
-         * @property {number} m23
-         * @property {number} m24
-         * @property {number} m31
-         * @property {number} m32
-         * @property {number} m33
-         * @property {number} m34
-         * @property {number} m41
-         * @property {number} m42
-         * @property {number} m43
-         * @property {number} m44
-         */
-        /**
          * Returns a JSON representation of the `CSSMatrix` instance, a standard *Object*
          * that includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and
          * excludes `is2D` & `isIdentity` properties.
@@ -127,52 +116,18 @@ declare module "dommatrix" {
          * The result can also be used as a second parameter for the `fromMatrix` static method
          * to load values into a matrix instance.
          *
-         * @return {jsonMatrix} an *Object* with all matrix values.
+         * @return {DMNS.jsonMatrix} an *Object* with all matrix values.
          */
-        toJSON(): {
-            m11: number;
-            m12: number;
-            m13: number;
-            m14: number;
-            m21: number;
-            m22: number;
-            m23: number;
-            m24: number;
-            m31: number;
-            m32: number;
-            m33: number;
-            m34: number;
-            m41: number;
-            m42: number;
-            m43: number;
-            m44: number;
-        };
+        toJSON(): DMNS.jsonMatrix;
         /**
          * The Multiply method returns a new CSSMatrix which is the result of this
          * matrix multiplied by the passed matrix, with the passed matrix to the right.
          * This matrix is not modified.
          *
-         * @param {CSSMatrix | DOMMatrix | jsonMatrix} m2 CSSMatrix
+         * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m2 CSSMatrix
          * @return {CSSMatrix} The resulted matrix.
          */
-        multiply(m2: DOMMatrix | CSSMatrix | {
-            m11: number;
-            m12: number;
-            m13: number;
-            m14: number;
-            m21: number;
-            m22: number;
-            m23: number;
-            m24: number;
-            m31: number;
-            m32: number;
-            m33: number;
-            m34: number;
-            m41: number;
-            m42: number;
-            m43: number;
-            m44: number;
-        }): CSSMatrix;
+        multiply(m2: CSSMatrix | DOMMatrix | DMNS.jsonMatrix): CSSMatrix;
         /**
          * The translate method returns a new matrix which is this matrix post
          * multiplied by a translation matrix containing the passed values. If the z
@@ -180,11 +135,11 @@ declare module "dommatrix" {
          * modified.
          *
          * @param {number} x X component of the translation value.
-         * @param {number} y Y component of the translation value.
-         * @param {number} z Z component of the translation value.
+         * @param {number | null} y Y component of the translation value.
+         * @param {number | null} z Z component of the translation value.
          * @return {CSSMatrix} The resulted matrix
          */
-        translate(x: number, y: number, z: number): CSSMatrix;
+        translate(x: number, y: number | null, z: number | null): CSSMatrix;
         /**
          * The scale method returns a new matrix which is this matrix post multiplied by
          * a scale matrix containing the passed values. If the z component is undefined,
@@ -192,11 +147,11 @@ declare module "dommatrix" {
          * component value is used in its place. This matrix is not modified.
          *
          * @param {number} x The X component of the scale value.
-         * @param {number} y The Y component of the scale value.
-         * @param {number} z The Z component of the scale value.
+         * @param {number | null} y The Y component of the scale value.
+         * @param {number | null} z The Z component of the scale value.
          * @return {CSSMatrix} The resulted matrix
          */
-        scale(x: number, y: number, z: number): CSSMatrix;
+        scale(x: number, y: number | null, z: number | null): CSSMatrix;
         /**
          * The rotate method returns a new matrix which is this matrix post multiplied
          * by each of 3 rotation matrices about the major axes, first X, then Y, then Z.
@@ -205,11 +160,11 @@ declare module "dommatrix" {
          * rotation values are in degrees. This matrix is not modified.
          *
          * @param {number} rx The X component of the rotation, or Z if Y and Z are null.
-         * @param {number} ry The (optional) Y component of the rotation value.
-         * @param {number} rz The (optional) Z component of the rotation value.
+         * @param {number | null} ry The (optional) Y component of the rotation value.
+         * @param {number | null} rz The (optional) Z component of the rotation value.
          * @return {CSSMatrix} The resulted matrix
          */
-        rotate(rx: number, ry: number, rz: number): CSSMatrix;
+        rotate(rx: number, ry: number | null, rz: number | null): CSSMatrix;
         /**
          * The rotateAxisAngle method returns a new matrix which is this matrix post
          * multiplied by a rotation matrix with the given axis and `angle`. The right-hand
@@ -240,13 +195,6 @@ declare module "dommatrix" {
          */
         skewY(angle: number): CSSMatrix;
         /**
-         * @typedef {Object} Tuple
-         * @property {number} x the `x-axis` component
-         * @property {number} y the `y-axis` component
-         * @property {number} z the `z-axis` component
-         * @property {number} w the `w` component
-         */
-        /**
          * Transforms a specified point using the matrix, returning a new
          * Tuple *Object* comprising of the transformed point.
          * Neither the matrix nor the original point are altered.
@@ -256,87 +204,19 @@ declare module "dommatrix" {
          *
          * @copyright thednp © 2021
          *
-         * @param {Tuple | DOMPoint} v Tuple or DOMPoint
-         * @return {Tuple} the resulting Tuple
+         * @param {DMNS.PointTuple | DOMPoint} v Tuple or DOMPoint
+         * @return {DMNS.PointTuple} the resulting Tuple
          */
-        transformPoint(v: DOMPoint | {
-            /**
-             * the `x-axis` component
-             */
-            x: number;
-            /**
-             * the `y-axis` component
-             */
-            y: number;
-            /**
-             * the `z-axis` component
-             */
-            z: number;
-            /**
-             * the `w` component
-             */
-            w: number;
-        }): {
-            /**
-             * the `x-axis` component
-             */
-            x: number;
-            /**
-             * the `y-axis` component
-             */
-            y: number;
-            /**
-             * the `z-axis` component
-             */
-            z: number;
-            /**
-             * the `w` component
-             */
-            w: number;
-        };
+        transformPoint(v: DMNS.PointTuple | DOMPoint): DMNS.PointTuple;
         /**
          * Transforms a specified vector using the matrix, returning a new
          * {x,y,z,w} Tuple *Object* comprising the transformed vector.
          * Neither the matrix nor the original vector are altered.
          *
-         * @param {Tuple} t Tuple with `{x,y,z,w}` components
-         * @return {Tuple} the resulting Tuple
+         * @param {DMNS.PointTuple} t Tuple with `{x,y,z,w}` components
+         * @return {DMNS.PointTuple} the resulting Tuple
          */
-        transform(t: {
-            /**
-             * the `x-axis` component
-             */
-            x: number;
-            /**
-             * the `y-axis` component
-             */
-            y: number;
-            /**
-             * the `z-axis` component
-             */
-            z: number;
-            /**
-             * the `w` component
-             */
-            w: number;
-        }): {
-            /**
-             * the `x-axis` component
-             */
-            x: number;
-            /**
-             * the `y-axis` component
-             */
-            y: number;
-            /**
-             * the `z-axis` component
-             */
-            z: number;
-            /**
-             * the `w` component
-             */
-            w: number;
-        };
+        transform(t: DMNS.PointTuple): DMNS.PointTuple;
     }
     namespace CSSMatrix {
         export { Translate };
@@ -349,6 +229,7 @@ declare module "dommatrix" {
         export { fromArray };
         export { fromMatrix };
         export { fromString };
+        export { DMVersion as Version };
     }
     /**
      * Creates a new `CSSMatrix` for the translation matrix and returns it.
@@ -443,27 +324,10 @@ declare module "dommatrix" {
      * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
      * `DOMMatrix` instance which provides the values for its properties.
      *
-     * @param {CSSMatrix | DOMMatrix | jsonMatrix} m the source matrix to feed values from.
+     * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m the source matrix to feed values from.
      * @return {CSSMatrix} the resulted matrix.
      */
-    function fromMatrix(m: DOMMatrix | CSSMatrix | {
-        m11: number;
-        m12: number;
-        m13: number;
-        m14: number;
-        m21: number;
-        m22: number;
-        m23: number;
-        m24: number;
-        m31: number;
-        m32: number;
-        m33: number;
-        m34: number;
-        m41: number;
-        m42: number;
-        m43: number;
-        m44: number;
-    }): CSSMatrix;
+    function fromMatrix(m: CSSMatrix | DOMMatrix | DMNS.jsonMatrix): CSSMatrix;
     /**
      * Creates a new mutable `CSSMatrix` instance given any valid CSS transform string.
      *
@@ -477,6 +341,7 @@ declare module "dommatrix" {
      * @return {CSSMatrix} the resulted matrix.
      */
     function fromString(source: string): CSSMatrix;
+    import DMVersion from "version";
 }
 declare module "index" {
     export default CSSMatrix;
