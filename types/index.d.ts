@@ -1,6 +1,7 @@
 export as namespace CSSMatrixNS;
+export default CSSMatrix;
 
-export {default as CSSMatrix} from './dommatrix';
+import {default as CSSMatrix} from './dommatrix';
 
 export declare type PointTuple = {
   x: number;
