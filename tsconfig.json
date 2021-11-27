@@ -15,8 +15,8 @@
   },
   "types" : [],
   "files": [
-    // "src/dommatrix.js",
+    "src/dommatrix.js",
     "types/index.d.ts",
-    "types/dommatrix.d.ts",
+    // "types/dommatrix.d.ts",
   ]
 }

@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.18 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.19 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -132,7 +132,7 @@ function fromString(source) {
   }
   const str = String(source).replace(/\s/g, '');
   let m = new CSSMatrix();
-  const invalidStringError = `CSSMatrix: invalid transform string ${source}`;
+  const invalidStringError = `CSSMatrix: invalid transform string "${source}"`;
   let is2D = true;
   // const transformFunctions = [
   //   'matrix', 'matrix3d', 'perspective', 'translate3d',

@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.18 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.19 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -155,7 +155,7 @@
     }
     var str = String(source).replace(/\s/g, '');
     var m = new CSSMatrix();
-    var invalidStringError = "CSSMatrix: invalid transform string " + source;
+    var invalidStringError = "CSSMatrix: invalid transform string \"" + source + "\"";
     var is2D = true;
     // const transformFunctions = [
     //   'matrix', 'matrix3d', 'perspective', 'translate3d',
