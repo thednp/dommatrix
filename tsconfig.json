@@ -1,18 +1,22 @@
 {
   "compilerOptions": {
     "module": "ESNext",
+    "target": "ESNext",
     "moduleResolution": "Node",
-    "declaration": true,
+    "declaration": true, // uncomment to emit
+    "emitDeclarationOnly": true, // uncomment to emit
     "resolveJsonModule": true,
-    "emitDeclarationOnly": true,
-    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
     "allowJs": true,
     "checkJs": true,
-    "target": "ESNext",
-    "rootDir": "src",
-    "outFile": "types/index.d.ts"
+    "outDir": "types",
   },
-  "files": ["types/types.d.ts", "src/index.js"],
-  "include": ["src/*.js", "types/*.ts"],
-  "exclude": ["node_modules", "dist", "experiments", "types/index.d.ts", "test"]
+  "types" : [],
+  "files": [
+    // "src/dommatrix.js",
+    "types/index.d.ts",
+    "types/dommatrix.d.ts",
+  ]
 }

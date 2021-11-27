@@ -1,18 +1,8 @@
 /*!
-* DOMMatrix v0.0.16alpha4 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.17 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
-var version = "0.0.16alpha4";
-
-// @ts-ignore
-
-/**
- * A global namespace for library version.
- * @type {string}
- */
-const DMVersion = version;
-
 // DOMMatrix Static methods
 // * `fromFloat64Array` and `fromFloat32Array` methods are not supported;
 // * `fromArray` a more simple implementation, should also accept float[32/64]Array;
@@ -74,25 +64,25 @@ function fromArray(array) {
     m.m34 = m34;
     m.m44 = m44;
   } else if (a.length === 6) {
-    const [m11, m12, m21, m22, m41, m42] = a;
+    const [M11, M12, M21, M22, M41, M42] = a;
 
-    m.m11 = m11;
-    m.a = m11;
+    m.m11 = M11;
+    m.a = M11;
 
-    m.m12 = m12;
-    m.b = m12;
+    m.m12 = M12;
+    m.b = M12;
 
-    m.m21 = m21;
-    m.c = m21;
+    m.m21 = M21;
+    m.c = M21;
 
-    m.m22 = m22;
-    m.d = m22;
+    m.m22 = M22;
+    m.d = M22;
 
-    m.m41 = m41;
-    m.e = m41;
+    m.m41 = M41;
+    m.e = M41;
 
-    m.m42 = m42;
-    m.f = m42;
+    m.m42 = M42;
+    m.f = M42;
   } else {
     throw new TypeError('CSSMatrix: expecting an Array of 6/16 values.');
   }
@@ -103,7 +93,7 @@ function fromArray(array) {
  * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
  * `DOMMatrix` instance which provides the values for its properties.
  *
- * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m the source matrix to feed values from.
+ * @param {CSSMatrix | DOMMatrix | CSSMatrixNS.JSONMatrix} m the source matrix to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
 function fromMatrix(m) {
@@ -142,9 +132,20 @@ function fromString(source) {
   }
   const str = String(source).replace(/\s/g, '');
   let m = new CSSMatrix();
+  const invalidStringError = `CSSMatrix: invalid transform string ${source}`;
   let is2D = true;
+  // const transformFunctions = [
+  //   'matrix', 'matrix3d', 'perspective', 'translate3d',
+  //   'translate', 'translateX', 'translateY', 'translateZ',
+  //   'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ',
+  //   'scale', 'scale3d', 'skewX', 'skewY'];
   const tramsformObject = str.split(')').filter((f) => f).map((fn) => {
     const [prop, value] = fn.split('(');
+    if (!value) {
+      // invalidate
+      throw TypeError(invalidStringError);
+    }
+
     const components = value.split(',')
       .map((n) => (n.includes('rad') ? parseFloat(n) * (180 / Math.PI) : parseFloat(n)));
     const [x, y, z, a] = components;
@@ -204,6 +205,8 @@ function fromString(source) {
         // @ts-ignore unfortunately
         m = m[fn](...axeValues);
       }
+    } else {
+      throw TypeError(invalidStringError);
     }
   });
 
@@ -494,7 +497,7 @@ class CSSMatrix {
   /**
    * Sets a new `Boolean` flag value for `this.isIdentity` matrix property.
    *
-   * @param {Boolean} value sets a new flag for this property
+   * @param {boolean} value sets a new flag for this property
    */
   set isIdentity(value) {
     this.isIdentity = value;
@@ -505,7 +508,7 @@ class CSSMatrix {
    * matrix is one in which every value is 0 except those on the main diagonal from top-left
    * to bottom-right corner (in other words, where the offsets in each direction are equal).
    *
-   * @return {Boolean} the current property value
+   * @return {boolean} the current property value
    */
   get isIdentity() {
     const m = this;
@@ -519,7 +522,7 @@ class CSSMatrix {
    * A `Boolean` flag whose value is `true` if the matrix was initialized as a 2D matrix
    * and `false` if the matrix is 3D.
    *
-   * @return {Boolean} the current property value
+   * @return {boolean} the current property value
    */
   get is2D() {
     const m = this;
@@ -529,7 +532,7 @@ class CSSMatrix {
   /**
    * Sets a new `Boolean` flag value for `this.is2D` matrix property.
    *
-   * @param {Boolean} value sets a new flag for this property
+   * @param {boolean} value sets a new flag for this property
    */
   set is2D(value) {
     this.is2D = value;
@@ -616,7 +619,7 @@ class CSSMatrix {
    * The result can also be used as a second parameter for the `fromMatrix` static method
    * to load values into a matrix instance.
    *
-   * @return {DMNS.jsonMatrix} an *Object* with all matrix values.
+   * @return {CSSMatrixNS.JSONMatrix} an *Object* with all matrix values.
    */
   toJSON() {
     return JSON.parse(JSON.stringify(this));
@@ -627,7 +630,7 @@ class CSSMatrix {
    * matrix multiplied by the passed matrix, with the passed matrix to the right.
    * This matrix is not modified.
    *
-   * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m2 CSSMatrix
+   * @param {CSSMatrix | DOMMatrix | CSSMatrixNS.JSONMatrix} m2 CSSMatrix
    * @return {CSSMatrix} The resulted matrix.
    */
   multiply(m2) {
@@ -748,8 +751,8 @@ class CSSMatrix {
    *
    * @copyright thednp © 2021
    *
-   * @param {DMNS.PointTuple | DOMPoint} v Tuple or DOMPoint
-   * @return {DMNS.PointTuple} the resulting Tuple
+   * @param {CSSMatrixNS.PointTuple | DOMPoint} v Tuple or DOMPoint
+   * @return {CSSMatrixNS.PointTuple} the resulting Tuple
    */
   transformPoint(v) {
     const M = this;
@@ -771,8 +774,8 @@ class CSSMatrix {
    * {x,y,z,w} Tuple *Object* comprising the transformed vector.
    * Neither the matrix nor the original vector are altered.
    *
-   * @param {DMNS.PointTuple} t Tuple with `{x,y,z,w}` components
-   * @return {DMNS.PointTuple} the resulting Tuple
+   * @param {CSSMatrixNS.PointTuple} t Tuple with `{x,y,z,w}` components
+   * @return {CSSMatrixNS.PointTuple} the resulting Tuple
    */
   transform(t) {
     const m = this;
@@ -801,6 +804,5 @@ CSSMatrix.Multiply = Multiply;
 CSSMatrix.fromArray = fromArray;
 CSSMatrix.fromMatrix = fromMatrix;
 CSSMatrix.fromString = fromString;
-CSSMatrix.Version = DMVersion;
 
 export { CSSMatrix as default };

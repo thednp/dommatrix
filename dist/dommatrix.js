@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.16alpha4 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.17 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -8,16 +8,6 @@
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.CSSMatrix = factory());
 })(this, (function () { 'use strict';
-
-  var version = "0.0.16alpha4";
-
-  // @ts-ignore
-
-  /**
-   * A global namespace for library version.
-   * @type {string}
-   */
-  var DMVersion = version;
 
   // DOMMatrix Static methods
   // * `fromFloat64Array` and `fromFloat32Array` methods are not supported;
@@ -92,30 +82,30 @@
       m.m34 = m34;
       m.m44 = m44;
     } else if (a.length === 6) {
-      var m11$1 = a[0];
-      var m12$1 = a[1];
-      var m21$1 = a[2];
-      var m22$1 = a[3];
-      var m41$1 = a[4];
-      var m42$1 = a[5];
+      var M11 = a[0];
+      var M12 = a[1];
+      var M21 = a[2];
+      var M22 = a[3];
+      var M41 = a[4];
+      var M42 = a[5];
 
-      m.m11 = m11$1;
-      m.a = m11$1;
+      m.m11 = M11;
+      m.a = M11;
 
-      m.m12 = m12$1;
-      m.b = m12$1;
+      m.m12 = M12;
+      m.b = M12;
 
-      m.m21 = m21$1;
-      m.c = m21$1;
+      m.m21 = M21;
+      m.c = M21;
 
-      m.m22 = m22$1;
-      m.d = m22$1;
+      m.m22 = M22;
+      m.d = M22;
 
-      m.m41 = m41$1;
-      m.e = m41$1;
+      m.m41 = M41;
+      m.e = M41;
 
-      m.m42 = m42$1;
-      m.f = m42$1;
+      m.m42 = M42;
+      m.f = M42;
     } else {
       throw new TypeError('CSSMatrix: expecting an Array of 6/16 values.');
     }
@@ -126,7 +116,7 @@
    * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
    * `DOMMatrix` instance which provides the values for its properties.
    *
-   * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m the source matrix to feed values from.
+   * @param {CSSMatrix | DOMMatrix | CSSMatrixNS.JSONMatrix} m the source matrix to feed values from.
    * @return {CSSMatrix} the resulted matrix.
    */
   function fromMatrix(m) {
@@ -165,11 +155,22 @@
     }
     var str = String(source).replace(/\s/g, '');
     var m = new CSSMatrix();
+    var invalidStringError = "CSSMatrix: invalid transform string " + source;
     var is2D = true;
+    // const transformFunctions = [
+    //   'matrix', 'matrix3d', 'perspective', 'translate3d',
+    //   'translate', 'translateX', 'translateY', 'translateZ',
+    //   'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ',
+    //   'scale', 'scale3d', 'skewX', 'skewY'];
     var tramsformObject = str.split(')').filter(function (f) { return f; }).map(function (fn) {
       var ref = fn.split('(');
       var prop = ref[0];
       var value = ref[1];
+      if (!value) {
+        // invalidate
+        throw TypeError(invalidStringError);
+      }
+
       var components = value.split(',')
         .map(function (n) { return (n.includes('rad') ? parseFloat(n) * (180 / Math.PI) : parseFloat(n)); });
       var x = components[0];
@@ -236,6 +237,8 @@
           // @ts-ignore unfortunately
           m = m[fn].apply(m, axeValues);
         }
+      } else {
+        throw TypeError(invalidStringError);
       }
     });
 
@@ -523,7 +526,7 @@
   /**
    * Sets a new `Boolean` flag value for `this.isIdentity` matrix property.
    *
-   * @param {Boolean} value sets a new flag for this property
+   * @param {boolean} value sets a new flag for this property
    */
   prototypeAccessors.isIdentity.set = function (value) {
     this.isIdentity = value;
@@ -534,7 +537,7 @@
    * matrix is one in which every value is 0 except those on the main diagonal from top-left
    * to bottom-right corner (in other words, where the offsets in each direction are equal).
    *
-   * @return {Boolean} the current property value
+   * @return {boolean} the current property value
    */
   prototypeAccessors.isIdentity.get = function () {
     var m = this;
@@ -548,7 +551,7 @@
    * A `Boolean` flag whose value is `true` if the matrix was initialized as a 2D matrix
    * and `false` if the matrix is 3D.
    *
-   * @return {Boolean} the current property value
+   * @return {boolean} the current property value
    */
   prototypeAccessors.is2D.get = function () {
     var m = this;
@@ -558,7 +561,7 @@
   /**
    * Sets a new `Boolean` flag value for `this.is2D` matrix property.
    *
-   * @param {Boolean} value sets a new flag for this property
+   * @param {boolean} value sets a new flag for this property
    */
   prototypeAccessors.is2D.set = function (value) {
     this.is2D = value;
@@ -645,7 +648,7 @@
    * The result can also be used as a second parameter for the `fromMatrix` static method
    * to load values into a matrix instance.
    *
-   * @return {DMNS.jsonMatrix} an *Object* with all matrix values.
+   * @return {CSSMatrixNS.JSONMatrix} an *Object* with all matrix values.
    */
   CSSMatrix.prototype.toJSON = function toJSON () {
     return JSON.parse(JSON.stringify(this));
@@ -656,7 +659,7 @@
    * matrix multiplied by the passed matrix, with the passed matrix to the right.
    * This matrix is not modified.
    *
-   * @param {CSSMatrix | DOMMatrix | DMNS.jsonMatrix} m2 CSSMatrix
+   * @param {CSSMatrix | DOMMatrix | CSSMatrixNS.JSONMatrix} m2 CSSMatrix
    * @return {CSSMatrix} The resulted matrix.
    */
   CSSMatrix.prototype.multiply = function multiply (m2) {
@@ -777,8 +780,8 @@
    *
    * @copyright thednp © 2021
    *
-   * @param {DMNS.PointTuple | DOMPoint} v Tuple or DOMPoint
-   * @return {DMNS.PointTuple} the resulting Tuple
+   * @param {CSSMatrixNS.PointTuple | DOMPoint} v Tuple or DOMPoint
+   * @return {CSSMatrixNS.PointTuple} the resulting Tuple
    */
   CSSMatrix.prototype.transformPoint = function transformPoint (v) {
     var M = this;
@@ -800,8 +803,8 @@
    * {x,y,z,w} Tuple *Object* comprising the transformed vector.
    * Neither the matrix nor the original vector are altered.
    *
-   * @param {DMNS.PointTuple} t Tuple with `{x,y,z,w}` components
-   * @return {DMNS.PointTuple} the resulting Tuple
+   * @param {CSSMatrixNS.PointTuple} t Tuple with `{x,y,z,w}` components
+   * @return {CSSMatrixNS.PointTuple} the resulting Tuple
    */
   CSSMatrix.prototype.transform = function transform (t) {
     var m = this;
@@ -831,7 +834,6 @@
   CSSMatrix.fromArray = fromArray;
   CSSMatrix.fromMatrix = fromMatrix;
   CSSMatrix.fromString = fromString;
-  CSSMatrix.Version = DMVersion;
 
   return CSSMatrix;
 

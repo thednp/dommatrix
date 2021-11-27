@@ -1,11 +1,11 @@
 {
   "name": "dommatrix",
-  "version": "0.0.16alpha4",
+  "version": "0.0.17",
   "description": "ES6+ shim for DOMMatrix",
   "main": "dist/dommatrix.js",
   "module": "dist/dommatrix.esm.js",
   "types": "types/index.d.ts",
-  "jsnext": "src/index.js",
+  "jsnext": "src/dommatrix.js",
   "files": [
     "dist/*.{js,map}",
     "types/*.{ts,map}",
@@ -17,9 +17,9 @@
     "custom-build": "rollup -c --environment",
     "fix:js": "eslint src/*.js --config .eslintrc --fix",
     "lint:js": "eslint src/*.js --config .eslintrc",
-    "build-ts": "tsc -d",
+    "build:ts": "tsc -d",
     "build-js": "rollup --environment FORMAT:umd,MIN:false -c",
-    "build-test": "rollup --environment FORMAT:iife,MIN:true,OUTPUTFILE:test/dommatrix.min.js -c",
+    "build-test": "rollup --environment FORMAT:iife,MIN:false,OUTPUTFILE:test/dommatrix.js -c",
     "build-js-min": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
     "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c"

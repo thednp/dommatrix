@@ -20,7 +20,7 @@ const banner = `/*!
 
 const miniBannerJS = `// DOMMatrix v${pkg.version} | ${pkg.author} © ${year} | ${pkg.license}-License`;
 
-const INPUTFILE = INPUT || 'src/index.js';
+const INPUTFILE = INPUT || 'src/dommatrix.js';
 const OUTPUTFILE = OUTPUTC || `dist/dommatrix${FORMAT !== 'umd' ? `.${FORMAT}` : ''}${MIN ? '.min' : ''}.js`;
 
 const OUTPUT = {
