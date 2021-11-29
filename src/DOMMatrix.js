@@ -15,7 +15,7 @@
  * @param {number[]} array an `Array` to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
-function fromArray(array) {
+export function fromArray(array) {
   if (!array.every((n) => !Number.isNaN(n))) {
     throw TypeError(`CSSMatrix: "${array}" must only have numbers.`);
   }
@@ -88,10 +88,10 @@ function fromArray(array) {
  * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
  * `DOMMatrix` instance which provides the values for its properties.
  *
- * @param {CSSMatrix | DOMMatrix | CSSMatrixNS.JSONMatrix} m the source matrix to feed values from.
+ * @param {CSSMatrix | DOMMatrix | CSSMatrix.JSONMatrix} m the source matrix to feed values from.
  * @return {CSSMatrix} the resulted matrix.
  */
-function fromMatrix(m) {
+export function fromMatrix(m) {
   const keys = [
     'm11', 'm12', 'm13', 'm14',
     'm21', 'm22', 'm23', 'm24',
@@ -121,7 +121,7 @@ function fromMatrix(m) {
  * @param {string} source valid CSS transform string syntax.
  * @return {CSSMatrix} the resulted matrix.
  */
-function fromString(source) {
+export function fromString(source) {
   if (typeof source !== 'string') {
     throw TypeError(`CSSMatrix: "${source}" is not a string.`);
   }
@@ -185,7 +185,7 @@ function fromString(source) {
     } else if (prop === 'skew' && (x || y)) {
       m = x ? m.skewX(x) : m;
       m = y ? m.skewY(y) : m;
-    } else if (/[XYZ]/.test(prop) && x) {
+    } else if (/[XYZ]/.test(prop) && ['translate', 'rotate', 'scale', 'skew'].some((p) => prop.includes(p)) && x) {
       if (prop.includes('skew')) {
         // @ts-ignore unfortunately
         m = m[prop](x);
@@ -222,7 +222,7 @@ function fromString(source) {
  * @param {number} z the `z-axis` position.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Translate(x, y, z) {
+export function Translate(x, y, z) {
   const m = new CSSMatrix();
   m.m41 = x;
   m.e = x;
@@ -242,7 +242,7 @@ function Translate(x, y, z) {
  * @param {number} rz the `z-axis` rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Rotate(rx, ry, rz) {
+export function Rotate(rx, ry, rz) {
   const m = new CSSMatrix();
   const degToRad = Math.PI / 180;
   const radX = rx * degToRad;
@@ -297,7 +297,7 @@ function Rotate(rx, ry, rz) {
  * @param {number} alpha the value in degrees of the rotation.
  * @return {CSSMatrix} the resulted matrix.
  */
-function RotateAxisAngle(x, y, z, alpha) {
+export function RotateAxisAngle(x, y, z, alpha) {
   const m = new CSSMatrix();
   const angle = alpha * (Math.PI / 360);
   const sinA = Math.sin(angle);
@@ -360,7 +360,7 @@ function RotateAxisAngle(x, y, z, alpha) {
  * @param {number} z the `z-axis` scale.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Scale(x, y, z) {
+export function Scale(x, y, z) {
   const m = new CSSMatrix();
   m.m11 = x;
   m.a = x;
@@ -381,7 +381,7 @@ function Scale(x, y, z) {
  * @param {number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
-function SkewX(angle) {
+export function SkewX(angle) {
   const m = new CSSMatrix();
   const radA = (angle * Math.PI) / 180;
   const t = Math.tan(radA);
@@ -399,7 +399,7 @@ function SkewX(angle) {
  * @param {number} angle the angle in degrees.
  * @return {CSSMatrix} the resulted matrix.
  */
-function SkewY(angle) {
+export function SkewY(angle) {
   const m = new CSSMatrix();
   const radA = (angle * Math.PI) / 180;
   const t = Math.tan(radA);
@@ -416,7 +416,7 @@ function SkewY(angle) {
  * @param {CSSMatrix} m2 the second matrix.
  * @return {CSSMatrix} the resulted matrix.
  */
-function Multiply(m1, m2) {
+export function Multiply(m1, m2) {
   const m11 = m2.m11 * m1.m11 + m2.m12 * m1.m21 + m2.m13 * m1.m31 + m2.m14 * m1.m41;
   const m12 = m2.m11 * m1.m12 + m2.m12 * m1.m22 + m2.m13 * m1.m32 + m2.m14 * m1.m42;
   const m13 = m2.m11 * m1.m13 + m2.m12 * m1.m23 + m2.m13 * m1.m33 + m2.m14 * m1.m43;
@@ -451,13 +451,13 @@ function Multiply(m1, m2) {
  *
  * https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
  * https://github.com/thednp/DOMMatrix/
+ * @class
  */
 
 class CSSMatrix {
   /**
    * @constructor
    * @param {any} args accepts all parameter configurations:
-   *
    * * valid CSS transform string,
    * * CSSMatrix/DOMMatrix instance,
    * * a 6/16 elements *Array*.
@@ -614,7 +614,7 @@ class CSSMatrix {
    * The result can also be used as a second parameter for the `fromMatrix` static method
    * to load values into a matrix instance.
    *
-   * @return {CSSMatrixNS.JSONMatrix} an *Object* with all matrix values.
+   * @return {CSSMatrix.JSONMatrix} an *Object* with all matrix values.
    */
   toJSON() {
     return JSON.parse(JSON.stringify(this));
@@ -625,11 +625,10 @@ class CSSMatrix {
    * matrix multiplied by the passed matrix, with the passed matrix to the right.
    * This matrix is not modified.
    *
-   * @param {CSSMatrix | DOMMatrix | CSSMatrixNS.JSONMatrix} m2 CSSMatrix
+   * @param {CSSMatrix | DOMMatrix | CSSMatrix.JSONMatrix} m2 CSSMatrix
    * @return {CSSMatrix} The resulted matrix.
    */
   multiply(m2) {
-    // @ts-ignore - we only access [m11, m12, ... m44] values
     return Multiply(this, m2);
   }
 
@@ -746,8 +745,8 @@ class CSSMatrix {
    *
    * @copyright thednp © 2021
    *
-   * @param {CSSMatrixNS.PointTuple | DOMPoint} v Tuple or DOMPoint
-   * @return {CSSMatrixNS.PointTuple} the resulting Tuple
+   * @param {CSSMatrix.PointTuple | DOMPoint} v Tuple or DOMPoint
+   * @return {CSSMatrix.PointTuple} the resulting Tuple
    */
   transformPoint(v) {
     const M = this;
@@ -769,8 +768,8 @@ class CSSMatrix {
    * {x,y,z,w} Tuple *Object* comprising the transformed vector.
    * Neither the matrix nor the original vector are altered.
    *
-   * @param {CSSMatrixNS.PointTuple} t Tuple with `{x,y,z,w}` components
-   * @return {CSSMatrixNS.PointTuple} the resulting Tuple
+   * @param {CSSMatrix.PointTuple} t Tuple with `{x,y,z,w}` components
+   * @return {CSSMatrix.PointTuple} the resulting Tuple
    */
   transform(t) {
     const m = this;
@@ -789,15 +788,18 @@ class CSSMatrix {
 }
 
 // Add Transform Functions to CSSMatrix object
-CSSMatrix.Translate = Translate;
-CSSMatrix.Rotate = Rotate;
-CSSMatrix.RotateAxisAngle = RotateAxisAngle;
-CSSMatrix.Scale = Scale;
-CSSMatrix.SkewX = SkewX;
-CSSMatrix.SkewY = SkewY;
-CSSMatrix.Multiply = Multiply;
-CSSMatrix.fromArray = fromArray;
-CSSMatrix.fromMatrix = fromMatrix;
-CSSMatrix.fromString = fromString;
+// Don't create a TS namespace here
+Object.assign(CSSMatrix, {
+  Translate,
+  Rotate,
+  RotateAxisAngle,
+  Scale,
+  SkewX,
+  SkewY,
+  Multiply,
+  fromArray,
+  fromMatrix,
+  fromString,
+});
 
 export default CSSMatrix;

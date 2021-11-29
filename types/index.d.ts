@@ -1,16 +1,13 @@
-export as namespace CSSMatrixNS;
+export as namespace CSSMatrix;
 export default CSSMatrix;
 
-import {default as CSSMatrix} from './dommatrix';
-
-export declare type PointTuple = {
+export type PointTuple = {
   x: number;
   y: number;
   z: number;
   w: number;
 };
-
-export declare type JSONMatrix = {
+export type JSONMatrix = {
     m11: number;
     m12: number;
     m13: number;
@@ -35,4 +32,4 @@ export declare type JSONMatrix = {
     f: number;
 };
 
-
+import * as CSSMatrix from './dommatrix';

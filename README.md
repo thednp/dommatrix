@@ -6,7 +6,13 @@ An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOM
 [![NPM Downloads](https://img.shields.io/npm/dm/dommatrix.svg?style=flat-square)](http://npm-stat.com/charts.html?dommatrix)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/dommatrix/badge)](https://www.jsdelivr.com/package/npm/dommatrix)
 
-The constructor is almost equivalent with the **DOMMatrix** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
+The constructor is close to the **DOMMatrix Interface** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
+
+DOMMatrix shim is meant to be a light pocket tool for [many things](http://thednp.github.io/svg-path-commander), for a complete polyfill you might want to also consider more  [geometry-interfaces](https://github.com/trusktr/geometry-interfaces)
+and [geometry-polyfill](https://github.com/jarek-foksa/geometry-polyfill).
+
+This library implements a full transform string parsing via the static method `.fromString()`, which produce results inline with the DOMMatrix Interface as well as a very [elegant method](https://github.com/jsidea/jsidea/blob/2b4486c131d5cca2334293936fa13454b34fcdef/ts/jsidea/geom/Matrix3D.ts#L788) to determine `is2D`. Before moving to the [technical details](#More-info) of this script, have a look at the demo.
+
 
 # Demo
 See DOMMatrix shim in action, [click me](https://thednp.github.io/DOMMatrix) and start transforming.
@@ -70,11 +76,13 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * *not supported* `fromFloat64Array()` and `fromFloat32Array()` static methods are not supported since `fromArray()` should handle them just as well;
 * *not supported* `flipX()` or `flipY()` instance methods of the *DOMMatrixReadOnly* prototype are not supported,
 * *not supported* `translateSelf()` or `rotateSelf()` instance methods of the *DOMMatrix* prototype are not supported, instead we only implemented the most used *DOMMatrixReadOnly* instance methods.
+* *not supported* `scaleNonUniformSelf()` or `rotate3d()` with `{x, y, z}` transform origin parameters are not implemented.
 
 
 # Thanks
+* Joe Pea for his [geometry-interfaces](https://github.com/trusktr/geometry-interfaces)
+* Jarek Foksa for his [geometry-polyfill](https://github.com/jarek-foksa/geometry-polyfill)
 * Arian Stolwijk for his [CSSMatrix](https://github.com/arian/CSSMatrix/)
-
 
 # License
 DOMMatrix shim is [MIT Licensed](https://github.com/thednp/DOMMatrix/blob/master/LICENSE).

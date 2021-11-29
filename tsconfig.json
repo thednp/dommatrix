@@ -7,7 +7,9 @@
     "emitDeclarationOnly": true, // uncomment to emit
     "resolveJsonModule": true,
     "noImplicitAny": true,
+    // "maxNodeModuleJsDepth": 2, // allows to incorporate dependency utils
     "noImplicitThis": true,
+    "removeComments": true,
     "strictNullChecks": true,
     "allowJs": true,
     "checkJs": true,
@@ -15,8 +17,7 @@
   },
   "types" : [],
   "files": [
-    // "src/dommatrix.js",
-    "types/index.d.ts",
-    "types/dommatrix.d.ts",
+    // "src/dommatrix.js", // un-comment on regenerate, keep commented after
+    "types/index.d.ts", // comment on regenerate
   ]
 }
