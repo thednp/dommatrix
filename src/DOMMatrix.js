@@ -440,10 +440,10 @@ export function Multiply(m1, m2) {
 /**
  * Creates and returns a new `DOMMatrix` compatible instance
  * with equivalent instance.
+ * @class CSSMatrix
  *
- * https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
- * https://github.com/thednp/DOMMatrix/
- * @class
+ * @author thednp <https://github.com/thednp/DOMMatrix/>
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
  */
 
 class CSSMatrix {
