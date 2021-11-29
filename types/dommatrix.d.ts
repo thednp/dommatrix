@@ -38,13 +38,13 @@ declare class CSSMatrix {
     set is2D(arg: boolean);
     get is2D(): boolean;
     setMatrixValue(source: string | number[] | CSSMatrix | DOMMatrix): CSSMatrix;
-    toString(): string;
     toArray(): number[];
+    toString(): string;
     toJSON(): CSSMatrix.JSONMatrix;
     multiply(m2: CSSMatrix | DOMMatrix | CSSMatrix.JSONMatrix): CSSMatrix;
-    translate(x: number, y: number | null, z: number | null): CSSMatrix;
-    scale(x: number, y: number | null, z: number | null): CSSMatrix;
-    rotate(rx: number, ry: number | null, rz: number | null): CSSMatrix;
+    translate(x: number, y?: number | undefined, z?: number | undefined): CSSMatrix;
+    scale(x: number, y?: number | undefined, z?: number | undefined): CSSMatrix;
+    rotate(rx: number, ry?: number | undefined, rz?: number | undefined): CSSMatrix;
     rotateAxisAngle(x: number, y: number, z: number, angle: number): CSSMatrix;
     skewX(angle: number): CSSMatrix;
     skewY(angle: number): CSSMatrix;

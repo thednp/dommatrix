@@ -30,6 +30,8 @@ export type JSONMatrix = {
     d: number;
     e: number;
     f: number;
+    is2D: boolean;
+    isIdentity: boolean;
 };
 
 import * as CSSMatrix from './dommatrix';
