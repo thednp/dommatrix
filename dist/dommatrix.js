@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.21 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.22 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -473,10 +473,10 @@
   /**
    * Creates and returns a new `DOMMatrix` compatible instance
    * with equivalent instance.
+   * @class CSSMatrix
    *
-   * https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
-   * https://github.com/thednp/DOMMatrix/
-   * @class
+   * @author thednp <https://github.com/thednp/DOMMatrix/>
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
    */
 
   var CSSMatrix = function CSSMatrix() {
@@ -686,7 +686,7 @@
     var Y = y;
     var Z = z;
     if (Y === undefined) { Y = x; }
-    if (Z === undefined) { Z = 1; }
+    if (Z === undefined) { Z = 1; } // Z must be 1 if undefined
 
     return Multiply(this, Scale(X, Y, Z));
   };
