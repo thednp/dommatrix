@@ -34,4 +34,4 @@ export type JSONMatrix = {
     isIdentity: boolean;
 };
 
-import * as CSSMatrix from './dommatrix';
+import {default as CSSMatrix} from './dommatrix';
