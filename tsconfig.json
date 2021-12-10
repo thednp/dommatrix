@@ -6,18 +6,19 @@
     "declaration": true, // uncomment to emit
     "emitDeclarationOnly": true, // uncomment to emit
     "resolveJsonModule": true,
-    "noImplicitAny": true,
-    // "maxNodeModuleJsDepth": 2, // allows to incorporate dependency utils
-    "noImplicitThis": true,
-    "removeComments": true,
-    "strictNullChecks": true,
+    "maxNodeModuleJsDepth": 2, // allows to incorporate dependency utils
+    // "removeComments": true,
     "allowJs": true,
     "checkJs": true,
+    // "outFile": "types/dommatrix.d.ts", // comment after gen
     "outDir": "types",
+    "rootDir": "../",
   },
   "types" : [],
   "files": [
-    // "src/dommatrix.js", // un-comment on regenerate, keep commented after
-    "types/index.d.ts", // comment on regenerate
+    "types/index.d.ts",
+    "types/more/dommatrix.ts",
+    "types/more/types.d.ts",
+    "types/dommatrix.d.ts", // comment on regenerate, un-commented after
   ]
 }

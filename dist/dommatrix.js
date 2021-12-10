@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.0.22 (https://thednp.github.io/DOMMatrix/)
+* DOMMatrix v0.0.23 (https://thednp.github.io/DOMMatrix/)
 * Copyright 2021 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -820,6 +820,18 @@
     fromMatrix: fromMatrix,
     fromString: fromString,
   });
+
+  var version = "0.0.23";
+
+  // @ts-ignore
+
+  /**
+   * A global namespace for library version.
+   * @type {string}
+   */
+  var Version = version;
+
+  Object.assign(CSSMatrix, { Version: Version });
 
   return CSSMatrix;
 

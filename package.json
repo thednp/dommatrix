@@ -1,16 +1,15 @@
 {
   "name": "dommatrix",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "ES6+ shim for DOMMatrix",
   "main": "dist/dommatrix.js",
   "module": "dist/dommatrix.esm.js",
   "types": "types/index.d.ts",
-  "jsnext": "index.js",
+  "jsnext": "src/index.js",
   "files": [
-    "dist/*.{js,map}",
-    "types/*.{ts,map}",
-    "src/*.{js,map}",
-    "*.{js,map}"
+    "dist",
+    "types",
+    "src"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -30,7 +29,12 @@
     "url": "git+https://github.com/thednp/dommatrix.git"
   },
   "keywords": [
+    "dommatrix",
+    "dommatrix shim",
+    "dommatrix polyfill",
+    "dommatrix nodejs",
     "dom matrix",
+    "cssmatrix",
     "css matrix",
     "css transform",
     "javascript"
@@ -38,7 +42,7 @@
   "author": "thednp",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/thednp/dommatrix/issues"
+    "url": "https://github.com/thednp/DOMMatrix/issues"
   },
   "homepage": "https://thednp.github.io/DOMMatrix/",
   "dependencies": {},
