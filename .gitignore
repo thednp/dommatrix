@@ -3,3 +3,4 @@ experiments
 coverage
 .npmignore
 .nyc_output
+package-lock.json
