@@ -6,8 +6,9 @@
     "declaration": true, // uncomment to emit
     "emitDeclarationOnly": true, // uncomment to emit
     "resolveJsonModule": true,
-    "maxNodeModuleJsDepth": 2, // allows to incorporate dependency utils
+    "maxNodeModuleJsDepth": 3, // allows to incorporate dependency utils
     // "removeComments": true,
+    "strict": true,
     "allowJs": true,
     "checkJs": true,
     // "outFile": "types/dommatrix.d.ts", // comment after gen

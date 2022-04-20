@@ -82,6 +82,17 @@ declare module "dommatrix/src/dommatrix" {
      */
     export function Scale(x: number, y: number, z: number): CSSMatrix;
     /**
+     * Creates a new `CSSMatrix` for the shear of both the `x-axis` and`y-axis`
+     * rotation matrix and returns it. This method is equivalent to the CSS `skew()` function.
+     *
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skew
+     *
+     * @param {number} angleX the X-angle in degrees.
+     * @param {number} angleY the Y-angle in degrees.
+     * @return {CSSMatrix} the resulted matrix.
+     */
+    export function Skew(angleX: number, angleY: number): CSSMatrix;
+    /**
      * Creates a new `CSSMatrix` for the shear of the `x-axis` rotation matrix and
      * returns it. This method is equivalent to the CSS `skewX()` function.
      *
@@ -101,17 +112,6 @@ declare module "dommatrix/src/dommatrix" {
      * @return {CSSMatrix} the resulted matrix.
      */
     export function SkewY(angle: number): CSSMatrix;
-    /**
-     * Creates a new `CSSMatrix` for the shear of both the `x-axis` and`y-axis`
-     * rotation matrix and returns it. This method is equivalent to the CSS `skew()` function.
-     *
-     * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skew
-     *
-     * @param {number} angleX the X-angle in degrees.
-     * @param {number} angleY the Y-angle in degrees.
-     * @return {CSSMatrix} the resulted matrix.
-     */
-    export function Skew(angleX: number, angleY: number): CSSMatrix;
     /**
      * Creates a new `CSSMatrix` resulted from the multiplication of two matrixes
      * and returns it. Both matrixes are not changed.
@@ -327,7 +327,7 @@ declare module "dommatrix/src/dommatrix" {
          */
         skewY(angle: number): CSSMatrix;
         /**
-         * Specifies a skew transformation along both the `x-axis` and `y-axis`.
+         * Specifies a skew transformation along both the `x-axis` and `y-axis` by the given angle.
          * This matrix is not modified.
          *
          * @param {number} angleX The X-angle amount in degrees to skew.
