@@ -1,11 +1,11 @@
-export type PointTuple = {
+export interface PointTuple {
   x: number;
   y: number;
   z: number;
   w: number;
-};
+}
 
-export type JSONMatrix = {
+export interface JSONMatrix {
     m11: number;
     m12: number;
     m13: number;
@@ -30,4 +30,7 @@ export type JSONMatrix = {
     f: number;
     is2D: boolean;
     isIdentity: boolean;
-};
+}
+
+export type matrix = [number, number, number, number, number, number]
+export type matrix3d = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number]

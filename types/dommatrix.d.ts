@@ -6,18 +6,18 @@ declare module "dommatrix/src/dommatrix" {
      * If the array has six values, the result is a 2D matrix; if the array has 16 values,
      * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
      *
-     * @param {number[]} array an `Array` to feed values from.
+     * @param {CSSM.matrix | CSSM.matrix3d} array an `Array` to feed values from.
      * @return {CSSMatrix} the resulted matrix.
      */
-    export function fromArray(array: number[]): CSSMatrix;
+    export function fromArray(array: CSSM.matrix | CSSM.matrix3d): CSSMatrix;
     /**
      * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
      * `DOMMatrix` instance which provides the values for its properties.
      *
-     * @param {CSSMatrix | DOMMatrix | CSSMatrix.JSONMatrix} m the source matrix to feed values from.
+     * @param {CSSMatrix | DOMMatrix | CSSM.JSONMatrix} m the source matrix to feed values from.
      * @return {CSSMatrix} the resulted matrix.
      */
-    export function fromMatrix(m: CSSMatrix | DOMMatrix | CSSMatrix.JSONMatrix): CSSMatrix;
+    export function fromMatrix(m: CSSMatrix | DOMMatrix | CSSM.JSONMatrix): CSSMatrix;
     /**
      * Creates a new mutable `CSSMatrix` given any valid CSS transform string,
      * or what we call `TransformList`:
@@ -102,14 +102,25 @@ declare module "dommatrix/src/dommatrix" {
      */
     export function SkewY(angle: number): CSSMatrix;
     /**
+     * Creates a new `CSSMatrix` for the shear of both the `x-axis` and`y-axis`
+     * rotation matrix and returns it. This method is equivalent to the CSS `skew()` function.
+     *
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skew
+     *
+     * @param {number} angleX the X-angle in degrees.
+     * @param {number} angleY the Y-angle in degrees.
+     * @return {CSSMatrix} the resulted matrix.
+     */
+    export function Skew(angleX: number, angleY: number): CSSMatrix;
+    /**
      * Creates a new `CSSMatrix` resulted from the multiplication of two matrixes
      * and returns it. Both matrixes are not changed.
      *
-     * @param {CSSMatrix} m1 the first matrix.
-     * @param {CSSMatrix} m2 the second matrix.
+     * @param {CSSMatrix | DOMMatrix | CSSM.JSONMatrix} m1 the first matrix.
+     * @param {CSSMatrix | DOMMatrix | CSSM.JSONMatrix} m2 the second matrix.
      * @return {CSSMatrix} the resulted matrix.
      */
-    export function Multiply(m1: CSSMatrix, m2: CSSMatrix): CSSMatrix;
+    export function Multiply(m1: CSSMatrix | DOMMatrix | CSSM.JSONMatrix, m2: CSSMatrix | DOMMatrix | CSSM.JSONMatrix): CSSMatrix;
     export default CSSMatrix;
     /**
      * Creates and returns a new `DOMMatrix` compatible instance
@@ -188,18 +199,37 @@ declare module "dommatrix/src/dommatrix" {
          * This method expects valid *matrix()* / *matrix3d()* string values, as well
          * as other transform functions like *translateX(10px)*.
          *
-         * @param {string | number[] | CSSMatrix | DOMMatrix} source
+         * @param {string | CSSM.matrix | CSSM.matrix3d | CSSMatrix | DOMMatrix | CSSM.JSONMatrix} source
          * @return {CSSMatrix} the matrix instance
          */
-        setMatrixValue(source: string | number[] | CSSMatrix | DOMMatrix): CSSMatrix;
+        setMatrixValue(source: string | CSSM.matrix | CSSM.matrix3d | CSSMatrix | DOMMatrix | CSSM.JSONMatrix): CSSMatrix;
         /**
          * Returns an *Array* containing elements which comprise the matrix.
          * The method can return either the 16 elements or the 6 elements
-         * depending on the value of the `is2D` property.
+         * depending on the value of the `is2D` parameter.
          *
-         * @return {number[]} an *Array* representation of the matrix
+         * @param {boolean=} is2D *Array* representation of the matrix
+         * @return {CSSM.matrix | CSSM.matrix3d} an *Array* representation of the matrix
          */
-        toArray(): number[];
+        toArray(is2D?: boolean | undefined): CSSM.matrix | CSSM.matrix3d;
+        /**
+         * Returns a *Float32Array* containing elements which comprise the matrix.
+         * The method can return either the 16 elements or the 6 elements
+         * depending on the value of the `is2D` parameter.
+         *
+         * @param {boolean=} is2D *Array* representation of the matrix
+         * @return {Float32Array} an *Array* representation of the matrix
+         */
+        toFloat32Array(is2D?: boolean | undefined): Float32Array;
+        /**
+         * Returns a *Float64Array* containing elements which comprise the matrix.
+         * The method can return either the 16 elements or the 6 elements
+         * depending on the value of the `is2D` parameter.
+         *
+         * @param {boolean=} is2D *Array* representation of the matrix
+         * @return {Float64Array} an *Array* representation of the matrix
+         */
+        toFloat64Array(is2D?: boolean | undefined): Float64Array;
         /**
          * Creates and returns a string representation of the matrix in `CSS` matrix syntax,
          * using the appropriate `CSS` matrix notation.
@@ -218,18 +248,18 @@ declare module "dommatrix/src/dommatrix" {
          * The result can also be used as a second parameter for the `fromMatrix` static method
          * to load values into another matrix instance.
          *
-         * @return {CSSMatrix.JSONMatrix} an *Object* with all matrix values.
+         * @return {CSSM.JSONMatrix} an *Object* with all matrix values.
          */
-        toJSON(): CSSMatrix.JSONMatrix;
+        toJSON(): CSSM.JSONMatrix;
         /**
          * The Multiply method returns a new CSSMatrix which is the result of this
          * matrix multiplied by the passed matrix, with the passed matrix to the right.
          * This matrix is not modified.
          *
-         * @param {CSSMatrix | DOMMatrix | CSSMatrix.JSONMatrix} m2 CSSMatrix
+         * @param {CSSMatrix | DOMMatrix | CSSM.JSONMatrix} m2 CSSMatrix
          * @return {CSSMatrix} The resulted matrix.
          */
-        multiply(m2: CSSMatrix | DOMMatrix | CSSMatrix.JSONMatrix): CSSMatrix;
+        multiply(m2: CSSMatrix | DOMMatrix | CSSM.JSONMatrix): CSSMatrix;
         /**
          * The translate method returns a new matrix which is this matrix post
          * multiplied by a translation matrix containing the passed values. If the z
@@ -297,6 +327,15 @@ declare module "dommatrix/src/dommatrix" {
          */
         skewY(angle: number): CSSMatrix;
         /**
+         * Specifies a skew transformation along both the `x-axis` and `y-axis`.
+         * This matrix is not modified.
+         *
+         * @param {number} angleX The X-angle amount in degrees to skew.
+         * @param {number} angleY The angle amount in degrees to skew.
+         * @return {CSSMatrix} The resulted matrix
+         */
+        skew(angleX: number, angleY: number): CSSMatrix;
+        /**
          * Transforms a specified point using the matrix, returning a new
          * Tuple *Object* comprising of the transformed point.
          * Neither the matrix nor the original point are altered.
@@ -306,19 +345,19 @@ declare module "dommatrix/src/dommatrix" {
          *
          * @copyright thednp © 2021
          *
-         * @param {CSSMatrix.PointTuple | DOMPoint} v Tuple or DOMPoint
-         * @return {CSSMatrix.PointTuple} the resulting Tuple
+         * @param {CSSM.PointTuple | DOMPoint} v Tuple or DOMPoint
+         * @return {CSSM.PointTuple} the resulting Tuple
          */
-        transformPoint(v: CSSMatrix.PointTuple | DOMPoint): CSSMatrix.PointTuple;
+        transformPoint(v: CSSM.PointTuple | DOMPoint): CSSM.PointTuple;
         /**
          * Transforms a specified vector using the matrix, returning a new
          * {x,y,z,w} Tuple *Object* comprising the transformed vector.
          * Neither the matrix nor the original vector are altered.
          *
-         * @param {CSSMatrix.PointTuple} t Tuple with `{x,y,z,w}` components
-         * @return {CSSMatrix.PointTuple} the resulting Tuple
+         * @param {CSSM.PointTuple} t Tuple with `{x,y,z,w}` components
+         * @return {CSSM.PointTuple} the resulting Tuple
          */
-        transform(t: CSSMatrix.PointTuple): CSSMatrix.PointTuple;
+        transform(t: CSSM.PointTuple): CSSM.PointTuple;
     }
 }
 declare module "dommatrix/src/version" {

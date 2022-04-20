@@ -1,4 +1,4 @@
-# DOMMatrix shim
+# DOMMatrix
 
 An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
 

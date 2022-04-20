@@ -1,5 +1,7 @@
-node_modules/
-experiments/
-test/
+node_modules
+experiments
+coverage
+docs
 .gitignore
-package-lock.json
+.github
+.nyc_output
