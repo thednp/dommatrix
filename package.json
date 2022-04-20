@@ -49,7 +49,6 @@
     "url": "https://github.com/thednp/dommatrix/issues"
   },
   "homepage": "https://thednp.github.io/dommatrix/",
-  "dependencies": {},
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.1.3",
     "@cypress/code-coverage": "^3.9.12",
