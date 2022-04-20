@@ -46,9 +46,9 @@
   "author": "thednp",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/thednp/DOMMatrix/issues"
+    "url": "https://github.com/thednp/dommatrix/issues"
   },
-  "homepage": "https://thednp.github.io/DOMMatrix/",
+  "homepage": "https://thednp.github.io/dommatrix/",
   "dependencies": {},
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.1.3",
