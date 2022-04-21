@@ -9,8 +9,6 @@ on:
       - README.md
       - package.json
       - .github/workflows/badges.yml
-  schedule:
-    - cron: '20 * * * *'
 
 jobs:
   badges:
@@ -25,6 +23,6 @@ jobs:
       - name: Commit any changed files 💾
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Updated dependency badges
+          commit_message: Updated badges
           branch: main
           file_pattern: README.md

@@ -23,7 +23,7 @@
     "lint:js": "eslint src --config .eslintrc",
     "build:ts": "tsc -d",
     "build-js": "rollup --environment FORMAT:umd,MIN:false -c",
-    "build-docs": "rollup --environment FORMAT:iife,MIN:false,OUTPUTFILE:docs/dommatrix.js -c",
+    "build-docs": "rollup --environment FORMAT:umd,MIN:false,OUTPUTFILE:docs/dommatrix.js -c",
     "build-js-min": "rollup --environment FORMAT:umd,MIN:true -c",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
     "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c"

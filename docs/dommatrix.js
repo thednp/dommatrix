@@ -3,8 +3,11 @@
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
-var CSSMatrix = (function () {
-  'use strict';
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.CSSMatrix = factory());
+})(this, (function () { 'use strict';
 
   // DOMMatrix Static methods
   // * `fromArray` is a more simple implementation, should also accept Float[32/64]Array;
@@ -860,4 +863,4 @@ var CSSMatrix = (function () {
 
   return CSSMatrix;
 
-})();
+}));
