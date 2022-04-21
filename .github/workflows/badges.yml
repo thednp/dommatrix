@@ -1,6 +1,6 @@
 name: badges
-on: push
-  with:
+on:
+  push:
     branches:
       - main
     # update README badge only if the README file changes
