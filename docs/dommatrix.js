@@ -751,7 +751,7 @@ var CSSMatrix = (function () {
    * @return {CSSMatrix} The resulted matrix
    */
   CSSMatrix.prototype.skewX = function skewX (angle) {
-    return Multiply(this, Skew(angle, 0));
+    return Multiply(this, SkewX(angle));
   };
 
   /**
@@ -762,7 +762,7 @@ var CSSMatrix = (function () {
    * @return {CSSMatrix} The resulted matrix
    */
   CSSMatrix.prototype.skewY = function skewY (angle) {
-    return Multiply(this, Skew(0, angle));
+    return Multiply(this, SkewY(angle));
   };
 
   /**

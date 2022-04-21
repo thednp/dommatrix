@@ -1,6 +1,5 @@
 name: badges
 on: push
-  push:
     # update README badge only if the README file changes
     # or if the package.json file changes, or this file changes
     branches:
