@@ -12,6 +12,7 @@
     "src"
   ],
   "scripts": {
+    "///": "npx cypress info",
     "test": "npx cypress run",
     "cypress": "npx cypress open",
     "coverage:report": "npx nyc report --include=src/*.js --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",

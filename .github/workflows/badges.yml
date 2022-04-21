@@ -9,8 +9,6 @@ on:
       - README.md
       - package.json
       - .github/workflows/badges.yml
-  schedule:
-    - cron: '15 * * * *'
 
 jobs:
   badges:
