@@ -10,7 +10,7 @@ on:
       - package.json
       - .github/workflows/badges.yml
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '15 * * * *'
 
 jobs:
   badges:

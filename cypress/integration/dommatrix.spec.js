@@ -123,12 +123,12 @@ describe('DOMMatrix Class Test', () => {
         const str2 = dom.toString();
         el.style.transform = str2;
       });
-      expect(css.is2D).to.equal(dom.is2D);
-      expect(css.isIdentity).to.equal(dom.isIdentity);
 
               expect(Array.from(css.toFloat32Array()).map(x=> Math.floor(x * 10**6) / 10**6))
       .to.deep.equal(Array.from(dom.toFloat32Array()).map(x=> Math.floor(x * 10**6) / 10**6));
-
+      
+      expect(css.is2D).to.equal(dom.is2D);
+      expect(css.isIdentity).to.equal(dom.isIdentity);
     });
   })
 
