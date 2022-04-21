@@ -45,7 +45,7 @@ const instrument = (source, path, inputSourceMap) =>
 const esbuildPluginIstanbul = () => ({
   name: 'istanbul',
   setup(build) {
-    build.onLoad({ filter: /\\dommtrix\\src\\/ },
+    build.onLoad({ filter: /\\dommatrix\\src\\/ },
       async ({ path }) => {
         const contents = String(readFileSync(path));
 
