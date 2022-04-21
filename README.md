@@ -1,4 +1,4 @@
-# DOMMatrix
+# DOMMatrix ![check-code-coverage](https://img.shields.io/badge/code--coverage-90.57%25-brightgreen)
 
 An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
 
@@ -61,9 +61,12 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * **changed** `setMatrixValue()` instance method to do all the heavy duty work with parameters;
 * **added** `is2D` (*getter* and *setter*) property;
 * **added** `isIdentity` (*getter* and *setter*) property;
+* **added** `skew()` public method to work in line with native DOMMatrix;
+* **added** `Skew()` static method to work with the above `skew()` public method;
 * **added** `fromMatrix` static method, not present in the constructor prototype;
 * **added** `fromString` static method, not present in the constructor prototype;
 * **added** `fromArray()` static method, not present in the constructor prototype, should also process *Float32Array* / *Float64Array* via `Array.from()`;
+* **added** `toFloat64Array()` and `toFloat32Array()` instance methods are supported, the new `toString()` method makes use of them alongside `toArray`;
 * **added** `toArray()` instance method, normalizes values and is used by the `toString()` instance method;
 * **added** `toJSON()` instance method will generate a standard *Object* which includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and excludes `is2D` & `isIdentity` properties;
 * **added** `transformPoint()` instance method which works like the original.
@@ -72,8 +75,7 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * *removed* `setIdentity()` instance method due to code rework for enabling better TypeScript definitions;
 * *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
 * *removed* `feedFromArray` static method, not present in the constructor prototype, `fromArray()` will cover that;
-* *not supported* `toFloat64Array()` and `toFloat32Array()` instance methods are not supported, a quick `FromFloat32Array(myMatrix.toArray())` should achieve just that;
-* *not supported* `fromFloat64Array()` and `fromFloat32Array()` static methods are not supported since `fromArray()` should handle them just as well;
+* *not supported* `fromFloat64Array()` and `fromFloat32Array()` static methods are not supported, our `fromArray()` should handle them just as well;
 * *not supported* `flipX()` or `flipY()` instance methods of the *DOMMatrixReadOnly* prototype are not supported,
 * *not supported* `translateSelf()` or `rotateSelf()` instance methods of the *DOMMatrix* prototype are not supported, instead we only implemented the most used *DOMMatrixReadOnly* instance methods.
 * *not supported* `scaleNonUniformSelf()` or `rotate3d()` with `{x, y, z}` transform origin parameters are not implemented.
