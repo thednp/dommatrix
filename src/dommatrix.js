@@ -296,14 +296,14 @@ export function RotateAxisAngle(x, y, z, alpha) {
   const sinA2 = sinA * sinA;
   const length = Math.sqrt(x * x + y * y + z * z);
 
-  if (length === 0) {
-    // bad vector length, return identity
-    return m;
-  }
+  // if (length === 0) {
+  //   // bad vector length, return identity
+  //   return m;
+  // }
 
-  const X = x / length;
-  const Y = y / length;
-  const Z = z / length;
+  const X = x / (length || 1);
+  const Y = y / (length || 1);
+  const Z = z / (length || 1);
 
   const x2 = X * X;
   const y2 = Y * Y;
