@@ -723,7 +723,7 @@ class CSSMatrix {
    * @return {CSSMatrix} The resulted matrix
    */
   skewX(angle) {
-    return Multiply(this, Skew(angle, 0));
+    return Multiply(this, SkewX(angle));
   }
 
   /**
@@ -734,7 +734,7 @@ class CSSMatrix {
    * @return {CSSMatrix} The resulted matrix
    */
   skewY(angle) {
-    return Multiply(this, Skew(0, angle));
+    return Multiply(this, SkewY(angle));
   }
 
   /**

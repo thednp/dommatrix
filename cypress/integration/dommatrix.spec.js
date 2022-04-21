@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-// import CSSMatrix from '../instrumented/dommatrix';
 import CSSMatrix from '../../src/dommatrix';
 import testSamples from '../fixtures/testSamples';
 
@@ -23,9 +22,12 @@ describe('DOMMatrix Class Test', () => {
   it('Test init with no parameter, expect same output as native DOMMatrix', () => {
     const css = new CSSMatrix();
     const dom = new DOMMatrix();
-    expect(JSON.stringify(css)).to.equal(JSON.stringify(dom));
-    expect(css.is2D).to.equal(dom.is2D);
-    expect(css.isIdentity).to.equal(dom.isIdentity);
+    cy.wrap(css).as('css')
+      .get('@css').its('is2D').should('equal', dom.is2D)
+      .get('@css').its('isIdentity').should('equal', dom.isIdentity)
+      .get('@css').should(($this) => {
+        expect(JSON.stringify($this)).to.equal(JSON.stringify(dom));
+      })
   });
 
   it('Test init with invalid array, expect error', () => {
@@ -68,7 +70,24 @@ describe('DOMMatrix Class Test', () => {
     } 
   });
 
-  it('Test init a 6 values array', () => { 
+  // it.only('Test private methods', () => {
+  //   cy.log('CSSMatrix.rotateAxisAngle');
+  //   const m1 = new CSSMatrix();
+  //   cy.log('CSSMatrix.rotateAxisAngle');
+  //   cy.log(m1);
+
+
+  //   try {
+  //     m1.rotateAxisAngle('a','true','wombat','05');
+  //   } catch (err) {
+  //     expect(err).to.be.instanceOf(TypeError);
+  //     expect(err).to.have.property('message', 'CSSMatrix: expecting 4 values');
+  //   }
+  //   // cy.log('CSSMatrix.rotateAxisAngle');
+  //   // new CSSMatrix().rotateAxisAngle('','','','');
+  // });
+
+  it('Test init a 6 values array', () => {
     const test = [0.9659, 0.25879, -0.2588, 0.9659, -1.53961, -1.53961];
     const m1 = new CSSMatrix(test);
     const m2 = new CSSMatrix(...test);
