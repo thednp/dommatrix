@@ -10,7 +10,7 @@ export default {
   rotateX: 'rotateX(-25deg)',
   rotateY: 'rotateY(25deg)',
   rotate3d: 'rotate3d(0.1,1.5,0.7,25deg)',
-  // rotate3d1: 'rotate3d(0,0,0,20deg)',
+  rotate3d1: 'rotate3d(0,0,0,20deg)',
   translate: 'translate(25px)',
   translateX: 'translateX(25px)',
   translateY: 'translateY(25px)',

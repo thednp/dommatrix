@@ -323,26 +323,21 @@
    */
   function RotateAxisAngle(x, y, z, alpha) {
     var m = new CSSMatrix();
+    var length = Math.sqrt(x * x + y * y + z * z);
+
+    if (length === 0) {
+      // bad vector length, return identity
+      return m;
+    }
+
+    var X = x / length;
+    var Y = y / length;
+    var Z = z / length;
+
     var angle = alpha * (Math.PI / 360);
     var sinA = Math.sin(angle);
     var cosA = Math.cos(angle);
     var sinA2 = sinA * sinA;
-    var length = Math.sqrt(x * x + y * y + z * z);
-    var X = x;
-    var Y = y;
-    var Z = z;
-
-    if (length === 0) {
-      // bad vector length, use something reasonable
-      X = 0;
-      Y = 0;
-      Z = 1;
-    } else {
-      X /= length;
-      Y /= length;
-      Z /= length;
-    }
-
     var x2 = X * X;
     var y2 = Y * Y;
     var z2 = Z * Z;

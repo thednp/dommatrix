@@ -290,25 +290,21 @@ export function Rotate(rx, ry, rz) {
  */
 export function RotateAxisAngle(x, y, z, alpha) {
   const m = new CSSMatrix();
-  const angle = alpha * (Math.PI / 360);
-  const sinA = Math.sin(angle);
-  const cosA = Math.cos(angle);
-  const sinA2 = sinA * sinA;
   const length = Math.sqrt(x * x + y * y + z * z);
-
-  let X = x;
-  let Y = y;
-  let Z = z;
 
   if (length === 0) {
     // bad vector length, return identity
     return m;
-  } else if (length !== 1) {
-    X /= length;
-    Y /= length;
-    Z /= length;
   }
 
+  const X = x / length;
+  const Y = y / length;
+  const Z = z / length;
+
+  const angle = alpha * (Math.PI / 360);
+  const sinA = Math.sin(angle);
+  const cosA = Math.cos(angle);
+  const sinA2 = sinA * sinA;
   const x2 = X * X;
   const y2 = Y * Y;
   const z2 = Z * Z;
