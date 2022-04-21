@@ -1,4 +1,4 @@
-# DOMMatrix ![check-code-coverage](https://img.shields.io/badge/code--coverage-90.57%25-brightgreen) [![badges](https://github.com/thednp/dommatrix/actions/workflows/badges.yml/badge.svg?branch=master&event=workflow_run)](https://github.com/thednp/dommatrix/actions/workflows/badges.yml)
+# DOMMatrix ![check-code-coverage](https://img.shields.io/badge/code--coverage-90.57%25-brightgreen)
 
 An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
 
