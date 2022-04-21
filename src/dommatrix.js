@@ -183,10 +183,11 @@ export function fromString(source) {
         const fn = prop.replace(/[XYZ]/, '');
         const axis = prop.replace(fn, '');
         const idx = ['X', 'Y', 'Z'].indexOf(axis);
+        const def = fn === 'scale' ? 1 : 0;
         const axeValues = [
-          idx === 0 ? x : 0,
-          idx === 1 ? x : 0,
-          idx === 2 ? x : 0];
+          idx === 0 ? x : def,
+          idx === 1 ? x : def,
+          idx === 2 ? x : def];
         // @ts-ignore unfortunately
         m = m[fn](...axeValues);
       }
@@ -294,20 +295,15 @@ export function RotateAxisAngle(x, y, z, alpha) {
   const cosA = Math.cos(angle);
   const sinA2 = sinA * sinA;
   const length = Math.sqrt(x * x + y * y + z * z);
-  let X = x;
-  let Y = y;
-  let Z = z;
 
   if (length === 0) {
-    // bad vector length, use something reasonable
-    X = 0;
-    Y = 0;
-    Z = 1;
-  } else {
-    X /= length;
-    Y /= length;
-    Z /= length;
+    // bad vector length, return identity
+    return m;
   }
+
+  const X = x / length;
+  const Y = y / length;
+  const Z = z / length;
 
   const x2 = X * X;
   const y2 = Y * Y;
@@ -365,7 +361,7 @@ export function Scale(x, y, z) {
 
 /**
  * Creates a new `CSSMatrix` for the shear of both the `x-axis` and`y-axis`
- * rotation matrix and returns it. This method is equivalent to the CSS `skew()` function.
+ * matrix and returns it. This method is equivalent to the CSS `skew()` function.
  *
  * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skew
  *
@@ -491,15 +487,6 @@ class CSSMatrix {
   }
 
   /**
-   * Sets a new `Boolean` flag value for `this.isIdentity` matrix property.
-   *
-   * @param {boolean} value sets a new flag for this property
-   */
-  set isIdentity(value) {
-    this.isIdentity = value;
-  }
-
-  /**
    * A `Boolean` whose value is `true` if the matrix is the identity matrix. The identity
    * matrix is one in which every value is 0 except those on the main diagonal from top-left
    * to bottom-right corner (in other words, where the offsets in each direction are equal).
@@ -523,15 +510,6 @@ class CSSMatrix {
   get is2D() {
     const m = this;
     return (m.m31 === 0 && m.m32 === 0 && m.m33 === 1 && m.m34 === 0 && m.m43 === 0 && m.m44 === 1);
-  }
-
-  /**
-   * Sets a new `Boolean` flag value for `this.is2D` matrix property.
-   *
-   * @param {boolean} value sets a new flag for this property
-   */
-  set is2D(value) {
-    this.is2D = value;
   }
 
   /**
@@ -760,7 +738,7 @@ class CSSMatrix {
   }
 
   /**
-   * Specifies a skew transformation along both the `x-axis` and `y-axis` by the given angle.
+   * Specifies a skew transformation along both the `x-axis` and `y-axis`.
    * This matrix is not modified.
    *
    * @param {number} angleX The X-angle amount in degrees to skew.

@@ -1,4 +1,4 @@
-# DOMMatrix ![check-code-coverage](https://img.shields.io/badge/code--coverage-90.57%25-brightgreen)
+# DOMMatrix ![check-code-coverage](https://img.shields.io/badge/code--coverage-93.27%25-brightgreen)
 
 An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
 

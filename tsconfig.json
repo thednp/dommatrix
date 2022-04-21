@@ -6,8 +6,6 @@
     "declaration": true, // uncomment to emit
     "emitDeclarationOnly": true, // uncomment to emit
     "resolveJsonModule": true,
-    "maxNodeModuleJsDepth": 3, // allows to incorporate dependency utils
-    // "removeComments": true,
     "strict": true,
     "allowJs": true,
     "checkJs": true,

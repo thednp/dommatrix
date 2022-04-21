@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
-import CSSMatrix from '../instrumented/dommatrix';
+// import CSSMatrix from '../instrumented/dommatrix';
+import CSSMatrix from '../../src/dommatrix';
 import testSamples from '../fixtures/testSamples';
 
 describe('DOMMatrix Class Test', () => {
@@ -56,6 +57,45 @@ describe('DOMMatrix Class Test', () => {
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
       expect(err).to.have.property('message', `CSSMatrix: "${test}" is not a DOMMatrix / CSSMatrix / JSON compatible object.`);
+    } 
+  });
+
+  it('Test static methods', () => {
+    const m = new CSSMatrix();
+    const source = {a: 1};
+    const source1 = 'wombat(1)';
+    const source2 = 'skew()';
+    const source3 = 'translate(wombat)';
+
+    expect(CSSMatrix.fromMatrix(m)).to.deep.equal(m);
+    expect(CSSMatrix.fromMatrix(m.toJSON())).to.deep.equal(m);
+
+    try {
+      CSSMatrix.fromString(source);
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err).to.have.property('message', `CSSMatrix: "${source}" is not a string.`);
+    }
+
+    try {
+      CSSMatrix.fromString(source1);
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err).to.have.property('message', `CSSMatrix: invalid transform string "${source1}"`);
+    }
+
+    try {
+      CSSMatrix.fromString(source2);
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err).to.have.property('message', `CSSMatrix: invalid transform string "${source2}"`);
+    }
+
+    try {
+      CSSMatrix.fromString(source3);
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err).to.have.property('message', `CSSMatrix: invalid transform string "${source3}"`);
     }
   });
 
@@ -90,7 +130,6 @@ describe('DOMMatrix Class Test', () => {
       .to.deep.equal(Array.from(dom.toFloat32Array()).map(x=> Math.floor(x * 10**6) / 10**6));
 
     });
-
   })
 
 

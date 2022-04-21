@@ -213,10 +213,11 @@ var CSSMatrix = (function () {
           var fn = prop.replace(/[XYZ]/, '');
           var axis = prop.replace(fn, '');
           var idx = ['X', 'Y', 'Z'].indexOf(axis);
+          var def = fn === 'scale' ? 1 : 0;
           var axeValues = [
-            idx === 0 ? x : 0,
-            idx === 1 ? x : 0,
-            idx === 2 ? x : 0];
+            idx === 0 ? x : def,
+            idx === 1 ? x : def,
+            idx === 2 ? x : def];
           // @ts-ignore unfortunately
           m = m[fn].apply(m, axeValues);
         }
@@ -395,7 +396,7 @@ var CSSMatrix = (function () {
 
   /**
    * Creates a new `CSSMatrix` for the shear of both the `x-axis` and`y-axis`
-   * rotation matrix and returns it. This method is equivalent to the CSS `skew()` function.
+   * matrix and returns it. This method is equivalent to the CSS `skew()` function.
    *
    * https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/skew
    *
@@ -518,15 +519,6 @@ var CSSMatrix = (function () {
   var prototypeAccessors = { isIdentity: { configurable: true },is2D: { configurable: true } };
 
   /**
-   * Sets a new `Boolean` flag value for `this.isIdentity` matrix property.
-   *
-   * @param {boolean} value sets a new flag for this property
-   */
-  prototypeAccessors.isIdentity.set = function (value) {
-    this.isIdentity = value;
-  };
-
-  /**
    * A `Boolean` whose value is `true` if the matrix is the identity matrix. The identity
    * matrix is one in which every value is 0 except those on the main diagonal from top-left
    * to bottom-right corner (in other words, where the offsets in each direction are equal).
@@ -550,15 +542,6 @@ var CSSMatrix = (function () {
   prototypeAccessors.is2D.get = function () {
     var m = this;
     return (m.m31 === 0 && m.m32 === 0 && m.m33 === 1 && m.m34 === 0 && m.m43 === 0 && m.m44 === 1);
-  };
-
-  /**
-   * Sets a new `Boolean` flag value for `this.is2D` matrix property.
-   *
-   * @param {boolean} value sets a new flag for this property
-   */
-  prototypeAccessors.is2D.set = function (value) {
-    this.is2D = value;
   };
 
   /**
@@ -788,7 +771,7 @@ var CSSMatrix = (function () {
   };
 
   /**
-   * Specifies a skew transformation along both the `x-axis` and `y-axis` by the given angle.
+   * Specifies a skew transformation along both the `x-axis` and `y-axis`.
    * This matrix is not modified.
    *
    * @param {number} angleX The X-angle amount in degrees to skew.
