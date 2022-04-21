@@ -1,13 +1,14 @@
 name: badges
 on: push
-  branches:
-    - main
-  # update README badge only if the README file changes
-  # or if the package.json file changes, or this file changes
-  paths:
-    - README.md
-    - package.json
-    - .github/workflows/badges.yml
+  with:
+    branches:
+      - main
+    # update README badge only if the README file changes
+    # or if the package.json file changes, or this file changes
+    paths:
+      - README.md
+      - package.json
+      - .github/workflows/badges.yml
 
 jobs:
   badges:
