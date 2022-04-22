@@ -1,5 +1,8 @@
 name: badges
 on:
+  workflow_dispatch:
+    branches:
+      - main
   push:
     # update README badge only if the README file changes
     # or if the package.json file changes, or this file changes
