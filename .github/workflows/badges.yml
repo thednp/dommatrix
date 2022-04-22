@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Update version badges 🏷
         run: npx -p dependency-version-badge update-badge cypress esbuild
