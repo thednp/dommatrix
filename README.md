@@ -62,16 +62,17 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * **added** `is2D` (*getter* and *setter*) property;
 * **added** `isIdentity` (*getter* and *setter*) property;
 * **added** `skew()` public method to work in line with native DOMMatrix;
-* **added** `Skew()` static method to work with the above `skew()` public method;
+* **added** `Skew()` static method to work with the above `skew()` instance method;
 * **added** `fromMatrix` static method, not present in the constructor prototype;
 * **added** `fromString` static method, not present in the constructor prototype;
 * **added** `fromArray()` static method, not present in the constructor prototype, should also process *Float32Array* / *Float64Array* via `Array.from()`;
-* **added** `toFloat64Array()` and `toFloat32Array()` instance methods are supported, the new `toString()` method makes use of them alongside `toArray`;
+* **added** `toFloat64Array()` and `toFloat32Array()` instance methods, the updated `toString()` method makes use of them alongside `toArray`;
 * **added** `toArray()` instance method, normalizes values and is used by the `toString()` instance method;
 * **added** `toJSON()` instance method will generate a standard *Object* which includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and excludes `is2D` & `isIdentity` properties;
 * **added** `transformPoint()` instance method which works like the original.
 * *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
 * *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
+* *removed* `transform` instance method, not present in the native **DOMMatrix** prototype;
 * *removed* `setIdentity()` instance method due to code rework for enabling better TypeScript definitions;
 * *removed* `toFullString()` instance method, probably something also from *WebKitCSSMatrix*;
 * *removed* `feedFromArray` static method, not present in the constructor prototype, `fromArray()` will cover that;
