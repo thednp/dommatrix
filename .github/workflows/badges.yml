@@ -24,6 +24,6 @@ jobs:
       - name: Commit any changed files 💾
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: main
+          branch: master
           file_pattern: README.md
           commit_message: Updated badges
