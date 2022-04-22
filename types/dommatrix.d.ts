@@ -33,6 +33,16 @@ declare module "dommatrix/src/dommatrix" {
      */
     export function fromString(source: string): CSSMatrix;
     /**
+     * Returns an *Array* containing elements which comprise the matrix.
+     * The method can return either the 16 elements or the 6 elements
+     * depending on the value of the `is2D` parameter.
+     *
+     * @param {CSSMatrix | DOMMatrix | CSSM.JSONMatrix} m the source matrix to feed values from.
+     * @param {boolean=} is2D *Array* representation of the matrix
+     * @return {CSSM.matrix | CSSM.matrix3d} an *Array* representation of the matrix
+     */
+    export function toArray(m: CSSMatrix, is2D?: boolean | undefined): CSSM.matrix | CSSM.matrix3d;
+    /**
      * Creates a new `CSSMatrix` for the translation matrix and returns it.
      * This method is equivalent to the CSS `translate3d()` function.
      *
@@ -191,15 +201,6 @@ declare module "dommatrix/src/dommatrix" {
          * @return {CSSMatrix} the matrix instance
          */
         setMatrixValue(source: string | CSSM.matrix | CSSM.matrix3d | CSSMatrix | DOMMatrix | CSSM.JSONMatrix): CSSMatrix;
-        /**
-         * Returns an *Array* containing elements which comprise the matrix.
-         * The method can return either the 16 elements or the 6 elements
-         * depending on the value of the `is2D` parameter.
-         *
-         * @param {boolean=} is2D *Array* representation of the matrix
-         * @return {CSSM.matrix | CSSM.matrix3d} an *Array* representation of the matrix
-         */
-        toArray(is2D?: boolean | undefined): CSSM.matrix | CSSM.matrix3d;
         /**
          * Returns a *Float32Array* containing elements which comprise the matrix.
          * The method can return either the 16 elements or the 6 elements

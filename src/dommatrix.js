@@ -163,7 +163,7 @@ export function fromString(source) {
     // single value expected
     } else if (prop === 'rotate' && x && [y, z].every((n) => n === undefined)) {
       m = m.rotate(0, 0, x);
-    // 4 values expected
+    // 3 values expected
     } else if (prop === 'scale3d' && xyz.every((n) => !Number.isNaN(+n)) && xyz.some((n) => n !== 1)) {
       m = m.scale(x, y, z);
     // single value expected
@@ -197,6 +197,25 @@ export function fromString(source) {
   });
 
   return m;
+}
+
+/**
+ * Returns an *Array* containing elements which comprise the matrix.
+ * The method can return either the 16 elements or the 6 elements
+ * depending on the value of the `is2D` parameter.
+ *
+ * @param {CSSMatrix | DOMMatrix | CSSM.JSONMatrix} m the source matrix to feed values from.
+ * @param {boolean=} is2D *Array* representation of the matrix
+ * @return {CSSM.matrix | CSSM.matrix3d} an *Array* representation of the matrix
+ */
+export function toArray(m, is2D) {
+  if (is2D) {
+    return [m.a, m.b, m.c, m.d, m.e, m.f];
+  }
+  return [m.m11, m.m12, m.m13, m.m14,
+    m.m21, m.m22, m.m23, m.m24,
+    m.m31, m.m32, m.m33, m.m34,
+    m.m41, m.m42, m.m43, m.m44];
 }
 
 // Transform Functions
@@ -529,40 +548,22 @@ class CSSMatrix {
   setMatrixValue(source) {
     const m = this;
 
-    // [Arguments list | Array] come here
-    // if ([Array, Float64Array, Float32Array].some((a) => source instanceof a)) {
-    if (Array.isArray(source)) {
-      return fromArray(source);
-    }
-    // new CSSMatrix(CSSMatrix | DOMMatrix | JSON)
-    if (typeof source === 'object') {
-      return fromMatrix(source);
-    }
-    // CSS transform string source - TransformList
+    // CSS transform string source - TransformList first
     if (typeof source === 'string' && source.length && source !== 'none') {
       return fromString(source);
     }
-    return m;
-  }
-
-  /**
-   * Returns an *Array* containing elements which comprise the matrix.
-   * The method can return either the 16 elements or the 6 elements
-   * depending on the value of the `is2D` parameter.
-   *
-   * @param {boolean=} is2D *Array* representation of the matrix
-   * @return {CSSM.matrix | CSSM.matrix3d} an *Array* representation of the matrix
-   */
-  toArray(is2D) {
-    const m = this;
-
-    if (is2D) {
-      return [m.a, m.b, m.c, m.d, m.e, m.f];
+    // [Arguments list | Array] come second
+    if ([Array, Float64Array, Float32Array].some((a) => source instanceof a)) {
+      // @ts-ignore
+      return fromArray(source);
     }
-    return [m.m11, m.m12, m.m13, m.m14,
-      m.m21, m.m22, m.m23, m.m24,
-      m.m31, m.m32, m.m33, m.m34,
-      m.m41, m.m42, m.m43, m.m44];
+    // new CSSMatrix(CSSMatrix | DOMMatrix | JSON) last
+    if ([CSSMatrix, DOMMatrix, Object].some((a) => source instanceof a)) {
+      // @ts-ignore
+      return fromMatrix(source);
+    }
+
+    return m;
   }
 
   /**
@@ -574,7 +575,7 @@ class CSSMatrix {
    * @return {Float32Array} an *Array* representation of the matrix
    */
   toFloat32Array(is2D) {
-    return Float32Array.from(this.toArray(is2D));
+    return Float32Array.from(toArray(this, is2D));
   }
 
   /**
@@ -586,7 +587,7 @@ class CSSMatrix {
    * @return {Float64Array} an *Array* representation of the matrix
    */
   toFloat64Array(is2D) {
-    return Float64Array.from(this.toArray(is2D));
+    return Float64Array.from(toArray(this, is2D));
   }
 
   /**
@@ -649,8 +650,8 @@ class CSSMatrix {
     const X = x;
     let Y = y;
     let Z = z;
-    if (Z === undefined) Z = 0;
     if (Y === undefined) Y = 0;
+    if (Z === undefined) Z = 0;
     return Multiply(this, Translate(X, Y, Z));
   }
 
@@ -689,10 +690,13 @@ class CSSMatrix {
    */
   rotate(rx, ry, rz) {
     let RX = rx;
-    let RY = ry;
-    let RZ = rz;
-    if (RY === undefined) RY = 0;
-    if (RZ === undefined) { RZ = RX; RX = 0; }
+    let RY = ry || 0;
+    let RZ = rz || 0;
+
+    if (typeof rx === 'number' && ry === undefined && rz === undefined) {
+      RZ = RX; RX = 0; RY = 0;
+    }
+
     return Multiply(this, Rotate(RX, RY, RZ));
   }
 
@@ -709,7 +713,7 @@ class CSSMatrix {
    * @return {CSSMatrix} The resulted matrix
    */
   rotateAxisAngle(x, y, z, angle) {
-    if ([x, y, z, angle].some((n) => Number.isNaN(n))) {
+    if ([x, y, z, angle].some((n) => Number.isNaN(+n))) {
       throw new TypeError('CSSMatrix: expecting 4 values');
     }
     return Multiply(this, RotateAxisAngle(x, y, z, angle));
@@ -750,54 +754,29 @@ class CSSMatrix {
   }
 
   /**
-   * Transforms a specified point using the matrix, returning a new
-   * Tuple *Object* comprising of the transformed point.
-   * Neither the matrix nor the original point are altered.
-   *
-   * The method is equivalent with `transformPoint()` method
-   * of the `DOMMatrix` constructor.
-   *
-   * @copyright thednp © 2021
-   *
-   * @param {CSSM.PointTuple | DOMPoint} v Tuple or DOMPoint
-   * @return {CSSM.PointTuple} the resulting Tuple
-   */
-  transformPoint(v) {
-    const M = this;
-    let m = Translate(v.x, v.y, v.z);
-
-    m.m44 = v.w || 1;
-    m = M.multiply(m);
-
-    return {
-      x: m.m41,
-      y: m.m42,
-      z: m.m43,
-      w: m.m44,
-    };
-  }
-
-  /**
    * Transforms a specified vector using the matrix, returning a new
    * {x,y,z,w} Tuple *Object* comprising the transformed vector.
    * Neither the matrix nor the original vector are altered.
    *
-   * @param {CSSM.PointTuple} t Tuple with `{x,y,z,w}` components
-   * @return {CSSM.PointTuple} the resulting Tuple
+   * The method is equivalent with `transformPoint()` method
+   * of the `DOMMatrix` constructor.
+   *
+   * @param {CSSM.PointTuple | DOMPoint} t Tuple with `{x,y,z,w}` components
+   * @return {CSSM.PointTuple | DOMPoint} the resulting Tuple
    */
-  transform(t) {
+  transformPoint(t) {
     const m = this;
-    const x = m.m11 * t.x + m.m12 * t.y + m.m13 * t.z + m.m14 * t.w;
-    const y = m.m21 * t.x + m.m22 * t.y + m.m23 * t.z + m.m24 * t.w;
-    const z = m.m31 * t.x + m.m32 * t.y + m.m33 * t.z + m.m34 * t.w;
-    const w = m.m41 * t.x + m.m42 * t.y + m.m43 * t.z + m.m44 * t.w;
 
-    return {
-      x: x / w,
-      y: y / w,
-      z: z / w,
-      w,
-    };
+    const x = m.m11 * t.x + m.m21 * t.y + m.m31 * t.z + m.m41 * t.w;
+    const y = m.m12 * t.x + m.m22 * t.y + m.m32 * t.z + m.m42 * t.w;
+    const z = m.m13 * t.x + m.m23 * t.y + m.m33 * t.z + m.m43 * t.w;
+    const w = m.m14 * t.x + m.m24 * t.y + m.m34 * t.z + m.m44 * t.w;
+
+    return t instanceof DOMPoint
+      ? new DOMPoint(x, y, z, w)
+      : {
+        x, y, z, w,
+      };
   }
 }
 
@@ -815,6 +794,7 @@ Object.assign(CSSMatrix, {
   fromArray,
   fromMatrix,
   fromString,
+  toArray,
 });
 
 export default CSSMatrix;
