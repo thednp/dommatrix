@@ -1,8 +1,6 @@
 name: badges
 on:
   workflow_dispatch:
-    branches:
-      - main
   push:
     # update README badge only if the README file changes
     # or if the package.json file changes, or this file changes
@@ -18,7 +16,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Update version badges 🏷
         run: npx -p dependency-version-badge update-badge cypress esbuild
