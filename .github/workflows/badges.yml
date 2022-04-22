@@ -27,5 +27,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Updated badges
+          ref: ${{ github.head_ref }}
           branch: main
           file_pattern: README.md
