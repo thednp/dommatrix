@@ -1,4 +1,4 @@
-# DOMMatrix ![check-code-coverage](https://img.shields.io/badge/code--coverage-100%25-brightgreen) ![cypress version](https://img.shields.io/badge/cypress-9.5.4-brightgreen) ![esbuild version](https://img.shields.io/badge/esbuild-0.14.30-brightgreen)
+# DOMMatrix ![check-code-coverage](https://img.shields.io/badge/code--coverage-100%25-brightgreen) ![cypress version](https://img.shields.io/badge/cypress-9.5.4-brightgreen) ![esbuild version](https://img.shields.io/badge/esbuild-0.14.30-brightgreen) [![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg?event=check_run)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
 
 An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
 
