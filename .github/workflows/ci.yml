@@ -29,7 +29,7 @@ jobs:
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           files: ./coverage/lcov.info
-          flags: client,chrome
+          flags: electron
           name: codecov-client-electron
           fail_ci_if_error: true
           verbose: true

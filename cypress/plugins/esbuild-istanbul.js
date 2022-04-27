@@ -7,8 +7,9 @@ const debug = require('debug')('istanbul-lib-instrument')
 
 // import Cypress settings
 const { env: { sourceFolder } } = require('../../cypress.json');
-const cwd = process.cwd();
-const sourcePath = sourceFolder.replace(/\//,'\\')
+const cwd = process.cwd().split(/[\\|\/]/).slice(-1)[0];
+const sourcePath = sourceFolder.replace(/\//,'\\');
+
 const sourceFilter = `${cwd}\\${sourcePath}`;
 
 /**
