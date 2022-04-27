@@ -9,14 +9,13 @@
     "strict": true,
     "allowJs": true,
     "checkJs": true,
-    // "outFile": "types/dommatrix.d.ts", // comment after gen
     "outDir": "types",
     "rootDir": "../",
+    // "outFile": "types/dommatrix.d.ts", // comment after gen
   },
   "types" : [],
   "files": [
     "types/index.d.ts",
-    "types/more/dommatrix.ts",
     "types/more/types.d.ts",
     "types/dommatrix.d.ts", // comment on regenerate, un-commented after
   ]

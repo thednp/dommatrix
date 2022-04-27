@@ -3,7 +3,6 @@
 
 const { readFileSync } = require('fs');
 const { createInstrumenter } = require('istanbul-lib-instrument');
-
 /**
  * @typedef {import('istanbul-lib-instrument').InstrumenterOptions} InstrumenterOptions
  */
@@ -18,38 +17,19 @@ const instrumenter = createInstrumenter({
 });
 
 /**
- * @param {string} source
- * @param {string} path
- * @param {RawSourceMap} [inputSourceMap]
- * @return {Promise<string>}
- */
-const instrument = (source, path, inputSourceMap) =>
-  new Promise((resolve, reject) => {
-    instrumenter.instrument(
-      source,
-      path,
-      (error, code) => {
-        if (error == null) {
-          resolve(code);
-        } else {
-          reject(error);
-        }
-      },
-      inputSourceMap
-    );
-  });
-
-/**
  * @return {import('esbuild').Plugin}
  */
 const esbuildPluginIstanbul = () => ({
   name: 'istanbul',
   setup(build) {
-    build.onLoad({ filter: /\\dommatrix\\src\\/ },
+    build.onLoad({filter: /./ },
       async ({ path }) => {
-        const contents = String(readFileSync(path));
-
-        const instrumented = await instrument(contents, path);
+        const contents = String(readFileSync(path, 'utf8'));
+        
+        if (!path.includes('/dommatrix/src/')) {
+          return { contents };
+        }
+        const instrumented = instrumenter.instrumentSync(contents, path);
 
         return { contents: instrumented };
       }
