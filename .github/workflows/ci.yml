@@ -23,3 +23,13 @@ jobs:
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload coverage report to codecov.io
+      - uses: codecov/codecov-action@v2
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          files: ./coverage/lcov.info
+          flags: client,chrome
+          name: codecov-client-electron
+          fail_ci_if_error: true
+          verbose: true

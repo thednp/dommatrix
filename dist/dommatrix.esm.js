@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v0.1.1 (https://thednp.github.io/dommatrix/)
+* DOMMatrix v1.0.0 (https://thednp.github.io/dommatrix/)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -802,7 +802,7 @@ Object.assign(CSSMatrix, {
   toArray,
 });
 
-var version = "0.1.1";
+var version = "1.0.0";
 
 // @ts-ignore
 
