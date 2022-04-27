@@ -19,12 +19,12 @@ jobs:
       - run: npm run build
       - run: npm run test
 
-      - name: Upload coverage report to coveralls.io
+      - name: Upload coverage report on Node v${{ matrix.node }} to coveralls.io...
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload coverage report to codecov.io
+      - name: Upload coverage report on Node v${{ matrix.node }} to codecov.io...
         uses: codecov/codecov-action@v2
         with:
           token: ${{secrets.CODECOV_TOKEN}}
