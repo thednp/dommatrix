@@ -5,7 +5,6 @@ node_modules
 docs
 experiments
 coverage
-coverage
 cypress/videos
 cypress/screenshots
 cypress/coverage
