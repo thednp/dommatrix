@@ -20,8 +20,6 @@ const sourceFilter = `${name}/${sourcePath}`;
  * @typedef {import('source-map').RawSourceMap} RawSourceMap
  */
 
-console.log(sourceFilter)
-
 const instrumenter = createInstrumenter({
   compact: false,
   esModules: true,
@@ -37,7 +35,6 @@ const esbuildPluginIstanbul = () => ({
       async ({ path }) => {
         const contents = String(readFileSync(path, 'utf8'));
 
-        // if (!path.includes(sourceFilter)) {
         if (!sourceFilter.split(/\\|\//).every((word) => path.includes(word))) {
           return { contents };
         }

@@ -1,6 +1,6 @@
 {
   "name": "dommatrix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ES6+ shim for DOMMatrix",
   "main": "dist/dommatrix.js",
   "module": "dist/dommatrix.esm.js",
