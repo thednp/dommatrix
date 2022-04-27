@@ -33,7 +33,7 @@ const instrumenter = createInstrumenter({
 const esbuildPluginIstanbul = () => ({
   name: 'istanbul',
   setup(build) {
-    build.onLoad({filter: /[.\.js|.\.ts|.\.tsx|.\.jsx]$/ },
+    build.onLoad({filter: /\// },
       async ({ path }) => {
         const contents = String(readFileSync(path, 'utf8'));
 
