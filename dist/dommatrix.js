@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v1.0.1 (https://thednp.github.io/dommatrix/)
+* DOMMatrix v1.0.2 (https://thednp.github.io/dommatrix/)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -829,7 +829,7 @@
     toArray: toArray,
   });
 
-  var version = "1.0.1";
+  var version = "1.0.2";
 
   // @ts-ignore
 
