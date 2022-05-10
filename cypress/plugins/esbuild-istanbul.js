@@ -8,26 +8,14 @@ const debug = require('debug')('istanbul-lib-instrument')
 // import Cypress settings
 const { env: { sourceFolder } } = require('../../cypress.json');
 const [name] = process.cwd().split(/[\\|\/]/).slice(-1);
-const sourcePath = sourceFolder.replace(/\\/,'\/');
+const sourcePath = sourceFolder.replace(/\\/g,'\/');
 
 const sourceFilter = `${name}/${sourcePath}`;
-
-/**
- * @typedef {import('istanbul-lib-instrument').InstrumenterOptions} InstrumenterOptions
- */
-
-/**
- * @typedef {import('source-map').RawSourceMap} RawSourceMap
- */
-
 const instrumenter = createInstrumenter({
   compact: false,
   esModules: true,
 });
 
-/**
- * @return {import('esbuild').Plugin}
- */
 const esbuildPluginIstanbul = () => ({
   name: 'istanbul',
   setup(build) {
