@@ -1,5 +1,5 @@
 /*!
-* DOMMatrix v1.0.2 (https://thednp.github.io/dommatrix/)
+* DOMMatrix v1.0.3 (https://thednp.github.io/dommatrix/)
 * Copyright 2022 © thednp
 * Licensed under MIT (https://github.com/thednp/DOMMatrix/blob/master/LICENSE)
 */
@@ -502,7 +502,7 @@ class CSSMatrix {
     m.m31 = 0; m.m32 = 0; m.m33 = 1; m.m34 = 0;
     m.m41 = 0; m.m42 = 0; m.m43 = 0; m.m44 = 1;
 
-    if (args && args.length) {
+    if (args.length) {
       const ARGS = [16, 6].some((l) => l === args.length) ? args : args[0];
 
       return m.setMatrixValue(ARGS);
@@ -802,15 +802,15 @@ Object.assign(CSSMatrix, {
   toArray,
 });
 
-var version = "1.0.2";
-
-// @ts-ignore
+var version = "1.0.3";
 
 /**
  * A global namespace for library version.
  * @type {string}
  */
 const Version = version;
+
+/** @typedef {import('../types/index')} */
 
 Object.assign(CSSMatrix, { Version });
 

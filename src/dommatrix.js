@@ -497,7 +497,7 @@ class CSSMatrix {
     m.m31 = 0; m.m32 = 0; m.m33 = 1; m.m34 = 0;
     m.m41 = 0; m.m42 = 0; m.m43 = 0; m.m44 = 1;
 
-    if (args && args.length) {
+    if (args.length) {
       const ARGS = [16, 6].some((l) => l === args.length) ? args : args[0];
 
       return m.setMatrixValue(ARGS);
