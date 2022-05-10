@@ -1,6 +1,6 @@
 # DOMMatrix
 [![Coverage Status](https://coveralls.io/repos/github/thednp/dommatrix/badge.svg)](https://coveralls.io/github/thednp/dommatrix) 
-![cypress version](https://img.shields.io/badge/cypress-9.6.0-brightgreen)
+![cypress version](https://img.shields.io/badge/cypress-9.6.1-brightgreen)
 ![esbuild version](https://img.shields.io/badge/esbuild-0.14.30-brightgreen)
 [![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
 
