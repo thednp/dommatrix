@@ -3,10 +3,11 @@
 
 const { readFileSync } = require('fs');
 const { createInstrumenter } = require('istanbul-lib-instrument');
-const debug = require('debug')('istanbul-lib-instrument')
+const debug = require('debug');
 
 // import Cypress settings
-const { env: { sourceFolder } } = require('../../cypress.json');
+let { env: { sourceFolder } } = require('../../cypress.json');
+sourceFolder = sourceFolder || 'src';
 const [name] = process.cwd().split(/[\\|\/]/).slice(-1);
 const sourcePath = sourceFolder.replace(/\\/g,'\/');
 
@@ -22,8 +23,9 @@ const esbuildPluginIstanbul = () => ({
     build.onLoad({filter: /\.(js|jsx|ts|tsx)$/ },
       async ({ path }) => {
         const contents = String(readFileSync(path, 'utf8'));
+        const samePath = path.replace(/\\/g, '/')
 
-        if (!sourceFilter.split(/\\|\//).every((word) => path.includes(word))) {
+        if (!samePath.includes(sourceFilter)) {
           return { contents };
         }
         debug('instrumenting %s for output coverage', path);

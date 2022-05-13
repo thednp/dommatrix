@@ -16,7 +16,7 @@ describe('DOMMatrix Class Test', () => {
       .get('.bg-secondary').then((m) => {
         cy.wrap(m[0]).as('dommatrix');
       })
-      .log('These test compare CSSMatrix methods agains the native DOMMatrix.');
+      .log('These tests compare CSSMatrix methods agains the native DOMMatrix.');
   });
 
   it('Test init with no parameter, expect same output as native DOMMatrix', () => {
