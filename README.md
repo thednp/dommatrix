@@ -41,7 +41,7 @@ Alternativelly you can load from CDN:
 # Usage
 In your regular day to day usage, you will find yourself writing something like this:
 ```js
-import CSSMatrix from 'dommatrix';
+import CSSMatrix from '@thednp/dommatrix';
 
 // init
 let myMatrix = new CSSMatrix('matrix(1,0.25,-0.25,1,0,0)');
@@ -76,6 +76,8 @@ In contrast with the [original source](https://github.com/arian/CSSMatrix/) ther
 * **added** `toArray()` instance method, normalizes values and is used by the `toString()` instance method;
 * **added** `toJSON()` instance method will generate a standard *Object* which includes `{a,b,c,d,e,f}` and `{m11,m12,m13,..m44}` properties and excludes `is2D` & `isIdentity` properties;
 * **added** `transformPoint()` instance method which works like the original.
+* **added** `isCompatibleArray()` static method to check if an array is a compatible array of 6/16 numbers.
+* **added** `isCompatibleObject()` static method to checks if an object is compatible with CSSMatrix, usually another CSSMatrix / DOMMatrix instance or the result of these instances toJSON() method call.
 * *removed* `afine` property, it's a very old *WebKitCSSMatrix* defined property;
 * *removed* `inverse()` instance method, will be re-added later for other implementations (probably going to be accompanied by `determinant()`, `transpose()` and others);
 * *removed* `transform` instance method, not present in the native **DOMMatrix** prototype;
