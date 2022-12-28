@@ -1,14 +1,16 @@
 # DOMMatrix
 [![Coverage Status](https://coveralls.io/repos/github/thednp/dommatrix/badge.svg)](https://coveralls.io/github/thednp/dommatrix) 
-![cypress version](https://img.shields.io/badge/cypress-9.6.1-brightgreen)
-![esbuild version](https://img.shields.io/badge/esbuild-0.14.30-brightgreen)
-[![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
-
-An ES6+ sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
-
 [![NPM Version](https://img.shields.io/npm/v/dommatrix.svg?style=flat-square)](https://www.npmjs.com/package/dommatrix)
 [![NPM Downloads](https://img.shields.io/npm/dm/dommatrix.svg?style=flat-square)](http://npm-stat.com/charts.html?dommatrix)
+[![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/dommatrix/badge)](https://www.jsdelivr.com/package/npm/dommatrix)
+[![typescript version](https://img.shields.io/badge/typescript-4.9.4-brightgreen)](https://www.typescriptlang.org/)
+[![cypress version](https://img.shields.io/badge/cypress-12.2.0-brightgreen)](https://www.cypress.io/)
+[![eslint version](https://img.shields.io/badge/eslint-8.30.0-brightgreen)](https://github.com/eslint)
+[![vite version](https://img.shields.io/badge/vite-4.0.3-brightgreen)](https://vitejs.dev/)
+[![prettier version](https://img.shields.io/badge/prettier-2.8.1-brightgreen)](https://prettier.io/)
+
+A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
 
 The constructor is close to the **DOMMatrix Interface** in many respects, but tries to keep a sense of simplicity. In that note, we haven't implemented [DOMMatrixReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly) methods like `flipX()` or `inverse()` or aliases for the main methods like `translateSelf` or the old `rotate3d`.
 
@@ -24,16 +26,16 @@ See DOMMatrix shim in action, [click me](https://thednp.github.io/dommatrix) and
 
 # Installation
 ```js
-npm install dommatrix
+npm install @thednp/dommatrix
 ```
-Download the latest version and copy the `dist/dommatrix.min.js` file to your project assets folder, then load the file in your front-end:
+Download the latest version and copy the `dist/dommatrix.js` file to your project assets folder, then load the file in your front-end:
 ```html
-<script src="./assets/js/dommatrix.min.js">
+<script src="./assets/js/dommatrix.js">
 ```
 
 Alternativelly you can load from CDN:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dommatrix/dist/dommatrix.min.js">
+<script src="https://cdn.jsdelivr.net/npm/dommatrix/dist/dommatrix.js">
 ```
 
 # Usage
