@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "2.0.0-alpha1",
+  "version": "2.0.0-alpha2",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",

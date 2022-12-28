@@ -1,9 +1,9 @@
 # DOMMatrix
 [![Coverage Status](https://coveralls.io/repos/github/thednp/dommatrix/badge.svg)](https://coveralls.io/github/thednp/dommatrix) 
-[![NPM Version](https://img.shields.io/npm/v/dommatrix.svg?style=flat-square)](https://www.npmjs.com/package/dommatrix)
-[![NPM Downloads](https://img.shields.io/npm/dm/dommatrix.svg?style=flat-square)](http://npm-stat.com/charts.html?dommatrix)
+[![NPM Version](https://img.shields.io/npm/v/@thednp/dommatrix.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/dommatrix)
+[![NPM Downloads](https://img.shields.io/npm/dm/@thednp/dommatrix.svg?style=flat-square)](http://npm-stat.com/charts.html?@thednp/dommatrix)
 [![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
-[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/dommatrix/badge)](https://www.jsdelivr.com/package/npm/dommatrix)
+[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/dommatrix/badge)](https://www.jsdelivr.com/package/npm/@thednp/dommatrix)
 [![typescript version](https://img.shields.io/badge/typescript-4.9.4-brightgreen)](https://www.typescriptlang.org/)
 [![cypress version](https://img.shields.io/badge/cypress-12.2.0-brightgreen)](https://www.cypress.io/)
 [![eslint version](https://img.shields.io/badge/eslint-8.30.0-brightgreen)](https://github.com/eslint)
@@ -35,7 +35,7 @@ Download the latest version and copy the `dist/dommatrix.js` file to your projec
 
 Alternativelly you can load from CDN:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dommatrix/dist/dommatrix.js">
+<script src="https://cdn.jsdelivr.net/npm/@thednp/dommatrix/dist/dommatrix.js">
 ```
 
 # Usage
