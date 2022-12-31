@@ -3,7 +3,7 @@
  "compilerOptions": {
    "lib": ["DOM", "ESNext", "DOM.Iterable"],
    "types": ["vite", "vite/client", "cypress"],
-   "rootDir": "./",
+   "rootDir": "./src",
    "baseUrl": "./",
    "module": "ESNext",
    "target": "ESNext",
@@ -25,5 +25,5 @@
    "checkJs": true
  },
  "include": ["src/*"],
- "exclude": ["node_modules", "experiments", "coverage", ],
+ "exclude": ["node_modules", "experiments", "coverage"],
 }

@@ -1,6 +1,6 @@
 // compile.ts
 import TypeScript from 'typescript';
-import { basename, extname } from 'path';
+import { basename } from 'path';
 import { RawSourceMap } from 'source-map';
 import { readFileSync } from 'fs';
 
