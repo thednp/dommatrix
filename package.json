@@ -1,14 +1,12 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",
   "license": "MIT",
   "source": "src/index.ts",
-  "main": "dist/dommatrix.js",
-  "module": "dist/dommatrix.mjs",
-  "esmodule": "dist/dommatrix.mjs",
+  "main": "dist/dommatrix",
   "types": "dist/dommatrix.d.ts",
   "scripts": {
     "pre-test": "npm run clean-coverage",
