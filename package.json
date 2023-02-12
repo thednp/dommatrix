@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "2.0.0-alpha3",
+  "version": "2.0.0",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",
@@ -8,18 +8,8 @@
   "source": "src/index.ts",
   "main": "dist/dommatrix.js",
   "module": "dist/dommatrix.mjs",
+  "esmodule": "dist/dommatrix.mjs",
   "types": "dist/dommatrix.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/dommatrix.mjs",
-      "require": "./dist/dommatrix.cjs",
-      "types": "./dist/dommatrix.d.ts"
-    }
-  },
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
     "pre-test": "npm run clean-coverage",
     "test": "npm run pre-test && npx cypress run",
@@ -61,8 +51,8 @@
     "@types/istanbul-lib-instrument": "^1.7.4",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
-    "cypress": "^12.2.0",
-    "dts-bundle-generator": "^7.1.0",
+    "cypress": "^12.4.1",
+    "dts-bundle-generator": "^7.2.0",
     "eslint": "^8.30.0",
     "eslint-plugin-jsdoc": "^39.6.4",
     "eslint-plugin-prefer-arrow": "^1.2.3",
@@ -71,9 +61,9 @@
     "istanbul-lib-instrument": "^5.2.1",
     "ncp": "^2.0.0",
     "nyc": "^15.1.0",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.3",
     "rimraf": "^3.0.2",
     "typescript": "^4.9.4",
-    "vite": "^4.0.3"
+    "vite": "^4.0.4"
   }
 }
