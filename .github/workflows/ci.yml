@@ -19,8 +19,10 @@ jobs:
       - name: Install Cypress
         run: npx cypress install
 
-      - name: Build and Test
+      - name: Build
         run: npm run build
+
+      - name: Test
         run: npm run test
 
       - name: Upload coverage report to coveralls.io...
