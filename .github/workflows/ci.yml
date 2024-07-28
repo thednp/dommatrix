@@ -20,8 +20,8 @@ jobs:
         run: npx cypress install
 
       - name: Build and Test
-      - run: npm run build
-      - run: npm run test
+        run: npm run build
+        run: npm run test
 
       - name: Upload coverage report to coveralls.io...
         uses: coverallsapp/github-action@master
