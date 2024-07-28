@@ -1,6 +1,6 @@
 var Z = Object.defineProperty;
 var z = (s, t, e) => t in s ? Z(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e;
-var p = (s, t, e) => (z(s, typeof t != "symbol" ? t + "" : t, e), e);
+var p = (s, t, e) => z(s, typeof t != "symbol" ? t + "" : t, e);
 const $ = {
   a: 1,
   b: 0,
@@ -67,8 +67,7 @@ const $ = {
   const n = `CSSMatrix: invalid transform string "${s}"`;
   return t.split(")").filter((i) => i).forEach((i) => {
     const [r, a] = i.split("(");
-    if (!a)
-      throw TypeError(n);
+    if (!a) throw TypeError(n);
     const l = a.split(",").map((o) => o.includes("rad") ? parseFloat(o) * (180 / Math.PI) : parseFloat(o)), [m, h, c, u] = l, f = [m, h, c], w = [m, h, c, u];
     if (r === "perspective" && m && [h, c].every((o) => o === void 0))
       e.m34 = -1 / m;

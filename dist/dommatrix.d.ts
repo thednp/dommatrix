@@ -101,13 +101,13 @@ export default class CSSMatrix {
 	static SkewX: (angle: number) => CSSMatrix;
 	static SkewY: (angle: number) => CSSMatrix;
 	static Skew: (angleX: number, angleY: number) => CSSMatrix;
-	static Multiply: (m1: DOMMatrix | JSONMatrix | CSSMatrix, m2: DOMMatrix | JSONMatrix | CSSMatrix) => CSSMatrix;
+	static Multiply: (m1: CSSMatrix | DOMMatrix | JSONMatrix, m2: CSSMatrix | DOMMatrix | JSONMatrix) => CSSMatrix;
 	static fromArray: (array: any[] | Float32Array | Float64Array) => CSSMatrix;
-	static fromMatrix: (m: DOMMatrix | JSONMatrix | CSSMatrix) => CSSMatrix;
+	static fromMatrix: (m: CSSMatrix | DOMMatrix | JSONMatrix) => CSSMatrix;
 	static fromString: (source: string) => CSSMatrix;
-	static toArray: (m: DOMMatrix | JSONMatrix | CSSMatrix, is2D?: boolean | undefined) => Matrix | Matrix3d;
-	static isCompatibleArray: (array?: unknown) => array is Float32Array | Float64Array | Matrix | Matrix3d;
-	static isCompatibleObject: (object?: unknown) => object is DOMMatrix | JSONMatrix | CSSMatrix;
+	static toArray: (m: CSSMatrix | DOMMatrix | JSONMatrix, is2D?: boolean) => Matrix | Matrix3d;
+	static isCompatibleArray: (array?: unknown) => array is Matrix | Matrix3d | Float32Array | Float64Array;
+	static isCompatibleObject: (object?: unknown) => object is CSSMatrix | DOMMatrix | JSONMatrix;
 	/**
 	 * @constructor
 	 * @param init accepts all parameter configurations:

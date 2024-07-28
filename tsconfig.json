@@ -2,12 +2,12 @@
   // https://janessagarrow.com/blog/typescript-and-esbuild/
  "compilerOptions": {
    "lib": ["DOM", "ESNext", "DOM.Iterable"],
-   "types": ["vite", "vite/client", "cypress"],
+  //  "types": ["vite", "vite/client", "cypress"],
    "rootDir": "./src",
    "baseUrl": "./",
    "module": "ESNext",
    "target": "ESNext",
-   "moduleResolution": "Node",
+   "moduleResolution": "Bundler",
    "allowJs": true,
    "forceConsistentCasingInFileNames": true,
    "useDefineForClassFields": true,
@@ -25,5 +25,5 @@
    "checkJs": true
  },
  "include": ["src/*"],
- "exclude": ["node_modules", "experiments", "coverage"],
+ "exclude": ["node_modules", "experiments", "coverage"]
 }
