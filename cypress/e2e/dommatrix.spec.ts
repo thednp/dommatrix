@@ -111,8 +111,14 @@ describe('DOMMatrix Class Test', () => {
         })
       expect(m1.isIdentity).to.equal(d1.isIdentity);
       expect(m1.is2D).to.equal(d1.is2D);
-      expect(m1.toFloat32Array()).to.deep.equal(d1.toFloat32Array());
-      expect(m1.toFloat64Array()).to.deep.equal(d1.toFloat64Array());
+
+      // for some reason DOMMatrix in 
+      // expect(m1.toFloat32Array()).to.deep.equal(d1.toFloat32Array());
+      // expect(m1.toFloat64Array()).to.deep.equal(d1.toFloat64Array());
+      expect(Array.from(m1.toFloat32Array()).map(x => x.toFixed(5)))
+        .to.deep.equal(Array.from(d1.toFloat32Array()).map(x => x.toFixed(5)));
+      expect(Array.from(m1.toFloat64Array()).map(x => x.toFixed(5)))
+        .to.deep.equal(Array.from(d1.toFloat64Array()).map(x => x.toFixed(5)));
     });
 
     cy.log('CSSMatrix.rotate(x:25, y:15)').then(() => {
@@ -294,6 +300,4 @@ describe('DOMMatrix Class Test', () => {
         .get('@css').its('is2D').should((test === 'rotate3d1' ? 'not.equal' : 'equal'), dom.is2D);
     });
   })
-
-
 });

@@ -27,7 +27,8 @@
     "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix",
     "build": "npm run lint:ts && vite build && npm run dts && npm run docs",
     "dts": "dts-bundle-generator --config ./dts.config.ts",
-    "docs": "ncp dist/dommatrix.js docs/dommatrix.js && ncp dist/dommatrix.js.map docs/dommatrix.js.map"
+    "docs": "ncp dist/dommatrix.js docs/dommatrix.js && ncp dist/dommatrix.js.map docs/dommatrix.js.map",
+    "prepublishOnly": "npm update && npm run format && npm run lint:ts && npm run build && npm run badges"
   },
   "repository": {
     "type": "git",
