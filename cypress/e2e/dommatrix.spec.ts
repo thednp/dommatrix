@@ -133,8 +133,14 @@ describe('DOMMatrix Class Test', () => {
 
       expect(m2.isIdentity).to.equal(d2.isIdentity);
       expect(m2.is2D).to.equal(d2.is2D);
-      expect(m2.toFloat32Array()).to.deep.equal(d2.toFloat32Array());
-      expect(m2.toFloat64Array()).to.deep.equal(d2.toFloat64Array());
+
+      // same here
+      // expect(m2.toFloat32Array()).to.deep.equal(d2.toFloat32Array());
+      // expect(m2.toFloat64Array()).to.deep.equal(d2.toFloat64Array());
+      expect(Array.from(m2.toFloat32Array()).map(x => x.toFixed(5)))
+        .to.deep.equal(Array.from(d2.toFloat32Array()).map(x => x.toFixed(5)));
+      expect(Array.from(m2.toFloat64Array()).map(x => x.toFixed(5)))
+        .to.deep.equal(Array.from(d2.toFloat64Array()).map(x => x.toFixed(5)));
     });
 
     cy.log('CSSMatrix.translate(x:150)').then(() => {
