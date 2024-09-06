@@ -1,34 +1,36 @@
-/// <reference types="cypress" />
+import { expect, it, describe, vi, beforeEach, afterEach } from 'vitest';
+import { getExampleDOM } from './fixtures/getExampleDom';
 
-import CSSMatrix from '../../src/index';
-import type { Matrix, Matrix3d } from '../../src/types';
-import testSamples from '../fixtures/testSamples';
+import CSSMatrix from '../src/index';
+import type { Matrix, Matrix3d } from '../src/types';
+import testSamples from './fixtures/testSamples';
 
 const roundTo4 = (x: number) => Math.round(x * 10000) / 10000
 
 describe('DOMMatrix Class Test', () => {
-
-  beforeEach(() => {
-    cy.visit('cypress/test.html')
+  let container: HTMLElement;
+  beforeEach(async () => {
+    container = getExampleDOM();
+    await vi.waitUntil(() => container.querySelector('div') !== null, { timeout: 150 });
+  });
+  afterEach(async () => {
+    document.documentElement.innerHTML = '';
   });
 
   it('Test init with no parameter, expect same output as native DOMMatrix', () => {
     const css = new CSSMatrix();
     const css1 = new CSSMatrix().setMatrixValue();
     const dom = new DOMMatrix();
-    cy.wrap(css).as('css')
-      .get('@css').its('is2D').should('equal', dom.is2D)
-      .get('@css').its('isIdentity').should('equal', dom.isIdentity)
-      .get('@css').should(($this) => {
-        expect(JSON.stringify($this)).to.equal(JSON.stringify(dom));
-        expect(JSON.stringify($this)).to.equal(JSON.stringify(css1));
-      })
+
+    expect(css.is2D).to.equal(dom.is2D);
+    expect(css.isIdentity).to.equal(dom.isIdentity);
+    expect(JSON.stringify(css)).to.equal(JSON.stringify(dom));
+    expect(JSON.stringify(css)).to.equal(JSON.stringify(css1));
   });
 
   it('Test init with invalid array, expect error', () => {
     const test = [0.906308, 0.0839613, -0.414194, 0.00103549, 0, 0.980067, 0.198669, -0.000496673, 0.422618, -0.180056, 0.888242, -0.0022206, 0, 0, 0, 'NaN'];
     try {
-      // @ts-ignore
       CSSMatrix.fromArray(test);
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
@@ -64,7 +66,7 @@ describe('DOMMatrix Class Test', () => {
 
     [css1, css2, css3].forEach((c) => {
       try {
-        // @ts-ignore
+        // @ts-expect-error
         new CSSMatrix(c);
       } catch (err) {
         expect(err).to.be.instanceOf(TypeError);
@@ -77,61 +79,48 @@ describe('DOMMatrix Class Test', () => {
     const css = new CSSMatrix().rotate(15, 15);
     const dom = new DOMMatrix().rotate(15, 15);
 
-    cy.wrap(new CSSMatrix(css)).as('cc')
-      .get('@cc').its('is2D').should('equal', css.is2D)
-      .get('@cc').its('is2D').should('equal', new CSSMatrix(dom).is2D)
-      .get('@cc').its('isIdentity').should('equal', css.isIdentity)
-      .get('@cc').its('isIdentity').should('equal', new CSSMatrix(dom).isIdentity);
+    expect(css.is2D).to.equal(dom.is2D)
+    expect(css.is2D).to.equal(new CSSMatrix(css).is2D)
+    expect(css.isIdentity).to.equal(dom.isIdentity)
+    expect(css.isIdentity).to.equal((new CSSMatrix(dom)).isIdentity)
 
-    cy.wrap(css.toJSON()).as('js')
-      .get('@js').its('is2D').should('equal', css.is2D)
-      .get('@js').its('is2D').should('equal', new CSSMatrix(dom).is2D)
-      .get('@js').its('isIdentity').should('equal', css.isIdentity)
-      .get('@js').its('isIdentity').should('equal', new CSSMatrix(dom).isIdentity)
   });
 
   it('Test specific private methods', () => {
-    cy.log('CSSMatrix.rotateAxisAngle specific error').then(() => {
-      try {
-        // @ts-ignore
-        new CSSMatrix().rotateAxisAngle('a','true','wombat','05');
-      } catch (err) {
-        expect(err).to.be.instanceOf(TypeError);
-        expect(err).to.have.property('message', 'CSSMatrix: expecting 4 values');
-      }
-    });
+    try {
+      // @ts-ignore
+      new CSSMatrix().rotateAxisAngle('a','true','wombat','05');
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err).to.have.property('message', 'CSSMatrix: expecting 4 values');
+    }
 
-    cy.log('CSSMatrix.rotate').then(() => {
-      const d1 = new DOMMatrix().rotate(15);
-      const m1 = new CSSMatrix().rotate(15);
+    const d1 = new DOMMatrix().rotate(15);
+    const m1 = new CSSMatrix().rotate(15);
 
-      cy.get('.bg-primary').then(($el) => {
-          $el[0].style.transform = m1.toString();
-        })
-        .get('.bg-secondary').then(($el) => {
-          $el[0].style.transform = d1.toString();
-        })
-      expect(m1.isIdentity).to.equal(d1.isIdentity);
-      expect(m1.is2D).to.equal(d1.is2D);
+    const cssDiv = container.querySelector('.bg-primary') as HTMLElement;
+    const domDiv = container.querySelector('.bg-secondary') as HTMLElement;
 
-      // for some reason DOMMatrix in 
-      // expect(m1.toFloat32Array()).to.deep.equal(d1.toFloat32Array());
-      // expect(m1.toFloat64Array()).to.deep.equal(d1.toFloat64Array());
-      expect(Array.from(m1.toFloat32Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d1.toFloat32Array()).map(roundTo4));
-      expect(Array.from(m1.toFloat64Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d1.toFloat64Array()).map(roundTo4));
-    });
+    console.log('Some initial testing');
 
-    cy.log('CSSMatrix.rotate(x:25, y:15)').then(() => {
+    cssDiv.style.transform = m1.toString();
+    domDiv.style.transform = d1.toString();
+    expect(m1.isIdentity).to.equal(d1.isIdentity);
+    expect(m1.is2D).to.equal(d1.is2D);
+
+    // for some reason DOMMatrix in 
+    // expect(m1.toFloat32Array()).to.deep.equal(d1.toFloat32Array());
+    // expect(m1.toFloat64Array()).to.deep.equal(d1.toFloat64Array());
+    expect(Array.from(m1.toFloat32Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d1.toFloat32Array()).map(roundTo4));
+    expect(Array.from(m1.toFloat64Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d1.toFloat64Array()).map(roundTo4));
+
+    console.log('CSSMatrix.rotate(x:25, y:15)');
       const d2 = new DOMMatrix().rotate(25,15);
       const m2 = new CSSMatrix().rotate(25,15);
-      cy.get('.bg-primary').then(($el) => {
-          $el[0].style.transform = m2.toString();
-        })
-        .get('.bg-secondary').then(($el) => {
-          $el[0].style.transform = d2.toString();
-        })
+      cssDiv.style.transform = m2.toString();
+      domDiv.style.transform = d2.toString();
 
       expect(m2.isIdentity).to.equal(d2.isIdentity);
       expect(m2.is2D).to.equal(d2.is2D);
@@ -143,18 +132,14 @@ describe('DOMMatrix Class Test', () => {
         .to.deep.equal(Array.from(d2.toFloat32Array()).map(roundTo4));
       expect(Array.from(m2.toFloat64Array()).map(roundTo4))
         .to.deep.equal(Array.from(d2.toFloat64Array()).map(roundTo4));
-    });
 
-    cy.log('CSSMatrix.translate(x:150)').then(() => {
+
+    console.log('CSSMatrix.translate(x:150)');
       const d3 = new DOMMatrix().translate(150);
       const m3 = new CSSMatrix().translate(150);
 
-      cy.get('.bg-primary').then(($el) => {
-          $el[0].style.transform = m3.toString();
-        })
-        .get('.bg-secondary').then(($el) => {
-          $el[0].style.transform = d3.toString();
-        })
+      cssDiv.style.transform = m3.toString();
+      domDiv.style.transform = d3.toString();
       expect(m3.isIdentity).to.equal(d3.isIdentity);
       expect(m3.is2D).to.equal(d3.is2D);
       // expect(m3.toFloat32Array()).to.deep.equal(d3.toFloat32Array());
@@ -163,18 +148,13 @@ describe('DOMMatrix Class Test', () => {
         .to.deep.equal(Array.from(d3.toFloat32Array()).map(roundTo4));
       expect(Array.from(m3.toFloat64Array()).map(roundTo4))
         .to.deep.equal(Array.from(d3.toFloat64Array()).map(roundTo4));
-    });
 
-    cy.log('CSSMatrix.skew(x:15, y:-20)').then(() => {
+    console.log('CSSMatrix.skew(x:15, y:-20)');
       const d4 = new DOMMatrix('skew(15deg, -20deg)');
       const m4 = new CSSMatrix().skew(15, -20);
-      cy.log('In this test we\'re addapting to the output of the native DOMMatrix method since it doesn\'t support the skew() method itself.')
-        .get('.bg-primary').then(($el) => {
-          $el[0].style.transform = m4.toString();
-        })
-        .get('.bg-secondary').then(($el) => {
-          $el[0].style.transform = d4.toString();
-        })
+      console.log('In this test we\'re addapting to the output of the native DOMMatrix method since it doesn\'t support the skew() method itself.');
+        cssDiv.style.transform = m4.toString();
+        domDiv.style.transform = d4.toString();
         expect(m4.isIdentity).to.equal(d4.isIdentity);
         expect(m4.is2D).to.equal(d4.is2D);
         // expect(m4.toFloat32Array()).to.deep.equal(d4.toFloat32Array());
@@ -183,17 +163,13 @@ describe('DOMMatrix Class Test', () => {
           .to.deep.equal(Array.from(d4.toFloat32Array()).map(roundTo4));
         expect(Array.from(m4.toFloat64Array()).map(roundTo4))
           .to.deep.equal(Array.from(d4.toFloat64Array()).map(roundTo4));
-    });
 
-    cy.log('CSSMatrix.scale(x:1.3)').then(() => {
+    console.log('CSSMatrix.scale(x:1.3)');
       const d5 = new DOMMatrix().scale(1.3);
       const m5 = new CSSMatrix().scale(1.3);
-      cy.get('.bg-primary').then(($el) => {
-            $el[0].style.transform = m5.toString();
-        })
-        .get('.bg-secondary').then(($el) => {
-          $el[0].style.transform = d5.toString();
-        })
+      
+      cssDiv.style.transform = m5.toString();
+      domDiv.style.transform = d5.toString();
       expect(m5.isIdentity).to.equal(d5.isIdentity);
       expect(m5.is2D).to.equal(d5.is2D);
       // expect(m5.toFloat32Array()).to.deep.equal(d5.toFloat32Array());
@@ -202,17 +178,12 @@ describe('DOMMatrix Class Test', () => {
         .to.deep.equal(Array.from(d5.toFloat32Array()).map(roundTo4));
       expect(Array.from(m5.toFloat64Array()).map(roundTo4))
         .to.deep.equal(Array.from(d5.toFloat64Array()).map(roundTo4));
-    });
 
-    cy.log('CSSMatrix.scale(x:1.3,y:1.8)').then(() => {
+    console.log('CSSMatrix.scale(x:1.3,y:1.8)');
       const d6 = new DOMMatrix().scale(1.3,1.8);
       const m6 = new CSSMatrix().scale(1.3,1.8);
-      cy.get('.bg-primary').then(($el) => {
-          $el[0].style.transform = m6.toString();
-        })
-        .get('.bg-secondary').then(($el) => {
-          $el[0].style.transform = d6.toString();
-        })
+      cssDiv.style.transform = m6.toString();
+      domDiv.style.transform = d6.toString();
       expect(m6.isIdentity).to.equal(d6.isIdentity);
       expect(m6.is2D).to.equal(d6.is2D);
       // expect(m6.toFloat32Array()).to.deep.equal(d6.toFloat32Array());
@@ -221,29 +192,27 @@ describe('DOMMatrix Class Test', () => {
         .to.deep.equal(Array.from(d6.toFloat32Array()).map(roundTo4));
       expect(Array.from(m6.toFloat64Array()).map(roundTo4))
         .to.deep.equal(Array.from(d6.toFloat64Array()).map(roundTo4));
-    });
 
-    cy.log('CSSMatrix.transformPoint').then(() => {
+    console.log('CSSMatrix.transformPoint');
       const p1 = new DOMPoint(15, 20, 35, 1);
       const p2 = { x: 15, y: 20, z: 35, w: 1};
       const dp = new DOMMatrix().rotate(15).translate(15, 15);
       const mp = new CSSMatrix().rotate(15).translate(15, 15);
   
-      cy.log('For some reason the native DOMMatrix again falsely claims **is2D** to be true');
+      console.log('For some reason the native DOMMatrix again falsely claims **is2D** to be true');
       expect(mp.isIdentity).to.equal(dp.isIdentity);
       expect(mp.is2D).to.equal(dp.is2D);
       expect(mp.toFloat32Array()).to.deep.equal(dp.toFloat32Array());
       expect(mp.toFloat64Array()).to.deep.equal(dp.toFloat64Array());
       expect(mp.transformPoint(p1)).to.deep.equal(dp.transformPoint(p1));
       expect(mp.transformPoint(p2)).to.deep.equal(dp.transformPoint(p2).toJSON());
-    });
   });
 
   it('Test init a 6 values array', () => {
     const test = [0.9659, 0.25879, -0.2588, 0.9659, -1.53961, -1.53961] as Matrix;
     const m1 = new CSSMatrix(test);
     // const m2 = new CSSMatrix(...test);
-    const m3 = new CSSMatrix([...test]);
+    const m3 = new CSSMatrix(test);
     const m4 = new DOMMatrix(test);
 
     expect(m1.toFloat64Array()).to.deep.equal(m3.toFloat64Array())
@@ -272,7 +241,7 @@ describe('DOMMatrix Class Test', () => {
     expect(CSSMatrix.fromMatrix(m.toJSON())).to.deep.equal(m);
 
     try {
-      // @ts-ignore
+      // @ts-expect-error
       CSSMatrix.fromString(source);
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
@@ -306,23 +275,25 @@ describe('DOMMatrix Class Test', () => {
       const str = testSamples[test];
       const css = new CSSMatrix(str);
       const dom = new DOMMatrix(str);
+      const cssDiv = container.querySelector('.bg-primary') as HTMLElement;
+      const domDiv = container.querySelector('.bg-secondary') as HTMLElement;
       
-      cy.get('.bg-primary').then(($el) => {
-        $el[0].style.transform = css.toString();
-      });
-      cy.get('.bg-secondary').then(($el) => {
-        $el[0].style.transform = dom.toString();
-      });
+      cssDiv.style.transform = css.toString();
+      domDiv.style.transform = dom.toString();
 
-      cy.log('Due to the nature of the native DOMMatrix RegExp, for consistency reasons we\'re rounding numbers to 6 decimals in this test.')
+      console.log('Due to the nature of the native DOMMatrix RegExp, for consistency reasons we\'re rounding numbers to 6 decimals in this test.')
 
       expect(Array.from(css.toFloat32Array()).map(roundTo4))
         .to.deep.equal(Array.from(dom.toFloat32Array()).map(roundTo4));
 
-      cy.wrap(css).as('css')
-        .log('The native `DOMMatrix` is a little weird when it comes to rotateAxisAngle, it falsely claims the identity matrix is NOT `is2D`')
-        .get('@css').its('isIdentity').should((isIdentity) => expect(isIdentity).to.equal(dom.isIdentity))
-        .get('@css').its('is2D').should((test === 'rotate3d1' ? 'not.equal' : 'equal'), dom.is2D);
-    });
+      console.log('The native `DOMMatrix` is a little weird when it comes to rotateAxisAngle, it falsely claims the identity matrix is NOT `is2D`');
+
+      expect(css.isIdentity).to.equal(dom.isIdentity)
+      if (test === 'rotate3d1') {
+        expect(css.is2D).to.not.equal(dom.is2D)
+      } else {
+        expect(css.is2D).to.equal(dom.is2D)
+      }
+    })
   })
 });

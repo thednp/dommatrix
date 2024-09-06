@@ -30,6 +30,7 @@ const $ = {
   const t = new y(), e = Array.from(s);
   if (!E(e))
     throw TypeError(`CSSMatrix: "${e.join(",")}" must be an array with 6/16 numbers.`);
+  // istanbul ignore else @preserve
   if (e.length === 16) {
     const [n, i, r, a, l, m, h, c, u, f, w, o, d, A, M, b] = e;
     t.m11 = n, t.a = n, t.m21 = l, t.c = l, t.m31 = u, t.m41 = d, t.e = d, t.m12 = i, t.b = i, t.m22 = m, t.d = m, t.m32 = f, t.m42 = A, t.f = A, t.m13 = r, t.m23 = h, t.m33 = w, t.m43 = M, t.m14 = a, t.m24 = c, t.m34 = o, t.m44 = b;

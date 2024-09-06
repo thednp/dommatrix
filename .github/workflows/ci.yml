@@ -16,8 +16,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Install Cypress
-        run: npx cypress install
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Lint
+        run: npm run lint
 
       - name: Build
         run: npm run build

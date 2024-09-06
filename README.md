@@ -5,9 +5,9 @@
 [![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/dommatrix/badge)](https://www.jsdelivr.com/package/npm/@thednp/dommatrix)
 [![typescript version](https://img.shields.io/badge/typescript-5.5.4-brightgreen)](https://www.typescriptlang.org/)
-[![cypress version](https://img.shields.io/badge/cypress-13.13.1-brightgreen)](https://www.cypress.io/)
-[![eslint version](https://img.shields.io/badge/eslint-8.44.0-brightgreen)](https://github.com/eslint)
-[![vite version](https://img.shields.io/badge/vite-5.3.5-brightgreen)](https://vitejs.dev/)
+[![eslint version](https://img.shields.io/badge/eslint-8.57.0-brightgreen)](https://github.com/eslint)
+[![vitest version](https://img.shields.io/badge/vitest-2.0.5-brightgreen)](https://vitest.dev/)
+[![vite version](https://img.shields.io/badge/vite-5.4.3-brightgreen)](https://vitejs.dev/)
 [![prettier version](https://img.shields.io/badge/prettier-2.8.8-brightgreen)](https://prettier.io/)
 
 A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Since this source is modernized, legacy browsers might need some additional shims.
