@@ -60,9 +60,9 @@ describe('DOMMatrix Class Test', () => {
 
   it('Test init with incompatible CSSMatrix, DOMMatrix, JSON object', () => {
     // const css1 = {a: 0.94, b: 0.25, c: -0.25, d: 0.95, e: 0, f: 0, m11: 0.93, m12: 0.25, m13: -0.25, m14: 0, m21: -0.25, m22: 0.95, m23: 0, m24: 0, m31: 0.2, m32: 0.05, m33: 0.95, m34: 0, m41: 0, m42: 0, m43: 0, m44: 1};
-    const css1 = {a: 0.94, b: 0.25, c: -0.25, d: 0.95, e: 0, f: 0, m11: 0.93, m12: 0.25, m13: -0.25, m14: 0, m21: -0.25, m22: 0.95, m23: 0, m24: 0, m31: 0.2, m32: 0.05, m33: 0.95, m34: 0, m41: 0, m42: 0, m43: 0, m44: 1};
-    const css2 = {m11: 0.93, m12: 0.25, m13: -0.25, m14: 0, m21: -0.25, m22: 0.95, m23: 0, m24: 0, m31: 0.2, m32: 0.05, m33: 0.95, m34: 0, m41: 0, m42: 0, m43: 0, m44: 1};
-    const css3 = {a: 0.94, b: 0.25, c: -0.25, d: 0.95, e: 0, f: 0};
+    const css1 = { a: 0.94, b: 0.25, c: -0.25, d: 0.95, e: 0, f: 0, m11: 0.93, m12: 0.25, m13: -0.25, m14: 0, m21: -0.25, m22: 0.95, m23: 0, m24: 0, m31: 0.2, m32: 0.05, m33: 0.95, m34: 0, m41: 0, m42: 0, m43: 0, m44: 1 };
+    const css2 = { m11: 0.93, m12: 0.25, m13: -0.25, m14: 0, m21: -0.25, m22: 0.95, m23: 0, m24: 0, m31: 0.2, m32: 0.05, m33: 0.95, m34: 0, m41: 0, m42: 0, m43: 0, m44: 1 };
+    const css3 = { a: 0.94, b: 0.25, c: -0.25, d: 0.95, e: 0, f: 0 };
 
     [css1, css2, css3].forEach((c) => {
       try {
@@ -89,7 +89,7 @@ describe('DOMMatrix Class Test', () => {
   it('Test specific private methods', () => {
     try {
       // @ts-ignore
-      new CSSMatrix().rotateAxisAngle('a','true','wombat','05');
+      new CSSMatrix().rotateAxisAngle('a', 'true', 'wombat', '05');
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
       expect(err).to.have.property('message', 'CSSMatrix: expecting 4 values');
@@ -117,95 +117,95 @@ describe('DOMMatrix Class Test', () => {
       .to.deep.equal(Array.from(d1.toFloat64Array()).map(roundTo4));
 
     console.log('CSSMatrix.rotate(x:25, y:15)');
-      const d2 = new DOMMatrix().rotate(25,15);
-      const m2 = new CSSMatrix().rotate(25,15);
-      cssDiv.style.transform = m2.toString();
-      domDiv.style.transform = d2.toString();
+    const d2 = new DOMMatrix().rotate(25, 15);
+    const m2 = new CSSMatrix().rotate(25, 15);
+    cssDiv.style.transform = m2.toString();
+    domDiv.style.transform = d2.toString();
 
-      expect(m2.isIdentity).to.equal(d2.isIdentity);
-      expect(m2.is2D).to.equal(d2.is2D);
+    expect(m2.isIdentity).to.equal(d2.isIdentity);
+    expect(m2.is2D).to.equal(d2.is2D);
 
-      // same here
-      // expect(m2.toFloat32Array()).to.deep.equal(d2.toFloat32Array());
-      // expect(m2.toFloat64Array()).to.deep.equal(d2.toFloat64Array());
-      expect(Array.from(m2.toFloat32Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d2.toFloat32Array()).map(roundTo4));
-      expect(Array.from(m2.toFloat64Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d2.toFloat64Array()).map(roundTo4));
+    // same here
+    // expect(m2.toFloat32Array()).to.deep.equal(d2.toFloat32Array());
+    // expect(m2.toFloat64Array()).to.deep.equal(d2.toFloat64Array());
+    expect(Array.from(m2.toFloat32Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d2.toFloat32Array()).map(roundTo4));
+    expect(Array.from(m2.toFloat64Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d2.toFloat64Array()).map(roundTo4));
 
 
     console.log('CSSMatrix.translate(x:150)');
-      const d3 = new DOMMatrix().translate(150);
-      const m3 = new CSSMatrix().translate(150);
+    const d3 = new DOMMatrix().translate(150);
+    const m3 = new CSSMatrix().translate(150);
 
-      cssDiv.style.transform = m3.toString();
-      domDiv.style.transform = d3.toString();
-      expect(m3.isIdentity).to.equal(d3.isIdentity);
-      expect(m3.is2D).to.equal(d3.is2D);
-      // expect(m3.toFloat32Array()).to.deep.equal(d3.toFloat32Array());
-      // expect(m3.toFloat64Array()).to.deep.equal(d3.toFloat64Array());
-      expect(Array.from(m3.toFloat32Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d3.toFloat32Array()).map(roundTo4));
-      expect(Array.from(m3.toFloat64Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d3.toFloat64Array()).map(roundTo4));
+    cssDiv.style.transform = m3.toString();
+    domDiv.style.transform = d3.toString();
+    expect(m3.isIdentity).to.equal(d3.isIdentity);
+    expect(m3.is2D).to.equal(d3.is2D);
+    // expect(m3.toFloat32Array()).to.deep.equal(d3.toFloat32Array());
+    // expect(m3.toFloat64Array()).to.deep.equal(d3.toFloat64Array());
+    expect(Array.from(m3.toFloat32Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d3.toFloat32Array()).map(roundTo4));
+    expect(Array.from(m3.toFloat64Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d3.toFloat64Array()).map(roundTo4));
 
     console.log('CSSMatrix.skew(x:15, y:-20)');
-      const d4 = new DOMMatrix('skew(15deg, -20deg)');
-      const m4 = new CSSMatrix().skew(15, -20);
-      console.log('In this test we\'re addapting to the output of the native DOMMatrix method since it doesn\'t support the skew() method itself.');
-        cssDiv.style.transform = m4.toString();
-        domDiv.style.transform = d4.toString();
-        expect(m4.isIdentity).to.equal(d4.isIdentity);
-        expect(m4.is2D).to.equal(d4.is2D);
-        // expect(m4.toFloat32Array()).to.deep.equal(d4.toFloat32Array());
-        // expect(m4.toFloat64Array()).to.deep.equal(d4.toFloat64Array());
-        expect(Array.from(m4.toFloat32Array()).map(roundTo4))
-          .to.deep.equal(Array.from(d4.toFloat32Array()).map(roundTo4));
-        expect(Array.from(m4.toFloat64Array()).map(roundTo4))
-          .to.deep.equal(Array.from(d4.toFloat64Array()).map(roundTo4));
+    const d4 = new DOMMatrix('skew(15deg, -20deg)');
+    const m4 = new CSSMatrix().skew(15, -20);
+    console.log('In this test we\'re addapting to the output of the native DOMMatrix method since it doesn\'t support the skew() method itself.');
+    cssDiv.style.transform = m4.toString();
+    domDiv.style.transform = d4.toString();
+    expect(m4.isIdentity).to.equal(d4.isIdentity);
+    expect(m4.is2D).to.equal(d4.is2D);
+    // expect(m4.toFloat32Array()).to.deep.equal(d4.toFloat32Array());
+    // expect(m4.toFloat64Array()).to.deep.equal(d4.toFloat64Array());
+    expect(Array.from(m4.toFloat32Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d4.toFloat32Array()).map(roundTo4));
+    expect(Array.from(m4.toFloat64Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d4.toFloat64Array()).map(roundTo4));
 
     console.log('CSSMatrix.scale(x:1.3)');
-      const d5 = new DOMMatrix().scale(1.3);
-      const m5 = new CSSMatrix().scale(1.3);
-      
-      cssDiv.style.transform = m5.toString();
-      domDiv.style.transform = d5.toString();
-      expect(m5.isIdentity).to.equal(d5.isIdentity);
-      expect(m5.is2D).to.equal(d5.is2D);
-      // expect(m5.toFloat32Array()).to.deep.equal(d5.toFloat32Array());
-      // expect(m5.toFloat64Array()).to.deep.equal(d5.toFloat64Array());
-      expect(Array.from(m5.toFloat32Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d5.toFloat32Array()).map(roundTo4));
-      expect(Array.from(m5.toFloat64Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d5.toFloat64Array()).map(roundTo4));
+    const d5 = new DOMMatrix().scale(1.3);
+    const m5 = new CSSMatrix().scale(1.3);
+
+    cssDiv.style.transform = m5.toString();
+    domDiv.style.transform = d5.toString();
+    expect(m5.isIdentity).to.equal(d5.isIdentity);
+    expect(m5.is2D).to.equal(d5.is2D);
+    // expect(m5.toFloat32Array()).to.deep.equal(d5.toFloat32Array());
+    // expect(m5.toFloat64Array()).to.deep.equal(d5.toFloat64Array());
+    expect(Array.from(m5.toFloat32Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d5.toFloat32Array()).map(roundTo4));
+    expect(Array.from(m5.toFloat64Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d5.toFloat64Array()).map(roundTo4));
 
     console.log('CSSMatrix.scale(x:1.3,y:1.8)');
-      const d6 = new DOMMatrix().scale(1.3,1.8);
-      const m6 = new CSSMatrix().scale(1.3,1.8);
-      cssDiv.style.transform = m6.toString();
-      domDiv.style.transform = d6.toString();
-      expect(m6.isIdentity).to.equal(d6.isIdentity);
-      expect(m6.is2D).to.equal(d6.is2D);
-      // expect(m6.toFloat32Array()).to.deep.equal(d6.toFloat32Array());
-      // expect(m6.toFloat64Array()).to.deep.equal(d6.toFloat64Array());
-      expect(Array.from(m6.toFloat32Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d6.toFloat32Array()).map(roundTo4));
-      expect(Array.from(m6.toFloat64Array()).map(roundTo4))
-        .to.deep.equal(Array.from(d6.toFloat64Array()).map(roundTo4));
+    const d6 = new DOMMatrix().scale(1.3, 1.8);
+    const m6 = new CSSMatrix().scale(1.3, 1.8);
+    cssDiv.style.transform = m6.toString();
+    domDiv.style.transform = d6.toString();
+    expect(m6.isIdentity).to.equal(d6.isIdentity);
+    expect(m6.is2D).to.equal(d6.is2D);
+    // expect(m6.toFloat32Array()).to.deep.equal(d6.toFloat32Array());
+    // expect(m6.toFloat64Array()).to.deep.equal(d6.toFloat64Array());
+    expect(Array.from(m6.toFloat32Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d6.toFloat32Array()).map(roundTo4));
+    expect(Array.from(m6.toFloat64Array()).map(roundTo4))
+      .to.deep.equal(Array.from(d6.toFloat64Array()).map(roundTo4));
 
     console.log('CSSMatrix.transformPoint');
-      const p1 = new DOMPoint(15, 20, 35, 1);
-      const p2 = { x: 15, y: 20, z: 35, w: 1};
-      const dp = new DOMMatrix().rotate(15).translate(15, 15);
-      const mp = new CSSMatrix().rotate(15).translate(15, 15);
-  
-      console.log('For some reason the native DOMMatrix again falsely claims **is2D** to be true');
-      expect(mp.isIdentity).to.equal(dp.isIdentity);
-      expect(mp.is2D).to.equal(dp.is2D);
-      expect(mp.toFloat32Array()).to.deep.equal(dp.toFloat32Array());
-      expect(mp.toFloat64Array()).to.deep.equal(dp.toFloat64Array());
-      expect(mp.transformPoint(p1)).to.deep.equal(dp.transformPoint(p1));
-      expect(mp.transformPoint(p2)).to.deep.equal(dp.transformPoint(p2).toJSON());
+    const p1 = new DOMPoint(15, 20, 35, 1);
+    const p2 = { x: 15, y: 20, z: 35, w: 1 };
+    const dp = new DOMMatrix().rotate(15).translate(15, 15);
+    const mp = new CSSMatrix().rotate(15).translate(15, 15);
+
+    console.log('For some reason the native DOMMatrix again falsely claims **is2D** to be true');
+    expect(mp.isIdentity).to.equal(dp.isIdentity);
+    expect(mp.is2D).to.equal(dp.is2D);
+    expect(mp.toFloat32Array()).to.deep.equal(dp.toFloat32Array());
+    expect(mp.toFloat64Array()).to.deep.equal(dp.toFloat64Array());
+    expect(mp.transformPoint(p1)).to.deep.equal(dp.transformPoint(p1));
+    expect(mp.transformPoint(p2)).to.deep.equal(dp.transformPoint(p2).toJSON());
   });
 
   it('Test init a 6 values array', () => {
@@ -219,7 +219,7 @@ describe('DOMMatrix Class Test', () => {
     expect(m1.toFloat64Array()).to.deep.equal(m4.toFloat64Array())
   });
 
-  it('Test init a 16 values array', () => { 
+  it('Test init a 16 values array', () => {
     const test = [0.852, 0.153, 0.186, -0.0004, -0.092, 0.869, -0.266, 0.0006, -0.25, 0.258, 0.933, -0.002, 0, 0, 0, 1] as Matrix3d;
     const m1 = new CSSMatrix(test);
     // const m2 = new CSSMatrix(...test);
@@ -232,7 +232,7 @@ describe('DOMMatrix Class Test', () => {
 
   it('Test static methods', () => {
     const m = new CSSMatrix();
-    const source = {a: 1};
+    const source = { a: 1 };
     const source1 = 'wombat(1)';
     const source2 = 'skew()';
     const source3 = 'translate(wombat)';
@@ -277,7 +277,7 @@ describe('DOMMatrix Class Test', () => {
       const dom = new DOMMatrix(str);
       const cssDiv = container.querySelector('.bg-primary') as HTMLElement;
       const domDiv = container.querySelector('.bg-secondary') as HTMLElement;
-      
+
       cssDiv.style.transform = css.toString();
       domDiv.style.transform = dom.toString();
 

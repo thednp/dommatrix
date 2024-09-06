@@ -15,7 +15,7 @@ export const getExampleDOM = () => {
     #dom, #css {transition: transform 0.5s ease;}
   </style>
 </head>
-<bo<body class="container">
+<body class="container">
   <h1 class="mt-3 mt-md-5"><a class="text-decoration-none" href="https://github.com/thednp/DOMMatrix">DOMMatrix Shim Test</a></h1>
 
   <div class="row">
