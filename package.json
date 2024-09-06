@@ -17,8 +17,8 @@
   },
   "scripts": {
     "pre-test": "npm run clean-coverage",
-    "test": "npm pre-test && vitest --config vitest.config.ts",
-    "test-ui": "npm pre-test && vitest --config vitest.config-ui.ts --browser=chromium",
+    "test": "npm run pre-test && vitest --config vitest.config.ts",
+    "test-ui": "npm run pre-test && vitest --config vitest.config-ui.ts --browser=chromium",
     "clean-coverage": "rimraf coverage .nyc_output",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "badges": "npx -p dependency-version-badge update-badge eslint typescript eslint prettier vitest vite",
