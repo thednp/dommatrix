@@ -5,7 +5,8 @@ node_modules
 docs
 experiments
 coverage
-cypress/videos
-cypress/screenshots
-cypress/coverage
-cypress/instrumented
+src
+test
+vite.config.mts
+vitest.config.mts
+vitest.config-ui.mts

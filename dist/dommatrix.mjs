@@ -29,10 +29,29 @@ const $ = {
 }, E = (s) => (s instanceof Float64Array || s instanceof Float32Array || Array.isArray(s) && s.every((t) => typeof t == "number")) && [6, 16].some((t) => s.length === t), P = (s) => s instanceof DOMMatrix || s instanceof y || typeof s == "object" && Object.keys($).every((t) => s && t in s), g = (s) => {
   const t = new y(), e = Array.from(s);
   if (!E(e))
-    throw TypeError(`CSSMatrix: "${e.join(",")}" must be an array with 6/16 numbers.`);
+    throw TypeError(
+      `CSSMatrix: "${e.join(",")}" must be an array with 6/16 numbers.`
+    );
   // istanbul ignore else @preserve
   if (e.length === 16) {
-    const [n, i, r, a, l, m, h, c, u, f, w, o, d, A, M, b] = e;
+    const [
+      n,
+      i,
+      r,
+      a,
+      l,
+      m,
+      h,
+      c,
+      u,
+      f,
+      w,
+      o,
+      d,
+      A,
+      M,
+      b
+    ] = e;
     t.m11 = n, t.a = n, t.m21 = l, t.c = l, t.m31 = u, t.m41 = d, t.e = d, t.m12 = i, t.b = i, t.m22 = m, t.d = m, t.m32 = f, t.m42 = A, t.f = A, t.m13 = r, t.m23 = h, t.m33 = w, t.m43 = M, t.m14 = a, t.m24 = c, t.m34 = o, t.m44 = b;
   } else if (e.length === 6) {
     const [n, i, r, a, l, m] = e;
@@ -59,7 +78,9 @@ const $ = {
       s.m43,
       s.m44
     ]);
-  throw TypeError(`CSSMatrix: "${JSON.stringify(s)}" is not a DOMMatrix / CSSMatrix / JSON compatible object.`);
+  throw TypeError(
+    `CSSMatrix: "${JSON.stringify(s)}" is not a DOMMatrix / CSSMatrix / JSON compatible object.`
+  );
 }, O = (s) => {
   if (typeof s != "string")
     throw TypeError(`CSSMatrix: "${JSON.stringify(s)}" is not a string.`);
@@ -69,7 +90,9 @@ const $ = {
   return t.split(")").filter((i) => i).forEach((i) => {
     const [r, a] = i.split("(");
     if (!a) throw TypeError(n);
-    const l = a.split(",").map((o) => o.includes("rad") ? parseFloat(o) * (180 / Math.PI) : parseFloat(o)), [m, h, c, u] = l, f = [m, h, c], w = [m, h, c, u];
+    const l = a.split(",").map(
+      (o) => o.includes("rad") ? parseFloat(o) * (180 / Math.PI) : parseFloat(o)
+    ), [m, h, c, u] = l, f = [m, h, c], w = [m, h, c, u];
     if (r === "perspective" && m && [h, c].every((o) => o === void 0))
       e.m34 = -1 / m;
     else if (r.includes("matrix") && [6, 16].includes(l.length) && l.every((o) => !Number.isNaN(+o))) {
@@ -90,11 +113,17 @@ const $ = {
       e = e.scale(m, d, 1);
     } else if (r === "skew" && (m || !Number.isNaN(m) && h) && c === void 0)
       e = e.skew(m, h || 0);
-    else if (["translate", "rotate", "scale", "skew"].some((o) => r.includes(o)) && /[XYZ]/.test(r) && m && [h, c].every((o) => o === void 0))
+    else if (["translate", "rotate", "scale", "skew"].some(
+      (o) => r.includes(o)
+    ) && /[XYZ]/.test(r) && m && [h, c].every((o) => o === void 0))
       if (r === "skewX" || r === "skewY")
         e = e[r](m);
       else {
-        const o = r.replace(/[XYZ]/, ""), d = r.replace(o, ""), A = ["X", "Y", "Z"].indexOf(d), M = o === "scale" ? 1 : 0, b = [A === 0 ? m : M, A === 1 ? m : M, A === 2 ? m : M];
+        const o = r.replace(/[XYZ]/, ""), d = r.replace(o, ""), A = ["X", "Y", "Z"].indexOf(d), M = o === "scale" ? 1 : 0, b = [
+          A === 0 ? m : M,
+          A === 1 ? m : M,
+          A === 2 ? m : M
+        ];
         e = e[o](...b);
       }
     else
@@ -155,7 +184,24 @@ const $ = {
   return e;
 }, R = (s) => v(s, 0), D = (s) => v(0, s), N = (s, t) => {
   const e = t.m11 * s.m11 + t.m12 * s.m21 + t.m13 * s.m31 + t.m14 * s.m41, n = t.m11 * s.m12 + t.m12 * s.m22 + t.m13 * s.m32 + t.m14 * s.m42, i = t.m11 * s.m13 + t.m12 * s.m23 + t.m13 * s.m33 + t.m14 * s.m43, r = t.m11 * s.m14 + t.m12 * s.m24 + t.m13 * s.m34 + t.m14 * s.m44, a = t.m21 * s.m11 + t.m22 * s.m21 + t.m23 * s.m31 + t.m24 * s.m41, l = t.m21 * s.m12 + t.m22 * s.m22 + t.m23 * s.m32 + t.m24 * s.m42, m = t.m21 * s.m13 + t.m22 * s.m23 + t.m23 * s.m33 + t.m24 * s.m43, h = t.m21 * s.m14 + t.m22 * s.m24 + t.m23 * s.m34 + t.m24 * s.m44, c = t.m31 * s.m11 + t.m32 * s.m21 + t.m33 * s.m31 + t.m34 * s.m41, u = t.m31 * s.m12 + t.m32 * s.m22 + t.m33 * s.m32 + t.m34 * s.m42, f = t.m31 * s.m13 + t.m32 * s.m23 + t.m33 * s.m33 + t.m34 * s.m43, w = t.m31 * s.m14 + t.m32 * s.m24 + t.m33 * s.m34 + t.m34 * s.m44, o = t.m41 * s.m11 + t.m42 * s.m21 + t.m43 * s.m31 + t.m44 * s.m41, d = t.m41 * s.m12 + t.m42 * s.m22 + t.m43 * s.m32 + t.m44 * s.m42, A = t.m41 * s.m13 + t.m42 * s.m23 + t.m43 * s.m33 + t.m44 * s.m43, M = t.m41 * s.m14 + t.m42 * s.m24 + t.m43 * s.m34 + t.m44 * s.m44;
-  return g([e, n, i, r, a, l, m, h, c, u, f, w, o, d, A, M]);
+  return g([
+    e,
+    n,
+    i,
+    r,
+    a,
+    l,
+    m,
+    h,
+    c,
+    u,
+    f,
+    w,
+    o,
+    d,
+    A,
+    M
+  ]);
 };
 class y {
   /**

@@ -1,4 +1,4 @@
-import CSSMatrix from '.';
+import CSSMatrix from ".";
 
 /** A DOMMPoint compatible Tuple. */
 export interface PointTuple {
@@ -60,4 +60,11 @@ export type Matrix3d = [
 ];
 
 /** All CSSMatrix compatible initialization values. */
-export type CSSMatrixInput = string | any[] | CSSMatrix | DOMMatrix | JSONMatrix | Float32Array | Float64Array;
+export type CSSMatrixInput =
+  | string
+  | number[]
+  | CSSMatrix
+  | DOMMatrix
+  | JSONMatrix
+  | Float32Array
+  | Float64Array;

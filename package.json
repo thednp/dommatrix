@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",
@@ -16,21 +16,19 @@
     }
   },
   "scripts": {
-    "pre-test": "npm run clean-coverage",
-    "test": "npm run pre-test && vitest --config vitest.config.ts",
-    "test-ui": "npm run pre-test && vitest --config vitest.config-ui.ts --browser=chromium",
-    "clean-coverage": "rimraf coverage .nyc_output",
-    "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
-    "badges": "npx -p dependency-version-badge update-badge eslint typescript eslint prettier vitest vite",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "npm run lint:ts && npm run check:ts",
-    "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
+    "pre-test": "pnpm clean-coverage",
+    "test": "pnpm pre-test && vitest --config vitest.config.mts",
+    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.mts --browser=chromium",
+    "clean-coverage": "rm -rf coverage .nyc_output",
+    "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
+    "format": "deno fmt src",
+    "lint": "pnpm lint:ts && pnpm check:ts",
+    "lint:ts": "deno lint src",
     "check:ts": "tsc --noEmit",
-    "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix",
-    "build": "vite build && npm run dts && npm run docs",
-    "dts": "dts-bundle-generator --config ./dts.config.ts",
-    "docs": "ncp dist/dommatrix.js docs/dommatrix.js && ncp dist/dommatrix.js.map docs/dommatrix.js.map",
-    "prepublishOnly": "npm update && npm run format && npm run lint && npm run build && npm run badges"
+    "fix:ts": "deno lint src --fix",
+    "build": "vite build && pnpm copy-docs",
+    "copy-docs": "cp dist/dommatrix.js docs/dommatrix.js && cp dist/dommatrix.js.map docs/dommatrix.js.map",
+    "prepublishOnly": "pnpm up && pnpm format && pnpm lint && pnpm build && pnpm badges"
   },
   "repository": {
     "type": "git",
@@ -55,26 +53,18 @@
     "url": "https://github.com/thednp/dommatrix/issues"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
-    "@vitest/browser": "^2.0.5",
-    "@vitest/coverage-istanbul": "^2.0.5",
-    "@vitest/ui": "^2.0.5",
-    "dts-bundle-generator": "^8.1.2",
-    "eslint": "^8.57.0",
-    "eslint-plugin-jsdoc": "^46.10.1",
-    "eslint-plugin-prefer-arrow": "^1.2.3",
-    "eslint-plugin-prettier": "^4.2.1",
-    "istanbul-lib-coverage": "^3.2.2",
-    "istanbul-lib-instrument": "^5.2.1",
-    "ncp": "^2.0.0",
-    "nyc": "^15.1.0",
-    "playwright": "^1.47.0",
-    "prettier": "^2.8.8",
-    "rimraf": "^5.0.10",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.3",
-    "vitest": "^2.0.5"
+    "@vitest/browser": "^2.1.4",
+    "@vitest/coverage-istanbul": "^2.1.4",
+    "@vitest/ui": "^2.1.4",
+    "playwright": "^1.48.2",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vite-plugin-dts": "^4.3.0",
+    "vitest": "^2.1.4"
+  },
+  "packageManager": "pnpm@8.6.12",
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=8.6.0"
   }
 }

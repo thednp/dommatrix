@@ -3,7 +3,3 @@
 node_modules
 experiments
 coverage
-cypress/videos
-cypress/screenshots
-cypress/coverage
-cypress/instrumented

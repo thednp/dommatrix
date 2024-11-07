@@ -31,6 +31,7 @@ describe('DOMMatrix Class Test', () => {
   it('Test init with invalid array, expect error', () => {
     const test = [0.906308, 0.0839613, -0.414194, 0.00103549, 0, 0.980067, 0.198669, -0.000496673, 0.422618, -0.180056, 0.888242, -0.0022206, 0, 0, 0, 'NaN'];
     try {
+      // @ts-expect-error
       CSSMatrix.fromArray(test);
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
