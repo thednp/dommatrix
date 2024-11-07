@@ -1,7 +1,7 @@
 # DOMMatrix
 [![Coverage Status](https://coveralls.io/repos/github/thednp/dommatrix/badge.svg)](https://coveralls.io/github/thednp/dommatrix) 
-[![NPM Version](https://img.shields.io/npm/v/@thednp/dommatrix.svg?style=flat-square)](https://www.npmjs.com/package/@thednp/dommatrix)
-[![NPM Downloads](https://img.shields.io/npm/dm/@thednp/dommatrix.svg?style=flat-square)](http://npm-stat.com/charts.html?@thednp/dommatrix)
+[![NPM Version](https://img.shields.io/npm/v/@thednp/dommatrix.svg)](https://www.npmjs.com/package/@thednp/dommatrix)
+[![NPM Downloads](https://img.shields.io/npm/dm/@thednp/dommatrix.svg)](http://npm-stat.com/charts.html?@thednp/dommatrix)
 [![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/dommatrix/badge)](https://www.jsdelivr.com/package/npm/@thednp/dommatrix)
 [![typescript version](https://img.shields.io/badge/typescript-5.6.3-brightgreen)](https://www.typescriptlang.org/)
