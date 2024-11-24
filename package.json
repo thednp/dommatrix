@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",
@@ -64,7 +64,7 @@
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {
-    "node": ">=16",
+    "node": ">=20",
     "pnpm": ">=8.6.0"
   }
 }
