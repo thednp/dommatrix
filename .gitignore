@@ -1,5 +1,5 @@
-.npmignore
 .nyc_output
 node_modules
 experiments
 coverage
+test/_screenshots_
