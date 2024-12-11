@@ -37,10 +37,10 @@ const $ = {
     const [
       n,
       i,
-      r,
+      m,
       a,
       l,
-      m,
+      r,
       h,
       c,
       u,
@@ -52,10 +52,10 @@ const $ = {
       M,
       b
     ] = e;
-    t.m11 = n, t.a = n, t.m21 = l, t.c = l, t.m31 = u, t.m41 = d, t.e = d, t.m12 = i, t.b = i, t.m22 = m, t.d = m, t.m32 = f, t.m42 = A, t.f = A, t.m13 = r, t.m23 = h, t.m33 = w, t.m43 = M, t.m14 = a, t.m24 = c, t.m34 = o, t.m44 = b;
+    t.m11 = n, t.a = n, t.m21 = l, t.c = l, t.m31 = u, t.m41 = d, t.e = d, t.m12 = i, t.b = i, t.m22 = r, t.d = r, t.m32 = f, t.m42 = A, t.f = A, t.m13 = m, t.m23 = h, t.m33 = w, t.m43 = M, t.m14 = a, t.m24 = c, t.m34 = o, t.m44 = b;
   } else if (e.length === 6) {
-    const [n, i, r, a, l, m] = e;
-    t.m11 = n, t.a = n, t.m12 = i, t.b = i, t.m21 = r, t.c = r, t.m22 = a, t.d = a, t.m41 = l, t.e = l, t.m42 = m, t.f = m;
+    const [n, i, m, a, l, r] = e;
+    t.m11 = n, t.a = n, t.m12 = i, t.b = i, t.m21 = m, t.c = m, t.m22 = a, t.d = a, t.m41 = l, t.e = l, t.m42 = r, t.f = r;
   }
   return t;
 }, X = (s) => {
@@ -88,41 +88,44 @@ const $ = {
   let e = new y();
   const n = `CSSMatrix: invalid transform string "${s}"`;
   return t.split(")").filter((i) => i).forEach((i) => {
-    const [r, a] = i.split("(");
+    const [m, a] = i.split("(");
     if (!a) throw TypeError(n);
     const l = a.split(",").map(
       (o) => o.includes("rad") ? parseFloat(o) * (180 / Math.PI) : parseFloat(o)
-    ), [m, h, c, u] = l, f = [m, h, c], w = [m, h, c, u];
-    if (r === "perspective" && m && [h, c].every((o) => o === void 0))
-      e.m34 = -1 / m;
-    else if (r.includes("matrix") && [6, 16].includes(l.length) && l.every((o) => !Number.isNaN(+o))) {
+    ), [r, h, c, u] = l, f = [r, h, c], w = [r, h, c, u];
+    if (m === "perspective" && r && [h, c].every((o) => o === void 0))
+      e.m34 = -1 / r;
+    else if (m.includes("matrix") && [6, 16].includes(l.length) && l.every((o) => !Number.isNaN(+o))) {
       const o = l.map((d) => Math.abs(d) < 1e-6 ? 0 : d);
       e = e.multiply(g(o));
-    } else if (r === "translate3d" && f.every((o) => !Number.isNaN(+o)))
-      e = e.translate(m, h, c);
-    else if (r === "translate" && m && c === void 0)
-      e = e.translate(m, h || 0, 0);
-    else if (r === "rotate3d" && w.every((o) => !Number.isNaN(+o)) && u)
-      e = e.rotateAxisAngle(m, h, c, u);
-    else if (r === "rotate" && m && [h, c].every((o) => o === void 0))
-      e = e.rotate(0, 0, m);
-    else if (r === "scale3d" && f.every((o) => !Number.isNaN(+o)) && f.some((o) => o !== 1))
-      e = e.scale(m, h, c);
-    else if (r === "scale" && !Number.isNaN(m) && m !== 1 && c === void 0) {
-      const d = Number.isNaN(+h) ? m : h;
-      e = e.scale(m, d, 1);
-    } else if (r === "skew" && (m || !Number.isNaN(m) && h) && c === void 0)
-      e = e.skew(m, h || 0);
+    } else if (m === "translate3d" && f.every((o) => !Number.isNaN(+o)))
+      e = e.translate(r, h, c);
+    else if (m === "translate" && r && c === void 0)
+      e = e.translate(r, h || 0, 0);
+    else if (m === "rotate3d" && w.every((o) => !Number.isNaN(+o)) && u)
+      e = e.rotateAxisAngle(r, h, c, u);
+    else if (m === "rotate" && r && [h, c].every((o) => o === void 0))
+      e = e.rotate(0, 0, r);
+    else if (m === "scale3d" && f.every((o) => !Number.isNaN(+o)) && f.some((o) => o !== 1))
+      e = e.scale(r, h, c);
+    else if (
+      // prop === "scale" && !Number.isNaN(x) && x !== 1 && z === undefined
+      m === "scale" && !Number.isNaN(r) && [r, h].some((o) => o !== 1) && c === void 0
+    ) {
+      const d = Number.isNaN(+h) ? r : h;
+      e = e.scale(r, d, 1);
+    } else if (m === "skew" && (r || !Number.isNaN(r) && h) && c === void 0)
+      e = e.skew(r, h || 0);
     else if (["translate", "rotate", "scale", "skew"].some(
-      (o) => r.includes(o)
-    ) && /[XYZ]/.test(r) && m && [h, c].every((o) => o === void 0))
-      if (r === "skewX" || r === "skewY")
-        e = e[r](m);
+      (o) => m.includes(o)
+    ) && /[XYZ]/.test(m) && r && [h, c].every((o) => o === void 0))
+      if (m === "skewX" || m === "skewY")
+        e = e[m](r);
       else {
-        const o = r.replace(/[XYZ]/, ""), d = r.replace(o, ""), A = ["X", "Y", "Z"].indexOf(d), M = o === "scale" ? 1 : 0, b = [
-          A === 0 ? m : M,
-          A === 1 ? m : M,
-          A === 2 ? m : M
+        const o = m.replace(/[XYZ]/, ""), d = m.replace(o, ""), A = ["X", "Y", "Z"].indexOf(d), M = o === "scale" ? 1 : 0, b = [
+          A === 0 ? r : M,
+          A === 1 ? r : M,
+          A === 2 ? r : M
         ];
         e = e[o](...b);
       }
@@ -150,24 +153,24 @@ const $ = {
   const n = new y();
   return n.m41 = s, n.e = s, n.m42 = t, n.f = t, n.m43 = e, n;
 }, F = (s, t, e) => {
-  const n = new y(), i = Math.PI / 180, r = s * i, a = t * i, l = e * i, m = Math.cos(r), h = -Math.sin(r), c = Math.cos(a), u = -Math.sin(a), f = Math.cos(l), w = -Math.sin(l), o = c * f, d = -c * w;
+  const n = new y(), i = Math.PI / 180, m = s * i, a = t * i, l = e * i, r = Math.cos(m), h = -Math.sin(m), c = Math.cos(a), u = -Math.sin(a), f = Math.cos(l), w = -Math.sin(l), o = c * f, d = -c * w;
   n.m11 = o, n.a = o, n.m12 = d, n.b = d, n.m13 = u;
-  const A = h * u * f + m * w;
+  const A = h * u * f + r * w;
   n.m21 = A, n.c = A;
-  const M = m * f - h * u * w;
-  return n.m22 = M, n.d = M, n.m23 = -h * c, n.m31 = h * w - m * u * f, n.m32 = h * f + m * u * w, n.m33 = m * c, n;
+  const M = r * f - h * u * w;
+  return n.m22 = M, n.d = M, n.m23 = -h * c, n.m31 = h * w - r * u * f, n.m32 = h * f + r * u * w, n.m33 = r * c, n;
 }, T = (s, t, e, n) => {
-  const i = new y(), r = Math.sqrt(s * s + t * t + e * e);
-  if (r === 0)
+  const i = new y(), m = Math.sqrt(s * s + t * t + e * e);
+  if (m === 0)
     return i;
-  const a = s / r, l = t / r, m = e / r, h = n * (Math.PI / 360), c = Math.sin(h), u = Math.cos(h), f = c * c, w = a * a, o = l * l, d = m * m, A = 1 - 2 * (o + d) * f;
+  const a = s / m, l = t / m, r = e / m, h = n * (Math.PI / 360), c = Math.sin(h), u = Math.cos(h), f = c * c, w = a * a, o = l * l, d = r * r, A = 1 - 2 * (o + d) * f;
   i.m11 = A, i.a = A;
-  const M = 2 * (a * l * f + m * c * u);
-  i.m12 = M, i.b = M, i.m13 = 2 * (a * m * f - l * c * u);
-  const b = 2 * (l * a * f - m * c * u);
+  const M = 2 * (a * l * f + r * c * u);
+  i.m12 = M, i.b = M, i.m13 = 2 * (a * r * f - l * c * u);
+  const b = 2 * (l * a * f - r * c * u);
   i.m21 = b, i.c = b;
   const k = 1 - 2 * (d + w) * f;
-  return i.m22 = k, i.d = k, i.m23 = 2 * (l * m * f + a * c * u), i.m31 = 2 * (m * a * f + l * c * u), i.m32 = 2 * (m * l * f - a * c * u), i.m33 = 1 - 2 * (w + o) * f, i;
+  return i.m22 = k, i.d = k, i.m23 = 2 * (l * r * f + a * c * u), i.m31 = 2 * (r * a * f + l * c * u), i.m32 = 2 * (r * l * f - a * c * u), i.m33 = 1 - 2 * (w + o) * f, i;
 }, I = (s, t, e) => {
   const n = new y();
   return n.m11 = s, n.a = s, n.m22 = t, n.d = t, n.m33 = e, n;
@@ -183,15 +186,15 @@ const $ = {
   }
   return e;
 }, R = (s) => v(s, 0), D = (s) => v(0, s), N = (s, t) => {
-  const e = t.m11 * s.m11 + t.m12 * s.m21 + t.m13 * s.m31 + t.m14 * s.m41, n = t.m11 * s.m12 + t.m12 * s.m22 + t.m13 * s.m32 + t.m14 * s.m42, i = t.m11 * s.m13 + t.m12 * s.m23 + t.m13 * s.m33 + t.m14 * s.m43, r = t.m11 * s.m14 + t.m12 * s.m24 + t.m13 * s.m34 + t.m14 * s.m44, a = t.m21 * s.m11 + t.m22 * s.m21 + t.m23 * s.m31 + t.m24 * s.m41, l = t.m21 * s.m12 + t.m22 * s.m22 + t.m23 * s.m32 + t.m24 * s.m42, m = t.m21 * s.m13 + t.m22 * s.m23 + t.m23 * s.m33 + t.m24 * s.m43, h = t.m21 * s.m14 + t.m22 * s.m24 + t.m23 * s.m34 + t.m24 * s.m44, c = t.m31 * s.m11 + t.m32 * s.m21 + t.m33 * s.m31 + t.m34 * s.m41, u = t.m31 * s.m12 + t.m32 * s.m22 + t.m33 * s.m32 + t.m34 * s.m42, f = t.m31 * s.m13 + t.m32 * s.m23 + t.m33 * s.m33 + t.m34 * s.m43, w = t.m31 * s.m14 + t.m32 * s.m24 + t.m33 * s.m34 + t.m34 * s.m44, o = t.m41 * s.m11 + t.m42 * s.m21 + t.m43 * s.m31 + t.m44 * s.m41, d = t.m41 * s.m12 + t.m42 * s.m22 + t.m43 * s.m32 + t.m44 * s.m42, A = t.m41 * s.m13 + t.m42 * s.m23 + t.m43 * s.m33 + t.m44 * s.m43, M = t.m41 * s.m14 + t.m42 * s.m24 + t.m43 * s.m34 + t.m44 * s.m44;
+  const e = t.m11 * s.m11 + t.m12 * s.m21 + t.m13 * s.m31 + t.m14 * s.m41, n = t.m11 * s.m12 + t.m12 * s.m22 + t.m13 * s.m32 + t.m14 * s.m42, i = t.m11 * s.m13 + t.m12 * s.m23 + t.m13 * s.m33 + t.m14 * s.m43, m = t.m11 * s.m14 + t.m12 * s.m24 + t.m13 * s.m34 + t.m14 * s.m44, a = t.m21 * s.m11 + t.m22 * s.m21 + t.m23 * s.m31 + t.m24 * s.m41, l = t.m21 * s.m12 + t.m22 * s.m22 + t.m23 * s.m32 + t.m24 * s.m42, r = t.m21 * s.m13 + t.m22 * s.m23 + t.m23 * s.m33 + t.m24 * s.m43, h = t.m21 * s.m14 + t.m22 * s.m24 + t.m23 * s.m34 + t.m24 * s.m44, c = t.m31 * s.m11 + t.m32 * s.m21 + t.m33 * s.m31 + t.m34 * s.m41, u = t.m31 * s.m12 + t.m32 * s.m22 + t.m33 * s.m32 + t.m34 * s.m42, f = t.m31 * s.m13 + t.m32 * s.m23 + t.m33 * s.m33 + t.m34 * s.m43, w = t.m31 * s.m14 + t.m32 * s.m24 + t.m33 * s.m34 + t.m34 * s.m44, o = t.m41 * s.m11 + t.m42 * s.m21 + t.m43 * s.m31 + t.m44 * s.m41, d = t.m41 * s.m12 + t.m42 * s.m22 + t.m43 * s.m32 + t.m44 * s.m42, A = t.m41 * s.m13 + t.m42 * s.m23 + t.m43 * s.m33 + t.m44 * s.m43, M = t.m41 * s.m14 + t.m42 * s.m24 + t.m43 * s.m34 + t.m44 * s.m44;
   return g([
     e,
     n,
     i,
-    r,
+    m,
     a,
     l,
-    m,
+    r,
     h,
     c,
     u,
@@ -323,8 +326,8 @@ class y {
    */
   translate(t, e, n) {
     const i = t;
-    let r = e, a = n;
-    return typeof r > "u" && (r = 0), typeof a > "u" && (a = 0), N(this, Y(i, r, a));
+    let m = e, a = n;
+    return typeof m > "u" && (m = 0), typeof a > "u" && (a = 0), N(this, Y(i, m, a));
   }
   /**
    * The scale method returns a new matrix which is this matrix post multiplied by
@@ -339,8 +342,8 @@ class y {
    */
   scale(t, e, n) {
     const i = t;
-    let r = e, a = n;
-    return typeof r > "u" && (r = t), typeof a > "u" && (a = 1), N(this, I(i, r, a));
+    let m = e, a = n;
+    return typeof m > "u" && (m = t), typeof a > "u" && (a = 1), N(this, I(i, m, a));
   }
   /**
    * The rotate method returns a new matrix which is this matrix post multiplied
@@ -355,8 +358,8 @@ class y {
    * @return The resulted matrix
    */
   rotate(t, e, n) {
-    let i = t, r = e || 0, a = n || 0;
-    return typeof t == "number" && typeof e > "u" && typeof n > "u" && (a = i, i = 0, r = 0), N(this, F(i, r, a));
+    let i = t, m = e || 0, a = n || 0;
+    return typeof t == "number" && typeof e > "u" && typeof n > "u" && (a = i, i = 0, m = 0), N(this, F(i, m, a));
   }
   /**
    * The rotateAxisAngle method returns a new matrix which is this matrix post
@@ -371,7 +374,7 @@ class y {
    * @return The resulted matrix
    */
   rotateAxisAngle(t, e, n, i) {
-    if ([t, e, n, i].some((r) => Number.isNaN(+r)))
+    if ([t, e, n, i].some((m) => Number.isNaN(+m)))
       throw new TypeError("CSSMatrix: expecting 4 values");
     return N(this, T(t, e, n, i));
   }
@@ -418,12 +421,12 @@ class y {
    * @return the resulting Tuple
    */
   transformPoint(t) {
-    const e = this.m11 * t.x + this.m21 * t.y + this.m31 * t.z + this.m41 * t.w, n = this.m12 * t.x + this.m22 * t.y + this.m32 * t.z + this.m42 * t.w, i = this.m13 * t.x + this.m23 * t.y + this.m33 * t.z + this.m43 * t.w, r = this.m14 * t.x + this.m24 * t.y + this.m34 * t.z + this.m44 * t.w;
-    return t instanceof DOMPoint ? new DOMPoint(e, n, i, r) : {
+    const e = this.m11 * t.x + this.m21 * t.y + this.m31 * t.z + this.m41 * t.w, n = this.m12 * t.x + this.m22 * t.y + this.m32 * t.z + this.m42 * t.w, i = this.m13 * t.x + this.m23 * t.y + this.m33 * t.z + this.m43 * t.w, m = this.m14 * t.x + this.m24 * t.y + this.m34 * t.z + this.m44 * t.w;
+    return t instanceof DOMPoint ? new DOMPoint(e, n, i, m) : {
       x: e,
       y: n,
       z: i,
-      w: r
+      w: m
     };
   }
 }

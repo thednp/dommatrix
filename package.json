@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",
@@ -53,14 +53,14 @@
     "url": "https://github.com/thednp/dommatrix/issues"
   },
   "devDependencies": {
-    "@vitest/browser": "^2.1.5",
-    "@vitest/coverage-istanbul": "^2.1.5",
-    "@vitest/ui": "^2.1.5",
-    "playwright": "^1.49.0",
+    "@vitest/browser": "^2.1.8",
+    "@vitest/coverage-istanbul": "^2.1.8",
+    "@vitest/ui": "^2.1.8",
+    "playwright": "^1.49.1",
     "typescript": "^5.7.2",
     "vite": "^5.4.11",
     "vite-plugin-dts": "^4.3.0",
-    "vitest": "^2.1.5"
+    "vitest": "^2.1.8"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

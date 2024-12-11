@@ -84,7 +84,15 @@ describe('DOMMatrix Class Test', () => {
     expect(css.is2D).to.equal(new CSSMatrix(css).is2D)
     expect(css.isIdentity).to.equal(dom.isIdentity)
     expect(css.isIdentity).to.equal((new CSSMatrix(dom)).isIdentity)
+  });
 
+  it('Test scale issue #3', () => {
+    const matrix = new CSSMatrix('scale(1, -1)');
+
+    expect(matrix.toString()).toBe('matrix(1, 0, 0, -1, 0, 0)');
+
+    const matrix2 = new CSSMatrix('scale(2, -1)');
+    expect(matrix2.toString()).toBe('matrix(2, 0, 0, -1, 0, 0)');
   });
 
   it('Test specific private methods', () => {
