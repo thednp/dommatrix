@@ -285,7 +285,8 @@ const fromString = (source: string): CSSMatrix => {
         // single value expected
       } else if (
         // prop === "scale" && !Number.isNaN(x) && x !== 1 && z === undefined
-        prop === "scale" && !Number.isNaN(x) && [x, y].some((n) => n !== 1) &&
+        // prop === "scale" && !Number.isNaN(x) && [x, y].some((n) => n !== 1) &&
+        prop === "scale" && !Number.isNaN(x) && (x !== 1 || y !== 1) &&
         z === undefined
       ) {
         const nosy = Number.isNaN(+y);
