@@ -14,8 +14,11 @@ export default defineConfig({
       provider: 'preview', // or 'webdriverio'
       enabled: true,
       headless: false,
-      name: 'chromium', // browser name is required
-      // enableUI: true
+      instances: [
+        {
+          browser: 'chromium', // browser name is required
+        }
+      ]      // enableUI: true
     },
   },
 });
