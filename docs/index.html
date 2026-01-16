@@ -1,236 +1,354 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0">
-  <title>DOMMatrix Demo</title>
-  <meta name="description" content="DOMMatrix Shim Demo">
-  <meta name="keywords" content="javascript,svg,svg path,dommatrix,cssmatrix">
-  <meta name="author" content="thednp">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-  <style>
-    .box {height: 200px;}
-    #dom, #css {transition: transform 0.5s ease;}
-  </style>
-</head>
-<body class="container">
-  <h1 class="mt-3 mt-md-5"><a class="text-decoration-none" href="https://github.com/thednp/dommatrix">DOMMatrix Shim Demo</a></h1>
-  <label class="visually-hidden" for="str">Matrix / Matrix3D String Input</label>
-  <div class="input-group dropdown mb-3">
-    <input id="str" class="form-control" title="Matrix / Matrix3D String Input" type="text"
-      value="perspective(600px) translate(-50px, -15px) rotate3d(-1.2, -1.2, 0.1, 0.6rad) skewY(-5deg) scale3d(0.9, 0.8, 0.9)"
-      placeholder="Type in a valid CSS3 transform string">
-      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Examples</button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#" onclick="setMatrix('perspective(400px) rotateX(0.2rad) rotateY(25deg)')">Regular Transform</a></li>
-        <li><a class="dropdown-item" href="#" onclick="setMatrix('matrix(0.9659, 0.2588, -0.2588, 0.9659, -1.5396, -1.5396)')">Matrix 2D</a></li>
-        <li><a class="dropdown-item" href="#" onclick="setMatrix('matrix3d(0.852, 0.153, 0.186, -0.0004, -0.092, 0.869, -0.266, 0.0006, -0.25, 0.258, 0.933, -0.002, 0, 0, 0, 1)')">Matrix 3D</a></li>
-        <li><a class="dropdown-item" href="#" onclick="setMatrix('skewX(0.3rad) skewY(10deg) matrix(0.984807, -0.173648, 0.173648, 0.984807, 0, 0)')">Combined</a></li>
-        <li><a class="dropdown-item" href="#" onclick="setMatrix('perspective(800px) scale(0.9,1.1) rotateX(15deg) rotate(-0.125rad) skewX(-5deg) rotate3d(0.1,1.5,0.7,25deg) skewY(-0.2rad)')">Going nuts</a></li>
-        <li><a class="dropdown-item" href="#" onclick="setMatrix('perspective(1200px) rotateY(-175deg) rotate(-0.125rad) scale3d(0.9,1.1,0.75) skewX(-0.2rad) rotate3d(0.1,1.5,0.7,25deg) skewY(-5deg) matrix(0.9659, 0.2588, -0.2588, 0.9659, -1.5396, -1.5396)')">Maximum settings</a></li>
-      </ul>
-    <button id="btn1" class="btn btn-outline-secondary">Transform</button>
-  </div>
-  <div class="row mb-4 d-none d-md-flex">
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="translateX">TranslateX (px)</label>
-      <input id="translateX" class="form-control" title="TranslateX" type="number" placeholder="TranslateX" value="10" min="-50" max="50" step="10">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="translateY">TranslateY (px)</label>
-      <input id="translateY" class="form-control" title="TranslateY" type="number" placeholder="TranslateY" value="10" min="-50" max="50" step="10">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="translateZ">TranslateZ (px)</label>
-      <input id="translateZ" class="form-control" title="TranslateZ" type="number" placeholder="TranslateZ" value="10" min="-50" max="50" step="10">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="perspective">Perspective (px)</label>
-      <input id="perspective" class="form-control" title="Perspective" type="number" placeholder="Perspective" value="800" min="100" max="800" step="100">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="rotateX">RotateX (deg/rad)</label>
-      <input id="rotateX" class="form-control" title="RotateX" type="number" placeholder="RotateX" value="15" min="-360" max="360" step="5">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="rotateY">RotateY (deg/rad)</label>
-      <input id="rotateY" class="form-control" title="RotateY" type="number" placeholder="RotateY" value="15" min="-360" max="360" step="5">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="rotateZ">RotateZ (deg/rad)</label>
-      <input id="rotateZ" class="form-control" title="RotateZ" type="number" placeholder="RotateZ" value="-15" min="-360" max="360" step="5">
-    </div>
-    <div class="col-12 col-md-3 mb-3"><span class="visually-hidden">Empty column</span></div>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, minimum-scale=1.0"
+        />
+        <title>DOMMatrix Demo</title>
+        <meta name="description" content="DOMMatrix Shim Demo" />
+        <meta
+            name="keywords"
+            content="javascript,svg,svg path,dommatrix,cssmatrix"
+        />
+        <meta name="author" content="thednp" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        />
+        <style>
+            .box {
+                height: 200px;
+            }
+            #dom,
+            #css {
+                transition: transform 0.5s ease;
+            }
+        </style>
+    </head>
+    <body class="container">
+        <h1 class="mt-3 mt-md-5">
+            <a
+                class="text-decoration-none"
+                href="https://github.com/thednp/dommatrix"
+                >DOMMatrix Shim Demo</a
+            >
+        </h1>
+        <label class="visually-hidden" for="str"
+            >Matrix / Matrix3D String Input</label
+        >
+        <div class="input-group dropdown mb-3">
+            <input
+                id="str"
+                class="form-control"
+                title="Matrix / Matrix3D String Input"
+                type="text"
+                value="perspective(600px) translate(-50px, -15px) rotate3d(-1.2, -1.2, 0.1, 0.6rad) skewY(-5deg) scale3d(0.9, 0.8, 0.9)"
+                placeholder="Type in a valid CSS3 transform string"
+            />
+            <button
+                class="btn btn-outline-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+                Examples
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        onclick="
+                            setMatrix(
+                                'perspective(400px) rotateX(0.2rad) rotateY(25deg)',
+                            )
+                        "
+                        >Regular Transform</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        onclick="
+                            setMatrix(
+                                'matrix(0.9659, 0.2588, -0.2588, 0.9659, -1.5396, -1.5396)',
+                            )
+                        "
+                        >Matrix 2D</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        onclick="
+                            setMatrix(
+                                'matrix3d(0.852, 0.153, 0.186, -0.0004, -0.092, 0.869, -0.266, 0.0006, -0.25, 0.258, 0.933, -0.002, 0, 0, 0, 1)',
+                            )
+                        "
+                        >Matrix 3D</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        onclick="
+                            setMatrix(
+                                'skewX(0.3rad) skewY(10deg) matrix(0.984807, -0.173648, 0.173648, 0.984807, 0, 0)',
+                            )
+                        "
+                        >Combined</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        onclick="
+                            setMatrix(
+                                'perspective(800px) scale(0.9,1.1) rotateX(15deg) rotate(-0.125rad) skewX(-5deg) rotate3d(0.1,1.5,0.7,25deg) skewY(-0.2rad)',
+                            )
+                        "
+                        >Going nuts</a
+                    >
+                </li>
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="#"
+                        onclick="
+                            setMatrix(
+                                'perspective(1200px) rotateY(-175deg) rotate(-0.125rad) scale3d(0.9,1.1,0.75) skewX(-0.2rad) rotate3d(0.1,1.5,0.7,25deg) skewY(-5deg) matrix(0.9659, 0.2588, -0.2588, 0.9659, -1.5396, -1.5396)',
+                            )
+                        "
+                        >Maximum settings</a
+                    >
+                </li>
+            </ul>
+            <button id="btn1" class="btn btn-outline-secondary">
+                Transform
+            </button>
+        </div>
+        <div class="row mb-4 d-none d-md-flex">
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="translateX"
+                    >TranslateX (px)</label
+                >
+                <input
+                    id="translateX"
+                    class="form-control"
+                    title="TranslateX"
+                    type="number"
+                    placeholder="TranslateX"
+                    value="10"
+                    min="-50"
+                    max="50"
+                    step="10"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="translateY"
+                    >TranslateY (px)</label
+                >
+                <input
+                    id="translateY"
+                    class="form-control"
+                    title="TranslateY"
+                    type="number"
+                    placeholder="TranslateY"
+                    value="10"
+                    min="-50"
+                    max="50"
+                    step="10"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="translateZ"
+                    >TranslateZ (px)</label
+                >
+                <input
+                    id="translateZ"
+                    class="form-control"
+                    title="TranslateZ"
+                    type="number"
+                    placeholder="TranslateZ"
+                    value="10"
+                    min="-50"
+                    max="50"
+                    step="10"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="perspective"
+                    >Perspective (px)</label
+                >
+                <input
+                    id="perspective"
+                    class="form-control"
+                    title="Perspective"
+                    type="number"
+                    placeholder="Perspective"
+                    value="800"
+                    min="100"
+                    max="800"
+                    step="100"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="rotateX"
+                    >RotateX (deg/rad)</label
+                >
+                <input
+                    id="rotateX"
+                    class="form-control"
+                    title="RotateX"
+                    type="number"
+                    placeholder="RotateX"
+                    value="15"
+                    min="-360"
+                    max="360"
+                    step="5"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="rotateY"
+                    >RotateY (deg/rad)</label
+                >
+                <input
+                    id="rotateY"
+                    class="form-control"
+                    title="RotateY"
+                    type="number"
+                    placeholder="RotateY"
+                    value="15"
+                    min="-360"
+                    max="360"
+                    step="5"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="rotateZ"
+                    >RotateZ (deg/rad)</label
+                >
+                <input
+                    id="rotateZ"
+                    class="form-control"
+                    title="RotateZ"
+                    type="number"
+                    placeholder="RotateZ"
+                    value="-15"
+                    min="-360"
+                    max="360"
+                    step="5"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <span class="visually-hidden">Empty column</span>
+            </div>
 
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="skewX">SkewX (deg/rad)</label>
-      <input id="skewX" class="form-control" title="SkewX" type="number" placeholder="SkewX" value="-10" min="-360" max="360" step="5">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="skewY">SkewY (deg/rad)</label>
-      <input id="skewY" class="form-control" title="SkewY" type="number" placeholder="SkewY" value="10" min="-360" max="360" step="5">
-    </div>
-    <div class="col-12 col-md-3 mb-3">
-      <label class="form-label" for="scale">Scale</label>
-      <input id="scale" class="form-control" title="Scale" type="number" placeholder="Scale" value="0.9" min="0" max="10" step="0.1">
-    </div>
-    <div class="align-self-md-end col-12 col-md-3 mb-3">
-      <button id="btn2" class="btn btn-outline-secondary" title="Transform multiple functions in the form">Transform</button>
-      <button onclick="resetMatrix()" class="btn btn-outline-secondary" title="Reset Form">Reset</button>
-    </div>
-  </div>
-  <div class="row">
-    <div id="css" class="col-12 col-md-6">
-      <div class="box bg-primary text-white p-3 my-3 text-center align-self-center rounded">
-        <b>CSSMatrix</b><br><span class="row"></span>
-      </div>
-    </div>
-    <div id="dom" class="col-12 col-md-6">
-      <div class="box bg-secondary text-white p-3 my-3 text-center align-self-center rounded">
-        <b>DOMMatrix</b><br><span class="row"></span>
-      </div>
-    </div>
-  </div>
-  <hr class="mt-5">
-  <div class="row mt-5 mx-0">
-    <div class="col p-0">
-      <p>
-        <a href="https://github.com/thednp/dommatrix">Github</a> | 
-        <a href="https://www.npmjs.com/package/@thednp/dommatrix">npm</a> |
-        <a href="https://www.jsdelivr.com/package/npm/@thednp/dommatrix">cdn</a>
-      </p>
-    </div>
-    <div class="col p-0">
-      <p class="text-end">2024 © <a href="https://github.com/thednp">thednp</a></p>
-    </div>
-  </div>
-  <script src="./dommatrix.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap.native@4.0.7/dist/bootstrap-native.js"></script>
-
-  <script>
-    const str = document.getElementById('str');
-    const css = document.getElementById('css');
-    const dom = document.getElementById('dom');
-    const span1 = css.querySelector('span.row');
-    const span2 = dom.querySelector('span.row');
-    const btn1 = document.getElementById('btn1');
-    const btn2 = document.getElementById('btn2');
-    let {value} = str;
-    let includeFunction = ['matrix','translate','rotate','scale','skew', 'perspective'].some(x => value.includes(x));
-    value = includeFunction
-        ? value
-        : value.split(',').map(parseFloat);
-    let matrix1 = new CSSMatrix(value);
-    let matrix2 = new DOMMatrix(value);
-
-    btn1.addEventListener('click', (e) => {
-      value = str.value;
-      if (!value || !value.length) return;
-      includeFunction = ['matrix','translate','rotate','scale','skew', 'perspective'].some(x => value.includes(x))
-
-      value = includeFunction
-        ? value
-        : value.split(',').map(parseFloat);
-
-      if (typeof value === 'object' && [16,6].includes(value.length) || includeFunction) {
-        matrix1 = new CSSMatrix(value);
-        matrix2 = new DOMMatrix(value);
-      } else {
-        throw TypeError('Invalid transform value')
-      }
-
-      const matrixString1 = Array.from(matrix1.toFloat32Array())
-        .map((x,i) => ('<span class="col-3">' + (x.toFixed(4)) + '</span>'))
-        .join('');
-      const matrixString2 = Array.from(matrix2.toFloat32Array())
-        .map((x,i) => ('<span class="col-3">' + (x.toFixed(4)) + '</span>'))
-        .join('');
-
-      css.style.transform = matrix1.toString();
-      dom.style.transform = matrix2.toString();
-      span1.innerHTML = matrixString1;
-      span2.innerHTML = matrixString2;
-      css.matrix = matrix1;
-      dom.matrix = matrix2;
-    })
-    btn2.addEventListener('click', (e) => { 
-      matrix1 = new CSSMatrix();
-      matrix2 = new DOMMatrix();
-      const pp = Number(document.getElementById('perspective').value);
-      const tx = Number(document.getElementById('translateX').value);
-      const ty = Number(document.getElementById('translateY').value);
-      const tz = Number(document.getElementById('translateZ').value);
-      const rx = Number(document.getElementById('rotateX').value);
-      const ry = Number(document.getElementById('rotateY').value);
-      const rz = Number(document.getElementById('rotateZ').value);
-      const sx = Number(document.getElementById('skewX').value);
-      const sy = Number(document.getElementById('skewY').value);
-      const s = Number(document.getElementById('scale').value);
-
-      if (pp && (tz || rx || ry)) {
-        matrix1.m34 = -1 / pp;
-        matrix2.m34 = -1 / pp;
-      }
-      
-      if (tx || ty || tz) {
-        matrix1 = matrix1.translate(tx||0,ty||0,tz||0);
-        matrix2 = matrix2.translate(tx||0,ty||0,tz||0);
-      }
-      if (rx || ry || rz) {
-        matrix1 = matrix1.rotate(rx||0,ry||0,rz||0);
-        matrix2 = matrix2.rotate(rx||0,ry||0,rz||0);
-      }
-      if (sx) {
-        matrix1 = matrix1.skewX(sx||0);
-        matrix2 = matrix2.skewX(sx||0);
-      }
-      if (sy) {
-        matrix1 = matrix1.skewY(sy||0);
-        matrix2 = matrix2.skewY(sy||0);
-      }
-      if (s!==1) {
-        matrix1 = matrix1.scale(s||1);
-        matrix2 = matrix2.scale(s||1);
-      }
-
-      // reset perspective
-      if (matrix1.m34 !== 0 && !tz && !rx && !ry) {
-        matrix1.m34 = 0;
-        matrix2.m34 = 0;
-      }
-
-      const matrixString1 = Array.from(matrix1.toFloat32Array())
-        .map((x,i) => ('<span class="col-3">' + (x.toFixed(4)) + '</span>'))
-        .join('');
-      const matrixString2 = Array.from(matrix2.toFloat32Array())
-        .map((x,i) => '<span class="col-3">' + (x.toFixed(4)) + '</span>')
-        .join('');
-
-      css.style.transform = matrix1.toString();
-      dom.style.transform = matrix2.toString();
-      span1.innerHTML = matrixString1;
-      span2.innerHTML = matrixString2;
-      css.matrix = matrix1;
-      dom.matrix = matrix2;
-    })
-    function setMatrix(v){
-      str.value = v;
-      value = v;
-    }
-    function resetMatrix(){
-      document.getElementById('translateX').value = 0;
-      document.getElementById('translateY').value = 0;
-      document.getElementById('translateZ').value = 0;
-      document.getElementById('rotateX').value = 0;
-      document.getElementById('rotateY').value = 0;
-      document.getElementById('rotateZ').value = 0;
-      document.getElementById('skewX').value = 0;
-      document.getElementById('skewY').value = 0;
-      document.getElementById('scale').value = 1;
-      btn2.dispatchEvent(new Event('click'));
-    }
-  </script>
-</body>
-
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="skewX">SkewX (deg/rad)</label>
+                <input
+                    id="skewX"
+                    class="form-control"
+                    title="SkewX"
+                    type="number"
+                    placeholder="SkewX"
+                    value="-10"
+                    min="-360"
+                    max="360"
+                    step="5"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="skewY">SkewY (deg/rad)</label>
+                <input
+                    id="skewY"
+                    class="form-control"
+                    title="SkewY"
+                    type="number"
+                    placeholder="SkewY"
+                    value="10"
+                    min="-360"
+                    max="360"
+                    step="5"
+                />
+            </div>
+            <div class="col-12 col-md-3 mb-3">
+                <label class="form-label" for="scale">Scale</label>
+                <input
+                    id="scale"
+                    class="form-control"
+                    title="Scale"
+                    type="number"
+                    placeholder="Scale"
+                    value="0.9"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                />
+            </div>
+            <div class="align-self-md-end col-12 col-md-3 mb-3">
+                <button
+                    id="btn2"
+                    class="btn btn-outline-secondary"
+                    title="Transform multiple functions in the form"
+                >
+                    Transform
+                </button>
+                <button
+                    onclick="resetMatrix()"
+                    class="btn btn-outline-secondary"
+                    title="Reset Form"
+                >
+                    Reset
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div id="css" class="col-12 col-md-6">
+                <div
+                    class="box bg-primary text-white p-3 my-3 text-center align-self-center rounded"
+                >
+                    <b>CSSMatrix</b><br /><span class="row"></span>
+                </div>
+            </div>
+            <div id="dom" class="col-12 col-md-6">
+                <div
+                    class="box bg-secondary text-white p-3 my-3 text-center align-self-center rounded"
+                >
+                    <b>DOMMatrix</b><br /><span class="row"></span>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-5" />
+        <div class="row mt-5 mx-0">
+            <div class="col p-0">
+                <p>
+                    <a href="https://github.com/thednp/dommatrix">Github</a> |
+                    <a href="https://www.npmjs.com/package/@thednp/dommatrix"
+                        >npm</a
+                    >
+                    |
+                    <a
+                        href="https://www.jsdelivr.com/package/npm/@thednp/dommatrix"
+                        >cdn</a
+                    >
+                </p>
+            </div>
+            <div class="col p-0">
+                <p class="text-end">
+                    2026 © <a href="https://github.com/thednp">thednp</a>
+                </p>
+            </div>
+        </div>
+        <script src="./dommatrix.js"></script>
+        <script src="./script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap.native@4.0.7/dist/bootstrap-native.js"></script>
+    </body>
 </html>

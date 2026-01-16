@@ -206,6 +206,81 @@ declare class CSSMatrix {
      */
     skew(angleX: number, angleY: number): CSSMatrix;
     /**
+     * Modifies the current matrix by post-multiplying it with another matrix.
+     * This is the mutable version of multiply().
+     *
+     * @param m2 The matrix to multiply with
+     * @return this matrix (modified)
+     */
+    multiplySelf(m2: CSSMatrix | DOMMatrix | JSONMatrix): this;
+    /**
+     * Modifies the current matrix by post-multiplying it with a translation matrix.
+     * This is the mutable version of translate().
+     *
+     * @param x X component of the translation value.
+     * @param y Y component of the translation value.
+     * @param z Z component of the translation value.
+     * @return this matrix (modified)
+     */
+    translateSelf(x: number, y?: number, z?: number): this;
+    /**
+     * Modifies the current matrix by post-multiplying it with a scale matrix.
+     * This is the mutable version of scale().
+     *
+     * @param x The X component of the scale value.
+     * @param y The Y component of the scale value.
+     * @param z The Z component of the scale value.
+     * @return this matrix (modified)
+     */
+    scaleSelf(x: number, y?: number, z?: number): this;
+    /**
+     * Modifies the current matrix by post-multiplying it with a rotation matrix.
+     * This is the mutable version of rotate().
+     *
+     * @param rx The X component of the rotation, or Z if Y and Z are null.
+     * @param ry The (optional) Y component of the rotation value.
+     * @param rz The (optional) Z component of the rotation value.
+     * @return this matrix (modified)
+     */
+    rotateSelf(rx: number, ry?: number, rz?: number): this;
+    /**
+     * Modifies the current matrix by post-multiplying it with a rotation matrix
+     * with the given axis and angle.
+     * This is the mutable version of rotateAxisAngle().
+     *
+     * @param x The X component of the axis vector.
+     * @param y The Y component of the axis vector.
+     * @param z The Z component of the axis vector.
+     * @param angle The angle of rotation about the axis vector, in degrees.
+     * @return this matrix (modified)
+     */
+    rotateAxisAngleSelf(x: number, y: number, z: number, angle: number): this;
+    /**
+     * Modifies the current matrix by post-multiplying it with a skewX matrix.
+     * This is the mutable version of skewX().
+     *
+     * @param angle The angle amount in degrees to skew.
+     * @return this matrix (modified)
+     */
+    skewXSelf(angle: number): this;
+    /**
+     * Modifies the current matrix by post-multiplying it with a skewY matrix.
+     * This is the mutable version of skewY().
+     *
+     * @param angle The angle amount in degrees to skew.
+     * @return this matrix (modified)
+     */
+    skewYSelf(angle: number): this;
+    /**
+     * Modifies the current matrix by post-multiplying it with a skew matrix.
+     * This is the mutable version of skew().
+     *
+     * @param angleX The X-angle amount in degrees to skew.
+     * @param angleY The Y-angle amount in degrees to skew.
+     * @return this matrix (modified)
+     */
+    skewSelf(angleX: number, angleY: number): this;
+    /**
      * Transforms a specified vector using the matrix, returning a new
      * {x,y,z,w} Tuple *Object* comprising the transformed vector.
      * Neither the matrix nor the original vector are altered.

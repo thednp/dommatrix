@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "2.0.12",
+  "version": "3.0.0",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",
@@ -17,8 +17,8 @@
   },
   "scripts": {
     "pre-test": "pnpm clean-coverage",
-    "test": "pnpm pre-test && vitest --config vitest.config.mts",
-    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.mts --browser=chromium",
+    "test": "pnpm pre-test && vitest --browser.headless",
+    "test-ui": "pnpm pre-test && vitest --browser --ui",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
     "format": "deno fmt src",
@@ -53,14 +53,16 @@
     "url": "https://github.com/thednp/dommatrix/issues"
   },
   "devDependencies": {
-    "@vitest/browser": "^3.1.4",
-    "@vitest/coverage-istanbul": "^3.1.4",
-    "@vitest/ui": "^3.1.4",
-    "playwright": "^1.52.0",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.5",
+    "@types/node": "^25.0.9",
+    "@vitest/browser": "^4.0.17",
+    "@vitest/browser-playwright": "^4.0.17",
+    "@vitest/coverage-istanbul": "^4.0.17",
+    "@vitest/ui": "^4.0.17",
+    "playwright": "^1.57.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^3.1.4"
+    "vitest": "^4.0.17"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

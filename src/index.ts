@@ -4,7 +4,7 @@ import type {
   Matrix,
   Matrix3d,
   PointTuple,
-} from "./types";
+} from "./types.ts";
 
 /** A model for JSONMatrix */
 const JSON_MATRIX: JSONMatrix = {
@@ -191,7 +191,9 @@ const fromMatrix = (m: CSSMatrix | DOMMatrix | JSONMatrix): CSSMatrix => {
   }
   throw TypeError(
     `CSSMatrix: "${
-      JSON.stringify(m)
+      JSON.stringify(
+        m,
+      )
     }" is not a DOMMatrix / CSSMatrix / JSON compatible object.`,
   );
 };
@@ -234,11 +236,8 @@ const fromString = (source: string): CSSMatrix => {
 
       const components = value
         .split(",")
-        .map((
-          n,
-        ) => (n.includes("rad")
-          ? parseFloat(n) * (180 / Math.PI)
-          : parseFloat(n))
+        .map((n) =>
+          n.includes("rad") ? parseFloat(n) * (180 / Math.PI) : parseFloat(n)
         );
 
       const [x, y, z, a] = components;
@@ -246,9 +245,7 @@ const fromString = (source: string): CSSMatrix => {
       const xyza = [x, y, z, a];
 
       // single number value expected
-      if (
-        prop === "perspective" && x && [y, z].every((n) => n === undefined)
-      ) {
+      if (prop === "perspective" && x && [y, z].every((n) => n === undefined)) {
         m.m34 = -1 / x;
         // 6/16 number values expected
       } else if (
@@ -260,7 +257,8 @@ const fromString = (source: string): CSSMatrix => {
         m = m.multiply(fromArray(values as Matrix | Matrix3d));
         // 3 values expected
       } else if (
-        prop === "translate3d" && xyz.every((n) => !Number.isNaN(+n))
+        prop === "translate3d" &&
+        xyz.every((n) => !Number.isNaN(+n))
       ) {
         m = m.translate(x, y, z);
         // single/double number value(s) expected
@@ -268,17 +266,22 @@ const fromString = (source: string): CSSMatrix => {
         m = m.translate(x, y || 0, 0);
         // all 4 values expected
       } else if (
-        prop === "rotate3d" && xyza.every((n) => !Number.isNaN(+n)) && a
+        prop === "rotate3d" &&
+        xyza.every((n) => !Number.isNaN(+n)) &&
+        a
       ) {
         m = m.rotateAxisAngle(x, y, z, a);
         // single value expected
       } else if (
-        prop === "rotate" && x && [y, z].every((n) => n === undefined)
+        prop === "rotate" &&
+        x &&
+        [y, z].every((n) => n === undefined)
       ) {
         m = m.rotate(0, 0, x);
         // 3 values expected
       } else if (
-        prop === "scale3d" && xyz.every((n) => !Number.isNaN(+n)) &&
+        prop === "scale3d" &&
+        xyz.every((n) => !Number.isNaN(+n)) &&
         xyz.some((n) => n !== 1)
       ) {
         m = m.scale(x, y, z);
@@ -286,7 +289,9 @@ const fromString = (source: string): CSSMatrix => {
       } else if (
         // prop === "scale" && !Number.isNaN(x) && x !== 1 && z === undefined
         // prop === "scale" && !Number.isNaN(x) && [x, y].some((n) => n !== 1) &&
-        prop === "scale" && !Number.isNaN(x) && (x !== 1 || y !== 1) &&
+        prop === "scale" &&
+        !Number.isNaN(x) &&
+        (x !== 1 || y !== 1) &&
         z === undefined
       ) {
         const nosy = Number.isNaN(+y);
@@ -294,7 +299,9 @@ const fromString = (source: string): CSSMatrix => {
         m = m.scale(x, sy, 1);
         // single/double value expected
       } else if (
-        prop === "skew" && (x || (!Number.isNaN(x) && y)) && z === undefined
+        prop === "skew" &&
+        (x || (!Number.isNaN(x) && y)) &&
+        z === undefined
       ) {
         m = m.skew(x, y || 0);
       } else if (
@@ -773,8 +780,14 @@ export default class CSSMatrix {
    * @return the current property value
    */
   get is2D(): boolean {
-    return this.m31 === 0 && this.m32 === 0 && this.m33 === 1 &&
-      this.m34 === 0 && this.m43 === 0 && this.m44 === 1;
+    return (
+      this.m31 === 0 &&
+      this.m32 === 0 &&
+      this.m33 === 1 &&
+      this.m34 === 0 &&
+      this.m43 === 0 &&
+      this.m44 === 1
+    );
   }
 
   /**
@@ -799,7 +812,8 @@ export default class CSSMatrix {
 
     // [Array | Float[32/64]Array] come next
     if (
-      Array.isArray(source) || source instanceof Float64Array ||
+      Array.isArray(source) ||
+      source instanceof Float64Array ||
       source instanceof Float32Array
     ) {
       return fromArray(source);
@@ -939,7 +953,8 @@ export default class CSSMatrix {
     let RZ = rz || 0;
 
     if (
-      typeof rx === "number" && typeof ry === "undefined" &&
+      typeof rx === "number" &&
+      typeof ry === "undefined" &&
       typeof rz === "undefined"
     ) {
       RZ = RX;
@@ -963,7 +978,7 @@ export default class CSSMatrix {
    * @return The resulted matrix
    */
   rotateAxisAngle(x: number, y: number, z: number, angle: number): CSSMatrix {
-    if ([x, y, z, angle].some((n) => Number.isNaN(+n))) {
+    if ([x, y, z, angle].some((n) => !Number.isFinite(n))) {
       throw new TypeError("CSSMatrix: expecting 4 values");
     }
     return Multiply(this, RotateAxisAngle(x, y, z, angle));
@@ -1001,6 +1016,124 @@ export default class CSSMatrix {
    */
   skew(angleX: number, angleY: number): CSSMatrix {
     return Multiply(this, Skew(angleX, angleY));
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with another matrix.
+   * This is the mutable version of multiply().
+   *
+   * @param m2 The matrix to multiply with
+   * @return this matrix (modified)
+   */
+  multiplySelf(m2: CSSMatrix | DOMMatrix | JSONMatrix): this {
+    const result = Multiply(this, m2);
+    Object.assign(this, result);
+    return this;
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with a translation matrix.
+   * This is the mutable version of translate().
+   *
+   * @param x X component of the translation value.
+   * @param y Y component of the translation value.
+   * @param z Z component of the translation value.
+   * @return this matrix (modified)
+   */
+  translateSelf(x: number, y?: number, z?: number): this {
+    return this.multiplySelf(Translate(x, y ?? 0, z ?? 0));
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with a scale matrix.
+   * This is the mutable version of scale().
+   *
+   * @param x The X component of the scale value.
+   * @param y The Y component of the scale value.
+   * @param z The Z component of the scale value.
+   * @return this matrix (modified)
+   */
+  scaleSelf(x: number, y?: number, z?: number): this {
+    return this.multiplySelf(Scale(x, y ?? x, z ?? 1));
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with a rotation matrix.
+   * This is the mutable version of rotate().
+   *
+   * @param rx The X component of the rotation, or Z if Y and Z are null.
+   * @param ry The (optional) Y component of the rotation value.
+   * @param rz The (optional) Z component of the rotation value.
+   * @return this matrix (modified)
+   */
+  rotateSelf(rx: number, ry?: number, rz?: number): this {
+    let RX = rx;
+    let RY = ry || 0;
+    let RZ = rz || 0;
+
+    if (
+      typeof rx === "number" &&
+      typeof ry === "undefined" &&
+      typeof rz === "undefined"
+    ) {
+      RZ = RX;
+      RX = 0;
+      RY = 0;
+    }
+
+    return this.multiplySelf(Rotate(RX, RY, RZ));
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with a rotation matrix
+   * with the given axis and angle.
+   * This is the mutable version of rotateAxisAngle().
+   *
+   * @param x The X component of the axis vector.
+   * @param y The Y component of the axis vector.
+   * @param z The Z component of the axis vector.
+   * @param angle The angle of rotation about the axis vector, in degrees.
+   * @return this matrix (modified)
+   */
+  rotateAxisAngleSelf(x: number, y: number, z: number, angle: number): this {
+    if ([x, y, z, angle].some((n) => !Number.isFinite(n))) {
+      throw new TypeError("CSSMatrix: expecting 4 values");
+    }
+    return this.multiplySelf(RotateAxisAngle(x, y, z, angle));
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with a skewX matrix.
+   * This is the mutable version of skewX().
+   *
+   * @param angle The angle amount in degrees to skew.
+   * @return this matrix (modified)
+   */
+  skewXSelf(angle: number): this {
+    return this.multiplySelf(SkewX(angle));
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with a skewY matrix.
+   * This is the mutable version of skewY().
+   *
+   * @param angle The angle amount in degrees to skew.
+   * @return this matrix (modified)
+   */
+  skewYSelf(angle: number): this {
+    return this.multiplySelf(SkewY(angle));
+  }
+
+  /**
+   * Modifies the current matrix by post-multiplying it with a skew matrix.
+   * This is the mutable version of skew().
+   *
+   * @param angleX The X-angle amount in degrees to skew.
+   * @param angleY The Y-angle amount in degrees to skew.
+   * @return this matrix (modified)
+   */
+  skewSelf(angleX: number, angleY: number): this {
+    return this.multiplySelf(Skew(angleX, angleY));
   }
 
   /**
