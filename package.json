@@ -13,8 +13,15 @@
       "types": "./dist/dommatrix.d.ts",
       "require": "./dist/dommatrix.cjs",
       "import": "./dist/dommatrix.mjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "pre-test": "pnpm clean-coverage",
     "test": "pnpm pre-test && vitest --browser.headless",
