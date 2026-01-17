@@ -661,11 +661,12 @@ const Multiply = (
 
 /**
  * Creates and returns a new `DOMMatrix` compatible instance
- * with equivalent instance.
+ * with equivalent instance methods.
  *
  * @class CSSMatrix
  *
- * @author thednp <https://github.com/thednp/DOMMatrix/>
+ * @author thednp <https://github.com/thednp>
+ * @link homepage <https://thednp.github.io/dommatrix/>
  * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
  */
 export default class CSSMatrix {

@@ -418,7 +418,7 @@ describe("DOMMatrix Class Test", () => {
 });
 
 describe("CSSMatrix Mutable Methods", () => {
-  it("should multiply matrix in place", () => {
+  it("Test multiplySelf to multiply matrix in place", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
     m2.m11 = 2;
@@ -431,7 +431,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.m22).toBe(2);
   });
 
-  it("should be chainable", () => {
+  it("Test multiplySelf to be chainable", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
     m2.m11 = 2;
@@ -442,7 +442,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.m11).toBe(4);
   });
 
-  it("should translate matrix in place", () => {
+  it("Test translateSelf to translate matrix in place", () => {
     const m = new CSSMatrix();
     const result = m.translateSelf(10, 20, 5);
 
@@ -454,7 +454,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.f).toBe(20);
   });
 
-  it("should handle default y and z values", () => {
+  it("Test translateSelf to handle handle default y and z values", () => {
     const m = new CSSMatrix();
     m.translateSelf(10);
 
@@ -463,7 +463,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m43).toBe(0);
   });
 
-  it("should be chainable", () => {
+  it("Test translateSelf to be chainable", () => {
     const m = new CSSMatrix();
     const result = m.translateSelf(10, 20).translateSelf(5, 5);
 
@@ -472,7 +472,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m42).toBe(25);
   });
 
-  it("should match immutable translate result", () => {
+  it("Test translateSelf to match immutable translate result", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
 
@@ -485,7 +485,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.m43).toBe(m2Result.m43);
   });
 
-  it("should scale matrix in place", () => {
+  it("Test scaleSelf to scale matrix in place", () => {
     const m = new CSSMatrix();
     const result = m.scaleSelf(2, 3, 4);
 
@@ -495,7 +495,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m33).toBe(4);
   });
 
-  it("should use x value for y if y is undefined", () => {
+  it("Test scaleSelf to use x value for y if y is undefined", () => {
     const m = new CSSMatrix();
     m.scaleSelf(2);
 
@@ -504,7 +504,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m33).toBe(1);
   });
 
-  it("should use 1 for z if z is undefined", () => {
+  it("Test scaleSelf to use 1 for z if z is undefined", () => {
     const m = new CSSMatrix();
     m.scaleSelf(2, 3);
 
@@ -513,7 +513,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m33).toBe(1);
   });
 
-  it("should be chainable", () => {
+  it("Test scaleSelf to be chainable", () => {
     const m = new CSSMatrix();
     const result = m.scaleSelf(2).scaleSelf(3);
 
@@ -522,7 +522,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m22).toBe(6);
   });
 
-  it("should match immutable scale result", () => {
+  it("Test scaleSelf to match immutable scale result", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
 
@@ -534,7 +534,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.m33).toBe(m2Result.m33);
   });
 
-  it("should rotate matrix in place", () => {
+  it("Test rotateSelf to rotate matrix in place", () => {
     const m = new CSSMatrix();
     const result = m.rotateSelf(45);
 
@@ -546,7 +546,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m22).toBeCloseTo(0.707, 3);
   });
 
-  it("should handle 2D rotation (x only)", () => {
+  it("Test rotateSelf to handle 2D rotation (first param, Z only)", () => {
     const m = new CSSMatrix();
     m.rotateSelf(45);
 
@@ -556,7 +556,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m22).toBeCloseTo(0.707, 3);
   });
 
-  it("should handle 3D rotation", () => {
+  it("Test rotateSelf to handle 3D rotation", () => {
     const m = new CSSMatrix();
     m.rotateSelf(45, 30, 60);
 
@@ -566,7 +566,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m33).not.toBe(1);
   });
 
-  it("should be chainable", () => {
+  it("Test rotateSelf to be chainable", () => {
     const m = new CSSMatrix();
     const result = m.rotateSelf(45).rotateSelf(30);
 
@@ -576,7 +576,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(roundTo4(m.m12)).toBeCloseTo(0.9659, 3);
   });
 
-  it("should match immutable rotate result", () => {
+  it("Test rotateSelf to match immutable rotate result", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
 
@@ -589,7 +589,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.m22).toBeCloseTo(m2Result.m22, 3);
   });
 
-  it("should rotate around axis in place", () => {
+  it("Test rotateAxisAngleSelf to rotate around axis in place", () => {
     const m = new CSSMatrix();
     m.rotateAxisAngleSelf(1, 0, 0, 90);
 
@@ -601,13 +601,13 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(roundTo4(m.m33)).toBeCloseTo(0, 3);
   });
 
-  it("should handle invalid vector length", () => {
+  it("Test rotateAxisAngleSelf to handle invalid vector length", () => {
     const m = new CSSMatrix();
     // @ts-expect-error
     expect(() => m.rotateAxisAngleSelf(0, 0, 0, null)).toThrowError();
   });
 
-  it("should be chainable", () => {
+  it("Test rotateAxisAngleSelf to be chainable", () => {
     const m = new CSSMatrix();
     const result = m
       .rotateAxisAngleSelf(1, 0, 0, 90)
@@ -620,7 +620,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m33).not.toBe(1);
   });
 
-  it("should match immutable rotateAxisAngle result", () => {
+  it("Test rotateAxisAngleSelf to match immutable rotateAxisAngle result", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
 
@@ -632,7 +632,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.m33).toBeCloseTo(m2Result.m33, 3);
   });
 
-  it("should skew X-axis in place", () => {
+  it("Test skewXSelf to skew X-axis in place", () => {
     const m = new CSSMatrix();
     m.skewXSelf(45);
 
@@ -641,7 +641,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.c).toBeCloseTo(1, 3);
   });
 
-  it("should be chainable", () => {
+  it("Test skewXSelf to be chainable", () => {
     const m = new CSSMatrix();
     const result = m.skewXSelf(45).skewXSelf(30);
 
@@ -650,7 +650,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m21).toBeCloseTo(1.57735, 3); // tan(45°) + tan(30°) = 1 + 0.577 = 1.577
   });
 
-  it("should match immutable skewX result", () => {
+  it("Test skewXSelf to match immutable skewX result", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
 
@@ -661,7 +661,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.c).toBeCloseTo(m2Result.c, 3);
   });
 
-  it("should skew Y-axis in place", () => {
+  it("Test skewYSelf to skew Y-axis in place", () => {
     const m = new CSSMatrix();
     m.skewYSelf(45);
 
@@ -670,7 +670,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.b).toBeCloseTo(1, 3);
   });
 
-  it("should be chainable", () => {
+  it("Test skewYSelf to be chainable", () => {
     const m = new CSSMatrix();
     const result = m.skewYSelf(45).skewYSelf(30);
 
@@ -679,7 +679,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m12).toBeCloseTo(1.57735, 3); // tan(45°) + tan(30°) = 1 + 0.577 = 1.577
   });
 
-  it("should match immutable skewY result", () => {
+  it("Test skewYSelf to match immutable skewY result", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
 
@@ -690,7 +690,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.b).toBeCloseTo(m2Result.b, 3);
   });
 
-  it("should skew both axes in place", () => {
+  it("Test skewYSelf to skew both axes in place", () => {
     const m = new CSSMatrix();
     m.skewSelf(45, 30);
 
@@ -699,17 +699,17 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m12).toBeCloseTo(0.577, 3); // tan(30°) = 0.577
   });
 
-  it("should be chainable", () => {
+  it("Test skewYSelf to be chainable", () => {
     const m = new CSSMatrix();
     const result = m.skewSelf(45, 30).skewSelf(15, 10);
 
     expect(result).toBe(m);
     // Verify combined skew
-    expect(m.m21).toBeCloseTo(1.26794, 3); // tan(45°) + tan(15°) = 1 + 0.268 = 1.268
-    expect(m.m12).toBeCloseTo(0.7536772, 3); // tan(30°) + tan(10°) = 0.577 + 0.176 = 0.753
+    expect(m.m21).toBeCloseTo(1.2679, 3); // tan(45°) + tan(15°) = 1 + 0.268 = 1.268
+    expect(m.m12).toBeCloseTo(0.7536, 3); // tan(30°) + tan(10°) = 0.577 + 0.176 = 0.753
   });
 
-  it("should match immutable skew result", () => {
+  it("Test skewYSelf to match immutable skew result", () => {
     const m1 = new CSSMatrix();
     const m2 = new CSSMatrix();
 
@@ -720,7 +720,7 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m1.m12).toBeCloseTo(m2Result.m12, 3);
   });
 
-  it("should allow chaining of all methods", () => {
+  it("Test chaining of all methods", () => {
     const m = new CSSMatrix();
     const result = m
       .translateSelf(10, 20)
@@ -740,12 +740,13 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m11).not.toBe(1); // Rotation should change values
   });
 
-  it("should throw error for invalid rotation axis angle", () => {
+  it("Test skewYSelf to throw error for invalid rotation axis angle", () => {
     const m = new CSSMatrix();
     // @ts-expect-error
     expect(() => m.rotateAxisAngleSelf(0, 0, 0, null)).toThrowError();
   });
 
+  // not yet implemented
   // it("should handle invalid inputs gracefully", () => {
   //   const m = new CSSMatrix();
   //   expect(() => m.translateSelf(NaN, 20)).toThrowError();

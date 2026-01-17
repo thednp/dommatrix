@@ -1,10 +1,11 @@
 /**
  * Creates and returns a new `DOMMatrix` compatible instance
- * with equivalent instance.
+ * with equivalent instance methods.
  *
  * @class CSSMatrix
  *
- * @author thednp <https://github.com/thednp/DOMMatrix/>
+ * @author thednp <https://github.com/thednp>
+ * @link homepage <https://thednp.github.io/dommatrix/>
  * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
  */
 declare class CSSMatrix {
@@ -296,7 +297,7 @@ declare class CSSMatrix {
 export default CSSMatrix;
 
 /** All CSSMatrix compatible initialization values. */
-declare type CSSMatrixInput = string | number[] | CSSMatrix | DOMMatrix | JSONMatrix | Float32Array | Float64Array;
+declare type CSSMatrixInput = string | number[] | Matrix | Matrix3d | CSSMatrix | DOMMatrix | JSONMatrix | Float32Array | Float64Array;
 
 /** The result of **CSSMatrix.toJSON()** / **DOMMatrix.toJSON()** instance calls. */
 declare interface JSONMatrix {

@@ -63,6 +63,8 @@ export type Matrix3d = [
 export type CSSMatrixInput =
   | string
   | number[]
+  | Matrix
+  | Matrix3d
   | CSSMatrix
   | DOMMatrix
   | JSONMatrix
