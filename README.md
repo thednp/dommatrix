@@ -52,6 +52,10 @@ myMatrix.rotate(15);
 // apply to styling to target
 element.style.transform = myMatrix.toString();
 ```
+> **Tip** in NodeJS you can import the default as whatever the name you want, best do:
+```ts
+import DOMMatrix from '@thednp/dommatrix';
+```
 For the complete JavaScript API, check the [JavaScript API](https://github.com/thednp/DOMMatrix/wiki/JavaScript-API) section in our wiki.
 
 ## WIKI
