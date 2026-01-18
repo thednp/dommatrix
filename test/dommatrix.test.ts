@@ -177,6 +177,13 @@ describe("DOMMatrix Class Test", () => {
       expect(err).to.have.property("message", "CSSMatrix: expecting 4 values");
     }
 
+    const m = new CSSMatrix();
+    expect(m.rotateAxisAngle(0, 0, 0, 0).isIdentity).toBe(true);
+    expect(m.rotateAxisAngle().isIdentity).toBe(true);
+
+    expect(CSSMatrix.RotateAxisAngle(0, 0, 0, 0).isIdentity).toBe(true);
+    expect(CSSMatrix.RotateAxisAngle().isIdentity).toBe(true);
+
     const d1 = new DOMMatrix().rotate(15);
     const m1 = new CSSMatrix().rotate(15);
 
@@ -744,6 +751,8 @@ describe("CSSMatrix Mutable Methods", () => {
     const m = new CSSMatrix();
     // @ts-expect-error
     expect(() => m.rotateAxisAngleSelf(0, 0, 0, null)).toThrowError();
+    expect(m.rotateAxisAngleSelf(0, 0, 0, 0)).to.deep.equal(m);
+    expect(m.rotateAxisAngleSelf()).to.deep.equal(m);
   });
 
   // not yet implemented

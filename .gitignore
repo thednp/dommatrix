@@ -3,3 +3,4 @@ node_modules
 experiments
 coverage
 test/_screenshots_
+test/__screenshots__

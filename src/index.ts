@@ -216,7 +216,7 @@ const fromString = (source: string): CSSMatrix => {
     throw TypeError(`CSSMatrix: "${JSON.stringify(source)}" is not a string.`);
   }
   const str = String(source).replace(/\s/g, "");
-  let m = new CSSMatrix();
+  const m = new CSSMatrix();
   const invalidStringError = `CSSMatrix: invalid transform string "${source}"`;
 
   // const px = ['perspective'];
@@ -254,37 +254,37 @@ const fromString = (source: string): CSSMatrix => {
         components.every((n) => !Number.isNaN(+n))
       ) {
         const values = components.map((n) => (Math.abs(n) < 1e-6 ? 0 : n));
-        m = m.multiply(fromArray(values as Matrix | Matrix3d));
+        m.multiplySelf(fromArray(values as Matrix | Matrix3d));
         // 3 values expected
       } else if (
         prop === "translate3d" &&
         xyz.every((n) => !Number.isNaN(+n))
       ) {
-        m = m.translate(x, y, z);
+        m.translateSelf(x, y, z);
         // single/double number value(s) expected
       } else if (prop === "translate" && x && z === undefined) {
-        m = m.translate(x, y || 0, 0);
+        m.translateSelf(x, y || 0, 0);
         // all 4 values expected
       } else if (
         prop === "rotate3d" &&
         xyza.every((n) => !Number.isNaN(+n)) &&
         a
       ) {
-        m = m.rotateAxisAngle(x, y, z, a);
+        m.rotateAxisAngleSelf(x, y, z, a);
         // single value expected
       } else if (
         prop === "rotate" &&
         x &&
         [y, z].every((n) => n === undefined)
       ) {
-        m = m.rotate(0, 0, x);
+        m.rotateSelf(0, 0, x);
         // 3 values expected
       } else if (
         prop === "scale3d" &&
         xyz.every((n) => !Number.isNaN(+n)) &&
         xyz.some((n) => n !== 1)
       ) {
-        m = m.scale(x, y, z);
+        m.scaleSelf(x, y, z);
         // single value expected
       } else if (
         // prop === "scale" && !Number.isNaN(x) && x !== 1 && z === undefined
@@ -296,14 +296,14 @@ const fromString = (source: string): CSSMatrix => {
       ) {
         const nosy = Number.isNaN(+y);
         const sy = nosy ? x : y;
-        m = m.scale(x, sy, 1);
+        m.scaleSelf(x, sy, 1);
         // single/double value expected
       } else if (
         prop === "skew" &&
         (x || (!Number.isNaN(x) && y)) &&
         z === undefined
       ) {
-        m = m.skew(x, y || 0);
+        m.skewSelf(x, y || 0);
       } else if (
         ["translate", "rotate", "scale", "skew"].some((p) =>
           prop.includes(p)
@@ -313,7 +313,8 @@ const fromString = (source: string): CSSMatrix => {
         [y, z].every((n) => n === undefined) // a single value expected
       ) {
         if ("skewX" === prop || "skewY" === prop) {
-          m = m[prop](x);
+          const method = "skewX" === prop ? "skewXSelf" : "skewYSelf";
+          m[method](x);
         } else {
           const fn = prop.replace(/[XYZ]/, "") as
             | "scale"
@@ -322,12 +323,16 @@ const fromString = (source: string): CSSMatrix => {
           const axis = prop.replace(fn, "");
           const idx = ["X", "Y", "Z"].indexOf(axis);
           const def = fn === "scale" ? 1 : 0;
+          const method = (fn + "Self") as
+            | "scaleSelf"
+            | "translateSelf"
+            | "rotateSelf";
           const axeValues: [number, number, number] = [
             idx === 0 ? x : def,
             idx === 1 ? x : def,
             idx === 2 ? x : def,
           ];
-          m = m[fn](...axeValues);
+          m[method](...axeValues);
         }
       } else {
         throw TypeError(invalidStringError);
@@ -463,16 +468,16 @@ const Rotate = (rx: number, ry: number, rz: number): CSSMatrix => {
  * @return the resulted matrix.
  */
 const RotateAxisAngle = (
-  x: number,
-  y: number,
-  z: number,
-  alpha: number,
+  x: number = 0,
+  y: number = 0,
+  z: number = 0,
+  alpha: number = 0,
 ): CSSMatrix => {
   const m = new CSSMatrix();
   const length = Math.sqrt(x * x + y * y + z * z);
 
+  // if somehow we get to here, make sure we don't fail
   if (length === 0) {
-    // bad vector length, return identity
     return m;
   }
 
@@ -907,12 +912,7 @@ export default class CSSMatrix {
    * @return The resulted matrix
    */
   translate(x: number, y?: number, z?: number): CSSMatrix {
-    const X = x;
-    let Y = y;
-    let Z = z;
-    if (typeof Y === "undefined") Y = 0;
-    if (typeof Z === "undefined") Z = 0;
-    return Multiply(this, Translate(X, Y, Z));
+    return this.multiply(Translate(x, y ?? 0, z ?? 0));
   }
 
   /**
@@ -927,13 +927,7 @@ export default class CSSMatrix {
    * @return The resulted matrix
    */
   scale(x: number, y?: number, z?: number): CSSMatrix {
-    const X = x;
-    let Y = y;
-    let Z = z;
-    if (typeof Y === "undefined") Y = x;
-    if (typeof Z === "undefined") Z = 1; // Z must be 1 if undefined
-
-    return Multiply(this, Scale(X, Y, Z));
+    return this.multiply(Scale(x, y ?? x, z ?? 1));
   }
 
   /**
@@ -963,7 +957,7 @@ export default class CSSMatrix {
       RY = 0;
     }
 
-    return Multiply(this, Rotate(RX, RY, RZ));
+    return this.multiply(Rotate(RX, RY, RZ));
   }
 
   /**
@@ -978,11 +972,23 @@ export default class CSSMatrix {
    * @param angle The angle of rotation about the axis vector, in degrees.
    * @return The resulted matrix
    */
-  rotateAxisAngle(x: number, y: number, z: number, angle: number): CSSMatrix {
+  rotateAxisAngle(
+    x: number = 0,
+    y: number = 0,
+    z: number = 0,
+    angle: number = 0,
+  ): CSSMatrix {
     if ([x, y, z, angle].some((n) => !Number.isFinite(n))) {
       throw new TypeError("CSSMatrix: expecting 4 values");
     }
-    return Multiply(this, RotateAxisAngle(x, y, z, angle));
+
+    // Early return if zero-length vector
+    const length = Math.sqrt(x * x + y * y + z * z);
+    if (length === 0) {
+      return fromMatrix(this); // Return copy of this
+    }
+
+    return this.multiply(RotateAxisAngle(x, y, z, angle));
   }
 
   /**
@@ -993,7 +999,7 @@ export default class CSSMatrix {
    * @return The resulted matrix
    */
   skewX(angle: number): CSSMatrix {
-    return Multiply(this, SkewX(angle));
+    return this.multiply(SkewX(angle));
   }
 
   /**
@@ -1004,7 +1010,7 @@ export default class CSSMatrix {
    * @return The resulted matrix
    */
   skewY(angle: number): CSSMatrix {
-    return Multiply(this, SkewY(angle));
+    return this.multiply(SkewY(angle));
   }
 
   /**
@@ -1016,7 +1022,7 @@ export default class CSSMatrix {
    * @return The resulted matrix
    */
   skew(angleX: number, angleY: number): CSSMatrix {
-    return Multiply(this, Skew(angleX, angleY));
+    return this.multiply(Skew(angleX, angleY));
   }
 
   /**
@@ -1096,9 +1102,20 @@ export default class CSSMatrix {
    * @param angle The angle of rotation about the axis vector, in degrees.
    * @return this matrix (modified)
    */
-  rotateAxisAngleSelf(x: number, y: number, z: number, angle: number): this {
+  rotateAxisAngleSelf(
+    x: number = 0,
+    y: number = 0,
+    z: number = 0,
+    angle: number = 0,
+  ): this {
     if ([x, y, z, angle].some((n) => !Number.isFinite(n))) {
       throw new TypeError("CSSMatrix: expecting 4 values");
+    }
+
+    // Early return if zero-length vector
+    const length = Math.sqrt(x * x + y * y + z * z);
+    if (length === 0) {
+      return this;
     }
     return this.multiplySelf(RotateAxisAngle(x, y, z, angle));
   }

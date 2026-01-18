@@ -23,8 +23,8 @@ const I = {
   m44: 1,
   is2D: !0,
   isIdentity: !0
-}, T = (s) => (s instanceof Float64Array || s instanceof Float32Array || Array.isArray(s) && s.every((t) => typeof t == "number")) && [6, 16].some((t) => s.length === t), E = (s) => s instanceof DOMMatrix || s instanceof w || typeof s == "object" && Object.keys(I).every((t) => s && t in s), x = (s) => {
-  const t = new w(), e = Array.from(s);
+}, T = (s) => (s instanceof Float64Array || s instanceof Float32Array || Array.isArray(s) && s.every((t) => typeof t == "number")) && [6, 16].some((t) => s.length === t), E = (s) => s instanceof DOMMatrix || s instanceof M || typeof s == "object" && Object.keys(I).every((t) => s && t in s), b = (s) => {
+  const t = new M(), e = Array.from(s);
   if (!T(e))
     throw TypeError(
       `CSSMatrix: "${e.join(",")}" must be an array with 6/16 numbers.`
@@ -33,10 +33,10 @@ const I = {
     const [
       i,
       n,
-      r,
+      m,
       a,
       h,
-      m,
+      r,
       l,
       c,
       u,
@@ -44,19 +44,19 @@ const I = {
       p,
       o,
       y,
-      d,
       S,
-      A
+      d,
+      w
     ] = e;
-    t.m11 = i, t.a = i, t.m21 = h, t.c = h, t.m31 = u, t.m41 = y, t.e = y, t.m12 = n, t.b = n, t.m22 = m, t.d = m, t.m32 = f, t.m42 = d, t.f = d, t.m13 = r, t.m23 = l, t.m33 = p, t.m43 = S, t.m14 = a, t.m24 = c, t.m34 = o, t.m44 = A;
+    t.m11 = i, t.a = i, t.m21 = h, t.c = h, t.m31 = u, t.m41 = y, t.e = y, t.m12 = n, t.b = n, t.m22 = r, t.d = r, t.m32 = f, t.m42 = S, t.f = S, t.m13 = m, t.m23 = l, t.m33 = p, t.m43 = d, t.m14 = a, t.m24 = c, t.m34 = o, t.m44 = w;
   } else if (e.length === 6) {
-    const [i, n, r, a, h, m] = e;
-    t.m11 = i, t.a = i, t.m12 = n, t.b = n, t.m21 = r, t.c = r, t.m22 = a, t.d = a, t.m41 = h, t.e = h, t.m42 = m, t.f = m;
+    const [i, n, m, a, h, r] = e;
+    t.m11 = i, t.a = i, t.m12 = n, t.b = n, t.m21 = m, t.c = m, t.m22 = a, t.d = a, t.m41 = h, t.e = h, t.m42 = r, t.f = r;
   }
   return t;
-}, C = (s) => {
+}, N = (s) => {
   if (E(s))
-    return x([
+    return b([
       s.m11,
       s.m12,
       s.m13,
@@ -82,56 +82,54 @@ const I = {
 }, R = (s) => {
   if (typeof s != "string")
     throw TypeError(`CSSMatrix: "${JSON.stringify(s)}" is not a string.`);
-  const t = String(s).replace(/\s/g, "");
-  let e = new w();
-  const i = `CSSMatrix: invalid transform string "${s}"`;
+  const t = String(s).replace(/\s/g, ""), e = new M(), i = `CSSMatrix: invalid transform string "${s}"`;
   return t.split(")").filter((n) => n).forEach((n) => {
-    const [r, a] = n.split("(");
+    const [m, a] = n.split("(");
     if (!a) throw TypeError(i);
     const h = a.split(",").map(
       (o) => o.includes("rad") ? parseFloat(o) * (180 / Math.PI) : parseFloat(o)
-    ), [m, l, c, u] = h, f = [m, l, c], p = [m, l, c, u];
-    if (r === "perspective" && m && [l, c].every((o) => o === void 0))
-      e.m34 = -1 / m;
-    else if (r.includes("matrix") && [6, 16].includes(h.length) && h.every((o) => !Number.isNaN(+o))) {
+    ), [r, l, c, u] = h, f = [r, l, c], p = [r, l, c, u];
+    if (m === "perspective" && r && [l, c].every((o) => o === void 0))
+      e.m34 = -1 / r;
+    else if (m.includes("matrix") && [6, 16].includes(h.length) && h.every((o) => !Number.isNaN(+o))) {
       const o = h.map((y) => Math.abs(y) < 1e-6 ? 0 : y);
-      e = e.multiply(x(o));
-    } else if (r === "translate3d" && f.every((o) => !Number.isNaN(+o)))
-      e = e.translate(m, l, c);
-    else if (r === "translate" && m && c === void 0)
-      e = e.translate(m, l || 0, 0);
-    else if (r === "rotate3d" && p.every((o) => !Number.isNaN(+o)) && u)
-      e = e.rotateAxisAngle(m, l, c, u);
-    else if (r === "rotate" && m && [l, c].every((o) => o === void 0))
-      e = e.rotate(0, 0, m);
-    else if (r === "scale3d" && f.every((o) => !Number.isNaN(+o)) && f.some((o) => o !== 1))
-      e = e.scale(m, l, c);
+      e.multiplySelf(b(o));
+    } else if (m === "translate3d" && f.every((o) => !Number.isNaN(+o)))
+      e.translateSelf(r, l, c);
+    else if (m === "translate" && r && c === void 0)
+      e.translateSelf(r, l || 0, 0);
+    else if (m === "rotate3d" && p.every((o) => !Number.isNaN(+o)) && u)
+      e.rotateAxisAngleSelf(r, l, c, u);
+    else if (m === "rotate" && r && [l, c].every((o) => o === void 0))
+      e.rotateSelf(0, 0, r);
+    else if (m === "scale3d" && f.every((o) => !Number.isNaN(+o)) && f.some((o) => o !== 1))
+      e.scaleSelf(r, l, c);
     else if (
       // prop === "scale" && !Number.isNaN(x) && x !== 1 && z === undefined
       // prop === "scale" && !Number.isNaN(x) && [x, y].some((n) => n !== 1) &&
-      r === "scale" && !Number.isNaN(m) && (m !== 1 || l !== 1) && c === void 0
+      m === "scale" && !Number.isNaN(r) && (r !== 1 || l !== 1) && c === void 0
     ) {
-      const y = Number.isNaN(+l) ? m : l;
-      e = e.scale(m, y, 1);
-    } else if (r === "skew" && (m || !Number.isNaN(m) && l) && c === void 0)
-      e = e.skew(m, l || 0);
+      const y = Number.isNaN(+l) ? r : l;
+      e.scaleSelf(r, y, 1);
+    } else if (m === "skew" && (r || !Number.isNaN(r) && l) && c === void 0)
+      e.skewSelf(r, l || 0);
     else if (["translate", "rotate", "scale", "skew"].some(
-      (o) => r.includes(o)
-    ) && /[XYZ]/.test(r) && m && [l, c].every((o) => o === void 0))
-      if (r === "skewX" || r === "skewY")
-        e = e[r](m);
+      (o) => m.includes(o)
+    ) && /[XYZ]/.test(m) && r && [l, c].every((o) => o === void 0))
+      if (m === "skewX" || m === "skewY")
+        e[m === "skewX" ? "skewXSelf" : "skewYSelf"](r);
       else {
-        const o = r.replace(/[XYZ]/, ""), y = r.replace(o, ""), d = ["X", "Y", "Z"].indexOf(y), S = o === "scale" ? 1 : 0, A = [
-          d === 0 ? m : S,
-          d === 1 ? m : S,
-          d === 2 ? m : S
+        const o = m.replace(/[XYZ]/, ""), y = m.replace(o, ""), S = ["X", "Y", "Z"].indexOf(y), d = o === "scale" ? 1 : 0, w = o + "Self", g = [
+          S === 0 ? r : d,
+          S === 1 ? r : d,
+          S === 2 ? r : d
         ];
-        e = e[o](...A);
+        e[w](...g);
       }
     else
       throw TypeError(i);
   }), e;
-}, N = (s, t) => t ? [s.a, s.b, s.c, s.d, s.e, s.f] : [
+}, x = (s, t) => t ? [s.a, s.b, s.c, s.d, s.e, s.f] : [
   s.m11,
   s.m12,
   s.m13,
@@ -148,33 +146,33 @@ const I = {
   s.m42,
   s.m43,
   s.m44
-], g = (s, t, e) => {
-  const i = new w();
+], v = (s, t, e) => {
+  const i = new M();
   return i.m41 = s, i.e = s, i.m42 = t, i.f = t, i.m43 = e, i;
-}, v = (s, t, e) => {
-  const i = new w(), n = Math.PI / 180, r = s * n, a = t * n, h = e * n, m = Math.cos(r), l = -Math.sin(r), c = Math.cos(a), u = -Math.sin(a), f = Math.cos(h), p = -Math.sin(h), o = c * f, y = -c * p;
+}, k = (s, t, e) => {
+  const i = new M(), n = Math.PI / 180, m = s * n, a = t * n, h = e * n, r = Math.cos(m), l = -Math.sin(m), c = Math.cos(a), u = -Math.sin(a), f = Math.cos(h), p = -Math.sin(h), o = c * f, y = -c * p;
   i.m11 = o, i.a = o, i.m12 = y, i.b = y, i.m13 = u;
-  const d = l * u * f + m * p;
-  i.m21 = d, i.c = d;
-  const S = m * f - l * u * p;
-  return i.m22 = S, i.d = S, i.m23 = -l * c, i.m31 = l * p - m * u * f, i.m32 = l * f + m * u * p, i.m33 = m * c, i;
-}, k = (s, t, e, i) => {
-  const n = new w(), r = Math.sqrt(s * s + t * t + e * e);
-  if (r === 0)
+  const S = l * u * f + r * p;
+  i.m21 = S, i.c = S;
+  const d = r * f - l * u * p;
+  return i.m22 = d, i.d = d, i.m23 = -l * c, i.m31 = l * p - r * u * f, i.m32 = l * f + r * u * p, i.m33 = r * c, i;
+}, X = (s = 0, t = 0, e = 0, i = 0) => {
+  const n = new M(), m = Math.sqrt(s * s + t * t + e * e);
+  if (m === 0)
     return n;
-  const a = s / r, h = t / r, m = e / r, l = i * (Math.PI / 360), c = Math.sin(l), u = Math.cos(l), f = c * c, p = a * a, o = h * h, y = m * m, d = 1 - 2 * (o + y) * f;
-  n.m11 = d, n.a = d;
-  const S = 2 * (a * h * f + m * c * u);
-  n.m12 = S, n.b = S, n.m13 = 2 * (a * m * f - h * c * u);
-  const A = 2 * (h * a * f - m * c * u);
-  n.m21 = A, n.c = A;
-  const F = 1 - 2 * (y + p) * f;
-  return n.m22 = F, n.d = F, n.m23 = 2 * (h * m * f + a * c * u), n.m31 = 2 * (m * a * f + h * c * u), n.m32 = 2 * (m * h * f - a * c * u), n.m33 = 1 - 2 * (p + o) * f, n;
-}, X = (s, t, e) => {
-  const i = new w();
+  const a = s / m, h = t / m, r = e / m, l = i * (Math.PI / 360), c = Math.sin(l), u = Math.cos(l), f = c * c, p = a * a, o = h * h, y = r * r, S = 1 - 2 * (o + y) * f;
+  n.m11 = S, n.a = S;
+  const d = 2 * (a * h * f + r * c * u);
+  n.m12 = d, n.b = d, n.m13 = 2 * (a * r * f - h * c * u);
+  const w = 2 * (h * a * f - r * c * u);
+  n.m21 = w, n.c = w;
+  const g = 1 - 2 * (y + p) * f;
+  return n.m22 = g, n.d = g, n.m23 = 2 * (h * r * f + a * c * u), n.m31 = 2 * (r * a * f + h * c * u), n.m32 = 2 * (r * h * f - a * c * u), n.m33 = 1 - 2 * (p + o) * f, n;
+}, O = (s, t, e) => {
+  const i = new M();
   return i.m11 = s, i.a = s, i.m22 = t, i.d = t, i.m33 = e, i;
-}, b = (s, t) => {
-  const e = new w();
+}, A = (s, t) => {
+  const e = new M();
   if (s) {
     const i = s * Math.PI / 180, n = Math.tan(i);
     e.m21 = n, e.c = n;
@@ -184,16 +182,16 @@ const I = {
     e.m12 = n, e.b = n;
   }
   return e;
-}, Y = (s) => b(s, 0), O = (s) => b(0, s), M = (s, t) => {
-  const e = t.m11 * s.m11 + t.m12 * s.m21 + t.m13 * s.m31 + t.m14 * s.m41, i = t.m11 * s.m12 + t.m12 * s.m22 + t.m13 * s.m32 + t.m14 * s.m42, n = t.m11 * s.m13 + t.m12 * s.m23 + t.m13 * s.m33 + t.m14 * s.m43, r = t.m11 * s.m14 + t.m12 * s.m24 + t.m13 * s.m34 + t.m14 * s.m44, a = t.m21 * s.m11 + t.m22 * s.m21 + t.m23 * s.m31 + t.m24 * s.m41, h = t.m21 * s.m12 + t.m22 * s.m22 + t.m23 * s.m32 + t.m24 * s.m42, m = t.m21 * s.m13 + t.m22 * s.m23 + t.m23 * s.m33 + t.m24 * s.m43, l = t.m21 * s.m14 + t.m22 * s.m24 + t.m23 * s.m34 + t.m24 * s.m44, c = t.m31 * s.m11 + t.m32 * s.m21 + t.m33 * s.m31 + t.m34 * s.m41, u = t.m31 * s.m12 + t.m32 * s.m22 + t.m33 * s.m32 + t.m34 * s.m42, f = t.m31 * s.m13 + t.m32 * s.m23 + t.m33 * s.m33 + t.m34 * s.m43, p = t.m31 * s.m14 + t.m32 * s.m24 + t.m33 * s.m34 + t.m34 * s.m44, o = t.m41 * s.m11 + t.m42 * s.m21 + t.m43 * s.m31 + t.m44 * s.m41, y = t.m41 * s.m12 + t.m42 * s.m22 + t.m43 * s.m32 + t.m44 * s.m42, d = t.m41 * s.m13 + t.m42 * s.m23 + t.m43 * s.m33 + t.m44 * s.m43, S = t.m41 * s.m14 + t.m42 * s.m24 + t.m43 * s.m34 + t.m44 * s.m44;
-  return x([
+}, Y = (s) => A(s, 0), F = (s) => A(0, s), C = (s, t) => {
+  const e = t.m11 * s.m11 + t.m12 * s.m21 + t.m13 * s.m31 + t.m14 * s.m41, i = t.m11 * s.m12 + t.m12 * s.m22 + t.m13 * s.m32 + t.m14 * s.m42, n = t.m11 * s.m13 + t.m12 * s.m23 + t.m13 * s.m33 + t.m14 * s.m43, m = t.m11 * s.m14 + t.m12 * s.m24 + t.m13 * s.m34 + t.m14 * s.m44, a = t.m21 * s.m11 + t.m22 * s.m21 + t.m23 * s.m31 + t.m24 * s.m41, h = t.m21 * s.m12 + t.m22 * s.m22 + t.m23 * s.m32 + t.m24 * s.m42, r = t.m21 * s.m13 + t.m22 * s.m23 + t.m23 * s.m33 + t.m24 * s.m43, l = t.m21 * s.m14 + t.m22 * s.m24 + t.m23 * s.m34 + t.m24 * s.m44, c = t.m31 * s.m11 + t.m32 * s.m21 + t.m33 * s.m31 + t.m34 * s.m41, u = t.m31 * s.m12 + t.m32 * s.m22 + t.m33 * s.m32 + t.m34 * s.m42, f = t.m31 * s.m13 + t.m32 * s.m23 + t.m33 * s.m33 + t.m34 * s.m43, p = t.m31 * s.m14 + t.m32 * s.m24 + t.m33 * s.m34 + t.m34 * s.m44, o = t.m41 * s.m11 + t.m42 * s.m21 + t.m43 * s.m31 + t.m44 * s.m41, y = t.m41 * s.m12 + t.m42 * s.m22 + t.m43 * s.m32 + t.m44 * s.m42, S = t.m41 * s.m13 + t.m42 * s.m23 + t.m43 * s.m33 + t.m44 * s.m43, d = t.m41 * s.m14 + t.m42 * s.m24 + t.m43 * s.m34 + t.m44 * s.m44;
+  return b([
     e,
     i,
     n,
-    r,
+    m,
     a,
     h,
-    m,
+    r,
     l,
     c,
     u,
@@ -201,23 +199,23 @@ const I = {
     p,
     o,
     y,
-    d,
-    S
+    S,
+    d
   ]);
 };
-class w {
-  static Translate = g;
-  static Rotate = v;
-  static RotateAxisAngle = k;
-  static Scale = X;
+class M {
+  static Translate = v;
+  static Rotate = k;
+  static RotateAxisAngle = X;
+  static Scale = O;
   static SkewX = Y;
-  static SkewY = O;
-  static Skew = b;
-  static Multiply = M;
-  static fromArray = x;
-  static fromMatrix = C;
+  static SkewY = F;
+  static Skew = A;
+  static Multiply = C;
+  static fromArray = b;
+  static fromMatrix = N;
   static fromString = R;
-  static toArray = N;
+  static toArray = x;
   static isCompatibleArray = T;
   static isCompatibleObject = E;
   /**
@@ -264,7 +262,7 @@ class w {
    * @return the matrix instance
    */
   setMatrixValue(t) {
-    return typeof t == "string" && t.length && t !== "none" ? R(t) : Array.isArray(t) || t instanceof Float64Array || t instanceof Float32Array ? x(t) : typeof t == "object" ? C(t) : this;
+    return typeof t == "string" && t.length && t !== "none" ? R(t) : Array.isArray(t) || t instanceof Float64Array || t instanceof Float32Array ? b(t) : typeof t == "object" ? N(t) : this;
   }
   /**
    * Returns a *Float32Array* containing elements which comprise the matrix.
@@ -275,7 +273,7 @@ class w {
    * @return an *Array* representation of the matrix
    */
   toFloat32Array(t) {
-    return Float32Array.from(N(this, t));
+    return Float32Array.from(x(this, t));
   }
   /**
    * Returns a *Float64Array* containing elements which comprise the matrix.
@@ -286,7 +284,7 @@ class w {
    * @return an *Array* representation of the matrix
    */
   toFloat64Array(t) {
-    return Float64Array.from(N(this, t));
+    return Float64Array.from(x(this, t));
   }
   /**
    * Creates and returns a string representation of the matrix in `CSS` matrix syntax,
@@ -324,7 +322,7 @@ class w {
    * @return The resulted matrix.
    */
   multiply(t) {
-    return M(this, t);
+    return C(this, t);
   }
   /**
    * The translate method returns a new matrix which is this matrix post
@@ -338,9 +336,7 @@ class w {
    * @return The resulted matrix
    */
   translate(t, e, i) {
-    const n = t;
-    let r = e, a = i;
-    return typeof r > "u" && (r = 0), typeof a > "u" && (a = 0), M(this, g(n, r, a));
+    return this.multiply(v(t, e ?? 0, i ?? 0));
   }
   /**
    * The scale method returns a new matrix which is this matrix post multiplied by
@@ -354,9 +350,7 @@ class w {
    * @return The resulted matrix
    */
   scale(t, e, i) {
-    const n = t;
-    let r = e, a = i;
-    return typeof r > "u" && (r = t), typeof a > "u" && (a = 1), M(this, X(n, r, a));
+    return this.multiply(O(t, e ?? t, i ?? 1));
   }
   /**
    * The rotate method returns a new matrix which is this matrix post multiplied
@@ -371,8 +365,8 @@ class w {
    * @return The resulted matrix
    */
   rotate(t, e, i) {
-    let n = t, r = e || 0, a = i || 0;
-    return typeof t == "number" && typeof e > "u" && typeof i > "u" && (a = n, n = 0, r = 0), M(this, v(n, r, a));
+    let n = t, m = e || 0, a = i || 0;
+    return typeof t == "number" && typeof e > "u" && typeof i > "u" && (a = n, n = 0, m = 0), this.multiply(k(n, m, a));
   }
   /**
    * The rotateAxisAngle method returns a new matrix which is this matrix post
@@ -386,10 +380,10 @@ class w {
    * @param angle The angle of rotation about the axis vector, in degrees.
    * @return The resulted matrix
    */
-  rotateAxisAngle(t, e, i, n) {
-    if ([t, e, i, n].some((r) => !Number.isFinite(r)))
+  rotateAxisAngle(t = 0, e = 0, i = 0, n = 0) {
+    if ([t, e, i, n].some((a) => !Number.isFinite(a)))
       throw new TypeError("CSSMatrix: expecting 4 values");
-    return M(this, k(t, e, i, n));
+    return Math.sqrt(t * t + e * e + i * i) === 0 ? N(this) : this.multiply(X(t, e, i, n));
   }
   /**
    * Specifies a skew transformation along the `x-axis` by the given angle.
@@ -399,7 +393,7 @@ class w {
    * @return The resulted matrix
    */
   skewX(t) {
-    return M(this, Y(t));
+    return this.multiply(Y(t));
   }
   /**
    * Specifies a skew transformation along the `y-axis` by the given angle.
@@ -409,7 +403,7 @@ class w {
    * @return The resulted matrix
    */
   skewY(t) {
-    return M(this, O(t));
+    return this.multiply(F(t));
   }
   /**
    * Specifies a skew transformation along both the `x-axis` and `y-axis`.
@@ -420,7 +414,7 @@ class w {
    * @return The resulted matrix
    */
   skew(t, e) {
-    return M(this, b(t, e));
+    return this.multiply(A(t, e));
   }
   /**
    * Modifies the current matrix by post-multiplying it with another matrix.
@@ -430,7 +424,7 @@ class w {
    * @return this matrix (modified)
    */
   multiplySelf(t) {
-    const e = M(this, t);
+    const e = C(this, t);
     return Object.assign(this, e), this;
   }
   /**
@@ -443,7 +437,7 @@ class w {
    * @return this matrix (modified)
    */
   translateSelf(t, e, i) {
-    return this.multiplySelf(g(t, e ?? 0, i ?? 0));
+    return this.multiplySelf(v(t, e ?? 0, i ?? 0));
   }
   /**
    * Modifies the current matrix by post-multiplying it with a scale matrix.
@@ -455,7 +449,7 @@ class w {
    * @return this matrix (modified)
    */
   scaleSelf(t, e, i) {
-    return this.multiplySelf(X(t, e ?? t, i ?? 1));
+    return this.multiplySelf(O(t, e ?? t, i ?? 1));
   }
   /**
    * Modifies the current matrix by post-multiplying it with a rotation matrix.
@@ -467,8 +461,8 @@ class w {
    * @return this matrix (modified)
    */
   rotateSelf(t, e, i) {
-    let n = t, r = e || 0, a = i || 0;
-    return typeof t == "number" && typeof e > "u" && typeof i > "u" && (a = n, n = 0, r = 0), this.multiplySelf(v(n, r, a));
+    let n = t, m = e || 0, a = i || 0;
+    return typeof t == "number" && typeof e > "u" && typeof i > "u" && (a = n, n = 0, m = 0), this.multiplySelf(k(n, m, a));
   }
   /**
    * Modifies the current matrix by post-multiplying it with a rotation matrix
@@ -481,10 +475,10 @@ class w {
    * @param angle The angle of rotation about the axis vector, in degrees.
    * @return this matrix (modified)
    */
-  rotateAxisAngleSelf(t, e, i, n) {
-    if ([t, e, i, n].some((r) => !Number.isFinite(r)))
+  rotateAxisAngleSelf(t = 0, e = 0, i = 0, n = 0) {
+    if ([t, e, i, n].some((a) => !Number.isFinite(a)))
       throw new TypeError("CSSMatrix: expecting 4 values");
-    return this.multiplySelf(k(t, e, i, n));
+    return Math.sqrt(t * t + e * e + i * i) === 0 ? this : this.multiplySelf(X(t, e, i, n));
   }
   /**
    * Modifies the current matrix by post-multiplying it with a skewX matrix.
@@ -504,7 +498,7 @@ class w {
    * @return this matrix (modified)
    */
   skewYSelf(t) {
-    return this.multiplySelf(O(t));
+    return this.multiplySelf(F(t));
   }
   /**
    * Modifies the current matrix by post-multiplying it with a skew matrix.
@@ -515,7 +509,7 @@ class w {
    * @return this matrix (modified)
    */
   skewSelf(t, e) {
-    return this.multiplySelf(b(t, e));
+    return this.multiplySelf(A(t, e));
   }
   /**
    * Transforms a specified vector using the matrix, returning a new
@@ -529,16 +523,16 @@ class w {
    * @return the resulting Tuple
    */
   transformPoint(t) {
-    const e = this.m11 * t.x + this.m21 * t.y + this.m31 * t.z + this.m41 * t.w, i = this.m12 * t.x + this.m22 * t.y + this.m32 * t.z + this.m42 * t.w, n = this.m13 * t.x + this.m23 * t.y + this.m33 * t.z + this.m43 * t.w, r = this.m14 * t.x + this.m24 * t.y + this.m34 * t.z + this.m44 * t.w;
-    return t instanceof DOMPoint ? new DOMPoint(e, i, n, r) : {
+    const e = this.m11 * t.x + this.m21 * t.y + this.m31 * t.z + this.m41 * t.w, i = this.m12 * t.x + this.m22 * t.y + this.m32 * t.z + this.m42 * t.w, n = this.m13 * t.x + this.m23 * t.y + this.m33 * t.z + this.m43 * t.w, m = this.m14 * t.x + this.m24 * t.y + this.m34 * t.z + this.m44 * t.w;
+    return t instanceof DOMPoint ? new DOMPoint(e, i, n, m) : {
       x: e,
       y: i,
       z: n,
-      w: r
+      w: m
     };
   }
 }
 export {
-  w as default
+  M as default
 };
 //# sourceMappingURL=dommatrix.mjs.map

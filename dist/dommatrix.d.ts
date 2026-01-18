@@ -33,7 +33,7 @@ declare class CSSMatrix {
     f: number;
     static Translate: (x: number, y: number, z: number) => CSSMatrix;
     static Rotate: (rx: number, ry: number, rz: number) => CSSMatrix;
-    static RotateAxisAngle: (x: number, y: number, z: number, alpha: number) => CSSMatrix;
+    static RotateAxisAngle: (x?: number, y?: number, z?: number, alpha?: number) => CSSMatrix;
     static Scale: (x: number, y: number, z: number) => CSSMatrix;
     static SkewX: (angle: number) => CSSMatrix;
     static SkewY: (angle: number) => CSSMatrix;
@@ -180,7 +180,7 @@ declare class CSSMatrix {
      * @param angle The angle of rotation about the axis vector, in degrees.
      * @return The resulted matrix
      */
-    rotateAxisAngle(x: number, y: number, z: number, angle: number): CSSMatrix;
+    rotateAxisAngle(x?: number, y?: number, z?: number, angle?: number): CSSMatrix;
     /**
      * Specifies a skew transformation along the `x-axis` by the given angle.
      * This matrix is not modified.
@@ -255,7 +255,7 @@ declare class CSSMatrix {
      * @param angle The angle of rotation about the axis vector, in degrees.
      * @return this matrix (modified)
      */
-    rotateAxisAngleSelf(x: number, y: number, z: number, angle: number): this;
+    rotateAxisAngleSelf(x?: number, y?: number, z?: number, angle?: number): this;
     /**
      * Modifies the current matrix by post-multiplying it with a skewX matrix.
      * This is the mutable version of skewX().
