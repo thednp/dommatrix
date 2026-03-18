@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "author": "thednp",
@@ -35,7 +35,7 @@
     "fix:ts": "deno lint src --fix",
     "build": "vite build && pnpm copy-docs",
     "copy-docs": "cp dist/dommatrix.js docs/dommatrix.js && cp dist/dommatrix.js.map docs/dommatrix.js.map",
-    "prepublishOnly": "pnpm up --latest && pnpm format && pnpm lint && pnpm build && pnpm badges"
+    "prepublishOnly": "pnpm up --latest && pnpm format && pnpm lint && pnpm build"
   },
   "repository": {
     "type": "git",
@@ -60,16 +60,16 @@
     "url": "https://github.com/thednp/dommatrix/issues"
   },
   "devDependencies": {
-    "@types/node": "^25.0.9",
-    "@vitest/browser": "^4.0.17",
-    "@vitest/browser-playwright": "^4.0.17",
-    "@vitest/coverage-istanbul": "^4.0.17",
-    "@vitest/ui": "^4.0.17",
-    "playwright": "^1.57.0",
+    "@types/node": "^25.5.0",
+    "@vitest/browser": "^4.1.0",
+    "@vitest/browser-playwright": "^4.1.0",
+    "@vitest/coverage-istanbul": "^4.1.0",
+    "@vitest/ui": "^4.1.0",
+    "playwright": "^1.58.2",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
+    "vite": "^8.0.0",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.0.17"
+    "vitest": "^4.1.0"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

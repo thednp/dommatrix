@@ -4,9 +4,6 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/@thednp/dommatrix.svg)](http://npm-stat.com/charts.html?@thednp/dommatrix)
 [![ci](https://github.com/thednp/dommatrix/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/dommatrix/actions/workflows/ci.yml)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/@thednp/dommatrix/badge)](https://www.jsdelivr.com/package/npm/@thednp/dommatrix)
-[![typescript version](https://img.shields.io/badge/typescript-5.9.3-brightgreen)](https://www.typescriptlang.org/)
-[![vitest version](https://img.shields.io/badge/vitest-4.0.17-brightgreen)](https://vitest.dev/)
-[![vite version](https://img.shields.io/badge/vite-7.3.1-brightgreen)](https://vitejs.dev/)
 
 A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers.
 

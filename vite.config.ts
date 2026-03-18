@@ -12,7 +12,7 @@ const NAME = 'CSSMatrix';
 const fileName = {
   es: `${getPackageName()}.mjs`,
   cjs: `${getPackageName()}.cjs`,
-  iife: `${getPackageName()}.js`,
+  umd: `${getPackageName()}.js`,
 };
 
 export default defineConfig({
@@ -30,7 +30,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: NAME,
-      formats: ['es', 'cjs', 'iife'],
+      formats: ['es', 'cjs', 'umd'],
       fileName: (format: string) => fileName[format],
     },
     sourcemap: true,
