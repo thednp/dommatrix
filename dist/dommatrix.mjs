@@ -62,7 +62,7 @@ var e = {
 	return t.split(")").filter((e) => e).forEach((e) => {
 		let [t, a] = e.split("(");
 		if (!a) throw TypeError(i);
-		let o = a.split(",").map((e) => e.includes("rad") ? parseFloat(e) * (180 / Math.PI) : parseFloat(e)), [s, c, l, u] = o, d = [
+		let o = a.split(",").map((e) => e.includes("rad") ? 180 / Math.PI * parseFloat(e) : parseFloat(e)), [s, c, l, u] = o, d = [
 			s,
 			c,
 			l
@@ -142,7 +142,7 @@ var e = {
 }, l = (e = 0, t = 0, n = 0, r = 0) => {
 	let i = new h(), a = Math.sqrt(e * e + t * t + n * n);
 	if (a === 0) return i;
-	let o = e / a, s = t / a, c = n / a, l = r * (Math.PI / 360), u = Math.sin(l), d = Math.cos(l), f = u * u, p = o * o, m = s * s, g = c * c, _ = 1 - 2 * (m + g) * f;
+	let o = e / a, s = t / a, c = n / a, l = Math.PI / 360 * r, u = Math.sin(l), d = Math.cos(l), f = u * u, p = o * o, m = s * s, g = c * c, _ = 1 - 2 * (m + g) * f;
 	i.m11 = _, i.a = _;
 	let v = 2 * (o * s * f + c * u * d);
 	i.m12 = v, i.b = v, i.m13 = 2 * (o * c * f - s * u * d);
