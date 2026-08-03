@@ -198,12 +198,6 @@ Methods of the `DOMMatrixReadOnly` prototype that are not part of this shim: `fl
 
 DOMMatrix shim is meant to be a light pocket tool for many things like [svg-path-commander](http://thednp.github.io/svg-path-commander). For a complete polyfill that fills in the missing `DOMMatrixReadOnly` methods (`inverse()`, `flipX()`, `flipY()`, ...), you might want to also consider [geometry-interfaces](https://github.com/trusktr/geometry-interfaces) and [geometry-polyfill](https://github.com/jarek-foksa/geometry-polyfill).
 
-## Thanks
-
-- Joe Pea for his [geometry-interfaces](https://github.com/trusktr/geometry-interfaces)
-- Jarek Foksa for his [geometry-polyfill](https://github.com/jarek-foksa/geometry-polyfill)
-- Arian Stolwijk for his [CSSMatrix](https://github.com/arian/CSSMatrix/)
-
 ## History
 
 `@thednp/dommatrix` started as a fork of the [original CSSMatrix](https://github.com/arian/CSSMatrix/). In contrast with the original source there have been a series of changes to the prototype for consistency, performance as well as requirements to better accommodate the **DOMMatrix** interface:
@@ -234,6 +228,12 @@ DOMMatrix shim is meant to be a light pocket tool for many things like [svg-path
 - *not supported* `fromFloat64Array()` and `fromFloat32Array()` static methods are not supported, our `fromArray()` should handle them just as well;
 - *not supported* `flipX()` or `flipY()` instance methods of the *DOMMatrixReadOnly* prototype are not supported;
 - *not supported* `scaleNonUniformSelf()` or `rotate3d()` with `{x, y, z}` transform origin parameters are not implemented.
+
+## Thanks
+
+- Joe Pea for his [geometry-interfaces](https://github.com/trusktr/geometry-interfaces)
+- Jarek Foksa for his [geometry-polyfill](https://github.com/jarek-foksa/geometry-polyfill)
+- Arian Stolwijk for his [CSSMatrix](https://github.com/arian/CSSMatrix/)
 
 ## License
 
