@@ -49,5 +49,5 @@ jobs:
       - name: Publish to jsr
         run: deno publish
         # env:
-          # Needed only if JSR OIDC (trusted publishing) is not enabled for this repo
-          # JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
+        #   Needed only if JSR OIDC (trusted publishing) is not enabled for this repo
+        #   JSR_TOKEN: ${{ secrets.JSR_TOKEN }}

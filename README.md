@@ -18,8 +18,8 @@ A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/AP
 - [API Reference](#api-reference)
 - [CSSMatrix vs native DOMMatrix](#cssmatrix-vs-native-dommatrix)
 - [Alternatives](#alternatives)
-- [Thanks](#thanks)
 - [History](#history)
+- [Thanks](#thanks)
 - [License](#license)
 
 ## Features

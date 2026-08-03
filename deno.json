@@ -1,7 +1,8 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "license": "MIT",
+  "description": "TypeScript shim for DOMMatrix",
   "keywords": [
     "dommatrix",
     "cssmatrix",
@@ -28,9 +29,7 @@
     "lint": "deno lint src",
     "check": "deno check src/index.ts",
     "format": "deno fmt src",
-    "fix": "deno lint src --fix",
-    "build": "tsdown",
-    "copy-docs": "cp dist/dommatrix.js docs/dommatrix.js && cp dist/dommatrix.js.map docs/dommatrix.js.map"
+    "fix": "deno lint src --fix"
   },
   "publish": {
     "include": [
@@ -41,6 +40,5 @@
       "CLAUDE.md",
       "LICENSE"
     ]
-  },
-  "description": "TypeScript shim for DOMMatrix"
+  }
 }
