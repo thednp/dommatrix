@@ -23,6 +23,7 @@
     "README.md",
     "AGENTS.md",
     "CLAUDE.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {

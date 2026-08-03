@@ -5,13 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.5] - 2026-08-03
+## [3.0.6] - 2026-08-04
+- The `README.md` now documents installing from JSR (`jsr add @thednp/dommatrix`).
+
+## [3.0.5] - 2026-08-04
 
 ### Added
 
 - JSDoc coverage for every public class member (the `m11`–`m44` and `a`–`f` properties plus all static helpers), so the generated documentation is complete.
-- A `deno.json` with JSR publishing config (`@thednp/dommatrix@3.0.5`) and Deno tasks (`lint`, `check`, `format`, `doc`, `publish`) mirroring the `package.json` scripts.
+- A `deno.json` for JSR publishing (`@thednp/dommatrix@3.0.5`, `exports: "./src/index.ts"`) with Deno tasks mirroring the `package.json` scripts (`test`, `test-ui`, `clean-coverage`, `lint`, `check`, `format`, `fix`, `build`, `copy-docs`), the vitest/playwright dev dependencies declared via `npm:` specifiers in `imports`, and a `publish.include` list.
 - The GitHub Actions publish workflow now also publishes to JSR (`deno publish`).
+
 
 ### Changed
 
@@ -19,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The bundled `dist/dommatrix.d.ts` now contains the full type declarations (the Vite build emitted an empty `export { }` stub).
 - The helper types (`Matrix`, `Matrix3d`, `JSONMatrix`, `PointTuple`, `CSSMatrixInput`) are now exported from the package root, so `import type { Matrix } from "@thednp/dommatrix"` works.
 - `src/types.ts` now uses a type-only import (`import type CSSMatrix from "."`) to satisfy `deno lint`'s `verbatim-module-syntax` rule when `deno.json` is present.
+- Added `"type": "module"` to `package.json`, eliminating the Node `MODULE_TYPELESS_PACKAGE_JSON` ESM-reparse warning during builds. The `exports` map still routes `require` to the `.cjs` build, so CommonJS consumers are unaffected.
+- Renamed `tsdown.config.ts` to `tsdown.config.mts` and `vitest.config.ts` to `vitest.config.mts`, explicitly marking both as ESM.
 
 ### Fixed
 
