@@ -774,3 +774,58 @@ describe("CSSMatrix Mutable Methods", () => {
     expect(m.m42).toBe(20);
   });
 });
+
+describe("Node.js Environment Test", () => {
+  beforeEach(() => {
+    vi.stubGlobal("DOMMatrix", undefined);
+    vi.stubGlobal("DOMPoint", undefined);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("should initialize from a JSON object without the DOMMatrix global", () => {
+    const source = {
+      a: 1,
+      b: 0,
+      c: 0,
+      d: 1,
+      e: 5,
+      f: 6,
+      m11: 1,
+      m12: 0,
+      m13: 0,
+      m14: 0,
+      m21: 0,
+      m22: 1,
+      m23: 0,
+      m24: 0,
+      m31: 0,
+      m32: 0,
+      m33: 1,
+      m34: 0,
+      m41: 5,
+      m42: 6,
+      m43: 0,
+      m44: 1,
+      is2D: true,
+      isIdentity: false,
+    };
+
+    const m = new CSSMatrix(source);
+
+    expect(m.e).to.equal(5);
+    expect(m.f).to.equal(6);
+    expect(CSSMatrix.isCompatibleObject(source)).to.equal(true);
+    expect(CSSMatrix.fromMatrix(source)).to.deep.equal(m);
+  });
+
+  it("should transform a point tuple without the DOMPoint global", () => {
+    const m = new CSSMatrix().translate(15, 20);
+
+    const t = m.transformPoint({ x: 1, y: 2, z: 3, w: 1 });
+
+    expect(t).to.deep.equal({ x: 16, y: 22, z: 3, w: 1 });
+  });
+});

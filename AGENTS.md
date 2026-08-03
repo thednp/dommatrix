@@ -1,0 +1,87 @@
+# AGENTS.md
+
+Guidance for AI agents working on this repository.
+
+## Project Overview
+
+`@thednp/dommatrix` is a TypeScript shim for the native [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) interface. It ships a single default export, the `CSSMatrix` class, with a nearly identical API surface to native `DOMMatrix`, but works in **Node.js** and legacy browsers where `DOMMatrix` does not exist.
+
+The library is intentionally small and dependency-free. There are no runtime dependencies; the `dist/` bundle is produced from `src/index.ts` alone.
+
+## Tech Stack
+
+- **Language**: TypeScript 7 (`typescript@^7`), `strict` mode, `moduleResolution: "Bundler"`
+- **Package manager**: pnpm (`packageManager: pnpm@10.33.0`)
+- **Build**: [tsdown](https://tsdown.dev) (rolldown-based), config in `tsdown.config.mts` — produces ESM (`dommatrix.mjs`), CJS (`dommatrix.cjs`), UMD (`dommatrix.js`, global `CSSMatrix`) and bundled types (`dommatrix.d.ts`) into `dist/`
+- **JSR**: `deno.json` mirrors `package.json` (name, version, MIT license, keywords) and publishes the raw TypeScript source via `deno publish`. Keep `version` in sync between the two files
+- **Tests**: Vitest 4 in **browser mode** only (Playwright + Chromium, headless), with istanbul coverage in `vitest.config.ts`
+- **Lint/format**: [Deno](https://docs.deno.com/runtime/reference/cli/lint/) (`deno lint`, `deno fmt`) — not ESLint/Prettier
+- **Runtime requirement**: Node >= 20, pnpm >= 8.6
+
+## Commands
+
+```sh
+pnpm build          # tsdown build + copy dist/dommatrix.js to docs/
+pnpm test           # vitest browser tests (headless Chromium) + coverage
+pnpm test-ui        # vitest browser tests with UI
+pnpm lint           # deno lint src + tsc --noEmit
+pnpm lint:ts        # deno lint src
+pnpm check:ts       # tsc --noEmit
+pnpm fix:ts         # deno lint src --fix
+pnpm format         # deno fmt src
+```
+
+Always run `pnpm lint` and `pnpm test` after making changes.
+
+Deno equivalents: `deno task test`, `deno task lint`, `deno task check`, `deno task format` (also usable as bare `deno test`-style commands: `deno lint src`, `deno check src/index.ts`, `deno fmt src`, `deno doc src/index.ts`, `deno publish`).
+
+## Project Structure
+
+- `src/index.ts` — the entire library (single file, ~1200 lines). The `CSSMatrix` class plus module-level helper functions (`Translate`, `Rotate`, `fromString`, etc.). Heavily documented with JSDoc.
+- `src/types.ts` — exported types (`JSONMatrix`, `Matrix`, `Matrix3d`, `PointTuple`)
+- `test/dommatrix.test.ts` — the full test suite (Vitest, browser mode)
+- `test/fixtures/` — test helpers and sample data
+- `docs/` — GitHub Pages demo; `docs/dommatrix.js` is a build artifact copied from `dist/`
+- `dist/` — build output, committed to the repo; regenerate with `pnpm build`, never edit by hand
+- `experiments/` — archived Cypress experiments (not part of the build)
+
+## Code Conventions
+
+- **Single default export**: `export default class CSSMatrix` — there are no runtime named exports. The helper types (`Matrix`, `Matrix3d`, `JSONMatrix`, `PointTuple`, `CSSMatrixInput`) are re-exported from `./types.ts` as type-only exports (`export type { ... } from "./types.ts"`)
+- **Style**: Deno-style — no semicolons, double quotes, 2-space indent, trailing commas. `deno lint` and `deno fmt src` enforce this; do not fight the formatter
+- **No comments unless they are JSDoc** — the codebase uses JSDoc extensively on public API, matching the existing style
+- **Naming**: `m11`-`m44` are the canonical 3D values; `a`-`f` are the 2D aliases (getters/setters sync both)
+- **API design**: mirrors native `DOMMatrix` — immutable methods (`translate()`, `rotate()`, `scale()`, `skew()`, `multiply()`) return new matrices; `*Self` variants mutate and return `this`. Static helpers (`fromString`, `fromArray`, `fromMatrix`, `Translate`, `Rotate`, ...) live on the class as static properties
+- **Error style**: throw `TypeError` with messages prefixed `CSSMatrix: ...` (tests assert on exact messages)
+- **`is2D`/`isIdentity`** are computed getters (from matrix values), not construction-time flags
+
+## Critical Rules (do not violate)
+
+1. **No runtime references to browser-only globals** (`DOMMatrix`, `DOMPoint`, `CSSMatrix`) without a `typeof ... !== "undefined"` guard. The library must work in Node.js where these globals do not exist. The `instanceof` guards in `isCompatibleObject()` and `transformPoint()` are the canonical pattern:
+   ```ts
+   typeof DOMMatrix !== "undefined" && object instanceof DOMMatrix
+   ```
+2. **Tests run in a browser, so a missing global guard will NOT fail tests on its own.** The test suite simulates Node.js with `vi.stubGlobal("DOMMatrix", undefined)` / `vi.stubGlobal("DOMPoint", undefined)` in the `"Node.js Environment Test"` describe block — keep that block covering any code path that touches these globals.
+3. **Coverage must stay 100%** (statements, branches, functions, lines). The CI gate enforces it via istanbul. Every new branch needs a test.
+4. **Do not edit `dist/` or `docs/dommatrix.js` directly** — they are build outputs; run `pnpm build`.
+5. **Do not add runtime dependencies.** This is a zero-dependency library; `src/` must stay import-free.
+6. **Do not change the dist file names** (`dommatrix.cjs/.js/.mjs/.d.ts` + maps) — package.json `exports`, `main`, `module`, and the docs copy script depend on them.
+
+## Releasing (patch/minor/major)
+
+1. Bump `version` in `package.json` **and** in `deno.json`
+2. Add an entry to `CHANGELOG.md` (Keep a Changelog style, date-stamped)
+3. Run `pnpm build && pnpm lint && pnpm test` and `deno publish --dry-run --allow-dirty`
+4. Commit, then tag with the **bare version number** (no `v` prefix — existing tags are `1.0.0` ... `3.0.4`)
+
+The GitHub Actions `publish.yml` workflow publishes to both npm and JSR on GitHub Release (JSR via OIDC when enabled on the scope, otherwise the `JSR_TOKEN` secret).
+
+Note: `prepublishOnly` runs `pnpm up --latest` (updates all deps), `pnpm format`, `pnpm lint`, `pnpm build` — expect dependency bumps to land in the same commit if publishing.
+
+## Gotchas
+
+- The old `vite.config.ts` was replaced by `tsdown.config.mts` in 3.0.5 — `tsdown.config.mts` relies on: object-form `entry` for the chunk name (`dommatrix`), an `outputOptions` override for UMD (it must spread defaults, otherwise `sourcemap` is silently dropped), and `outExtensions` to keep the `.d.ts` filename. The `.mts` extension (not `.ts`) prevents Node's `MODULE_TYPELESS_PACKAGE_JSON` ESM-reparse warning — `package.json` deliberately has no `"type": "module"` because that would break Node `require()` of the UMD `dist/dommatrix.js`
+- With `deno.json` present, `deno lint` enforces `verbatim-module-syntax` — type-only imports (like `import type CSSMatrix from "."` in `src/types.ts`) must use `import type`
+- Vitest runs only in browser mode; any Node-only concern (globals, `require()`, `process`) needs the stubbed-global test pattern
+- `rotateAxisAngle`/`rotateAxisAngleSelf` throw only when any of the 4 values is non-finite; zero-length vector returns a copy (or `this` for the `Self` variant)
+- `deno lint` runs on `src/` only — the `tsconfig.json` `include` is `["src/*"]`, `noEmit: true`

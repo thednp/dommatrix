@@ -1,0 +1,55 @@
+# @thednp/dommatrix
+
+> A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Ships a single default export, the `CSSMatrix` class, with an API surface nearly identical to native `DOMMatrix`. Zero runtime dependencies, 100% test coverage, works where the `DOMMatrix` / `DOMPoint` globals do not exist.
+
+## Links
+
+- [GitHub Repository](https://github.com/thednp/dommatrix)
+- [Live Demo](https://thednp.github.io/dommatrix)
+- [README](README.md)
+- [Changelog](CHANGELOG.md)
+- [Agent Guidance](AGENTS.md)
+- [JavaScript API Wiki](https://github.com/thednp/DOMMatrix/wiki/JavaScript-API)
+- [NPM Package](https://www.npmjs.com/package/@thednp/dommatrix)
+- [MDN DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix)
+
+## About
+
+`@thednp/dommatrix` is a lightweight shim for the native `DOMMatrix` interface, designed for Node.js apps and legacy browsers that lack the DOM geometry globals. The library:
+
+- is a single source file with **zero runtime dependencies**;
+- parses any valid CSS transform string (`matrix()`, `matrix3d()`, `translate*()`, `rotate*()`, `rotate3d()`, `scale*()`, `skew*()`, `perspective()`) with `deg` / `rad` / `px` units;
+- implements both immutable methods (`translate()`, `rotate()`, `scale()`, `skew()`, `multiply()`) that return new matrices, and mutating `*Self()` variants that return `this`, mirroring native `DOMMatrix`;
+- ships bundled TypeScript definitions, including the exported `Matrix`, `Matrix3d`, `JSONMatrix`, `PointTuple` and `CSSMatrixInput` types;
+- is verified against the native interface by a browser test suite (Vitest + Chromium) with 100% coverage;
+- is built with [tsdown](https://tsdown.dev), producing ESM (`dommatrix.mjs`), CJS (`dommatrix.cjs`) and UMD (`dommatrix.js`, global `CSSMatrix`) bundles into `dist/`.
+
+## Usage
+
+```ts
+import CSSMatrix from "@thednp/dommatrix";
+import type { Matrix } from "@thednp/dommatrix";
+
+const m = new CSSMatrix("translate(10px, 20px) rotate(45deg)");
+m.translateSelf(15, 20);
+element.style.transform = m.toString();
+```
+
+## API Overview
+
+**Constructor** — accepts a CSS transform string, an array of 6 (2D) / 16 (3D) numbers, a `Float32Array` / `Float64Array`, a `CSSMatrix` / `DOMMatrix` instance, or a `toJSON()` object.
+
+**Static methods** — `fromString`, `fromArray`, `fromMatrix`, `toArray`, `isCompatibleArray`, `isCompatibleObject`, `Translate`, `Rotate`, `RotateAxisAngle`, `Scale`, `Skew`, `SkewX`, `SkewY`, `Multiply`.
+
+**Instance methods** — `setMatrixValue`, `translate` / `translateSelf`, `rotate` / `rotateSelf`, `rotateAxisAngle` / `rotateAxisAngleSelf`, `scale` / `scaleSelf`, `skew` / `skewSelf`, `skewX` / `skewXSelf`, `skewY` / `skewYSelf`, `multiply` / `multiplySelf`, `transformPoint`, `toArray`, `toFloat32Array`, `toFloat64Array`, `toString`, `toJSON`.
+
+**Properties** — `a`-`f` (2D aliases) and `m11`-`m44` (3D values, kept in sync), plus the computed `is2D` and `isIdentity` getters.
+
+## Key Differences from Native DOMMatrix
+
+- Works in **Node.js** and legacy browsers — no `DOMMatrix` / `DOMPoint` globals required (guarded `instanceof` checks).
+- `is2D` / `isIdentity` are computed getters that always reflect the current values, unlike the native construction-time flag.
+- `transformPoint()` accepts a plain `{ x, y, z, w }` tuple and returns the same type it received; native always returns a `DOMPoint`.
+- `setMatrixValue()` returns a **new** matrix; native mutates the matrix in place.
+- Static helpers `fromString()` / `fromArray()` replace the native `fromFloat32Array()` / `fromFloat64Array()`; the constructor `transformOrigin` argument is not supported.
+- `DOMMatrixReadOnly` methods `flipX()`, `flipY()`, `inverse()` and `rotateFromVector()` are not implemented.

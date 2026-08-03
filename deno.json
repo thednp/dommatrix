@@ -1,0 +1,46 @@
+{
+  "name": "@thednp/dommatrix",
+  "version": "3.0.5",
+  "license": "MIT",
+  "keywords": [
+    "dommatrix",
+    "cssmatrix",
+    "shim",
+    "polyfill",
+    "nodejs",
+    "dom",
+    "css",
+    "transform",
+    "typescript"
+  ],
+  "exports": "./src/index.ts",
+  "imports": {
+    "@vitest/browser": "npm:@vitest/browser@^4.1.10",
+    "@vitest/browser-playwright": "npm:@vitest/browser-playwright@^4.1.10",
+    "@vitest/coverage-istanbul": "npm:@vitest/coverage-istanbul@^4.1.10",
+    "playwright": "npm:playwright@^1.62.1",
+    "vitest": "npm:vitest@^4.1.10"
+  },
+  "tasks": {
+    "test": "deno task clean-coverage && vitest --browser.headless",
+    "test-ui": "deno task clean-coverage && vitest --browser --ui",
+    "clean-coverage": "rm -rf coverage .nyc_output",
+    "lint": "deno lint src",
+    "check": "deno check src/index.ts",
+    "format": "deno fmt src",
+    "fix": "deno lint src --fix",
+    "build": "tsdown",
+    "copy-docs": "cp dist/dommatrix.js docs/dommatrix.js && cp dist/dommatrix.js.map docs/dommatrix.js.map"
+  },
+  "publish": {
+    "include": [
+      "src",
+      "README.md",
+      "CHANGELOG.md",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "LICENSE"
+    ]
+  },
+  "description": "TypeScript shim for DOMMatrix"
+}

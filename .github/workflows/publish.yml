@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Publish to npm/jsr
 
 on:
   release:
@@ -45,3 +45,9 @@ jobs:
         run: pnpm publish --provenance --access public --no-git-checks # --access public for new/public packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # Only needed if NOT using trusted publishing
+
+      - name: Publish to jsr
+        run: deno publish
+        # env:
+          # Needed only if JSR OIDC (trusted publishing) is not enabled for this repo
+          # JSR_TOKEN: ${{ secrets.JSR_TOKEN }}

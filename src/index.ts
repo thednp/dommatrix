@@ -5,6 +5,13 @@ import type {
   Matrix3d,
   PointTuple,
 } from "./types.ts";
+export type {
+  CSSMatrixInput,
+  JSONMatrix,
+  Matrix,
+  Matrix3d,
+  PointTuple,
+} from "./types.ts";
 
 /** A model for JSONMatrix */
 const JSON_MATRIX: JSONMatrix = {
@@ -58,7 +65,7 @@ const isCompatibleObject = (
   object?: unknown,
 ): object is CSSMatrix | DOMMatrix | JSONMatrix => {
   return (
-    object instanceof DOMMatrix ||
+    (typeof DOMMatrix !== "undefined" && object instanceof DOMMatrix) ||
     object instanceof CSSMatrix ||
     (typeof object === "object" &&
       Object.keys(JSON_MATRIX).every((k) => object && k in object))
@@ -675,41 +682,77 @@ const Multiply = (
  * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
  */
 export default class CSSMatrix {
+  /** The first element of the first row, alias of `a`. */
   declare m11: number;
+  /** The second element of the first row, alias of `b`. */
   declare m12: number;
+  /** The third element of the first row. */
   declare m13: number;
+  /** The fourth element of the first row. */
   declare m14: number;
+  /** The first element of the second row, alias of `c`. */
   declare m21: number;
+  /** The second element of the second row, alias of `d`. */
   declare m22: number;
+  /** The third element of the second row. */
   declare m23: number;
+  /** The fourth element of the second row. */
   declare m24: number;
+  /** The first element of the third row. */
   declare m31: number;
+  /** The second element of the third row. */
   declare m32: number;
+  /** The third element of the third row. */
   declare m33: number;
+  /** The fourth element of the third row. */
   declare m34: number;
+  /** The first element of the fourth row, alias of `e`. */
   declare m41: number;
+  /** The second element of the fourth row, alias of `f`. */
   declare m42: number;
+  /** The third element of the fourth row. */
   declare m43: number;
+  /** The fourth element of the fourth row. */
   declare m44: number;
+  /** The first element of the first row, alias of `m11`. */
   declare a: number;
+  /** The second element of the first row, alias of `m12`. */
   declare b: number;
+  /** The first element of the second row, alias of `m21`. */
   declare c: number;
+  /** The second element of the second row, alias of `m22`. */
   declare d: number;
+  /** The first element of the fourth row, alias of `m41`. */
   declare e: number;
+  /** The second element of the fourth row, alias of `m42`. */
   declare f: number;
+  /** Returns a new translation matrix. See the `Translate` helper. */
   static Translate = Translate;
+  /** Returns a new rotation matrix. See the `Rotate` helper. */
   static Rotate = Rotate;
+  /** Returns a new rotation matrix about a vector. See the `RotateAxisAngle` helper. */
   static RotateAxisAngle = RotateAxisAngle;
+  /** Returns a new scale matrix. See the `Scale` helper. */
   static Scale = Scale;
+  /** Returns a new skew-X matrix. See the `SkewX` helper. */
   static SkewX = SkewX;
+  /** Returns a new skew-Y matrix. See the `SkewY` helper. */
   static SkewY = SkewY;
+  /** Returns a new skew matrix. See the `Skew` helper. */
   static Skew = Skew;
+  /** Returns the multiplication of two matrices. See the `Multiply` helper. */
   static Multiply = Multiply;
+  /** Creates a new matrix from an array of 6/16 numbers. See the `fromArray` helper. */
   static fromArray = fromArray;
+  /** Creates a new matrix from an existing matrix or a JSON object. See the `fromMatrix` helper. */
   static fromMatrix = fromMatrix;
+  /** Creates a new matrix from a CSS transform string. See the `fromString` helper. */
   static fromString = fromString;
+  /** Returns an *Array* of 6/16 values from a compatible matrix. See the `toArray` helper. */
   static toArray = toArray;
+  /** Checks if a value is a compatible 6/16 number array. See the `isCompatibleArray` helper. */
   static isCompatibleArray = isCompatibleArray;
+  /** Checks if a value is a `CSSMatrix` / `DOMMatrix` / `JSONMatrix` object. See the `isCompatibleObject` helper. */
   static isCompatibleObject = isCompatibleObject;
 
   /**
@@ -1171,11 +1214,13 @@ export default class CSSMatrix {
     const z = this.m13 * t.x + this.m23 * t.y + this.m33 * t.z + this.m43 * t.w;
     const w = this.m14 * t.x + this.m24 * t.y + this.m34 * t.z + this.m44 * t.w;
 
-    return t instanceof DOMPoint ? new DOMPoint(x, y, z, w) : {
-      x,
-      y,
-      z,
-      w,
-    };
+    return typeof DOMPoint !== "undefined" && t instanceof DOMPoint
+      ? new DOMPoint(x, y, z, w)
+      : {
+        x,
+        y,
+        z,
+        w,
+      };
   }
 }

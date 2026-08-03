@@ -1,4 +1,4 @@
-import CSSMatrix from ".";
+import type CSSMatrix from ".";
 
 /** A DOMMPoint compatible Tuple. */
 export interface PointTuple {
