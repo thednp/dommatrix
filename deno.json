@@ -34,6 +34,7 @@
   "publish": {
     "include": [
       "src",
+      "package.json",
       "README.md",
       "CHANGELOG.md",
       "AGENTS.md",
