@@ -204,6 +204,7 @@ DOMMatrix shim is meant to be a light pocket tool for many things like [svg-path
 
 - **changed** how the constructor determines if the matrix is 2D, based on a [more accurate method](https://github.com/jsidea/jsidea/blob/2b4486c131d5cca2334293936fa13454b34fcdef/ts/jsidea/geom/Matrix3D.ts#L788) which is actually checking the designated values of the 3D space; in contrast, the old *CSSMatrix* constructor sets the `afine` property at initialization only and based on the number of arguments or the type of the input CSS transform syntax;
 - **fixed** the `translate()`, `scale()` and `rotate()` instance methods to work with one axis transformation, also inline with **DOMMatrix**;
+- **added** the `*Self` instance methods — `translateSelf()`, `scaleSelf()`, `rotateSelf()`, `rotateAxisAngleSelf()`, `skewXSelf()`, `skewYSelf()`, `skewSelf()` and `multiplySelf()` — the mutating counterparts of the immutable methods above, inline with the native **DOMMatrix** API;
 - **changed** `toString()` instance method to utilize the new method `toArray()` described below;
 - **changed** `setMatrixValue()` instance method to do all the heavy duty work with parameters;
 - **added** `is2D` (*getter*) property;
