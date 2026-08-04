@@ -337,6 +337,12 @@ describe("DOMMatrix Class Test", () => {
 
     expect(m1.toFloat32Array()).to.deep.equal(m3.toFloat32Array());
     expect(m1.toFloat32Array()).to.deep.equal(m4.toFloat32Array());
+
+    expect(
+      new CSSMatrix(new Float32Array(test)).toFloat32Array(),
+    ).to.deep.equal(m1.toFloat32Array());
+    // @ts-expect-error
+    expect(new CSSMatrix(42).isIdentity).toBe(true);
   });
 
   it("Test static methods", () => {
@@ -345,9 +351,27 @@ describe("DOMMatrix Class Test", () => {
     const source1 = "wombat(1)";
     const source2 = "skew()";
     const source3 = "translate(wombat)";
+    const source4 = "translate(10px) garbage";
 
     expect(CSSMatrix.fromMatrix(m)).to.deep.equal(m);
     expect(CSSMatrix.fromMatrix(m.toJSON())).to.deep.equal(m);
+    expect(CSSMatrix.toArray(m, true)).to.deep.equal([1, 0, 0, 1, 0, 0]);
+    expect(CSSMatrix.toArray(m)).to.have.length(16);
+
+    expect(CSSMatrix.SkewX(30).m21).to.be.closeTo(0.5773502691896257, 1e-9);
+    expect(CSSMatrix.SkewY(30).m12).to.be.closeTo(0.5773502691896257, 1e-9);
+
+    expect(m.setMatrixValue([1, 0, 0, 1, 10, 20])).to.deep.equal(
+      new CSSMatrix("translate(10px,20px)"),
+    );
+    expect(m.setMatrixValue("translate(10px,20px)")).to.deep.equal(
+      new CSSMatrix("translate(10px,20px)"),
+    );
+    expect(m.setMatrixValue(m.toJSON())).to.deep.equal(m);
+    expect(m.toFloat32Array(true)).to.have.length(6);
+    expect(m.toFloat64Array(true)).to.have.length(6);
+    // @ts-expect-error
+    expect(m.setMatrixValue(42)).toBe(m);
 
     try {
       // @ts-expect-error
@@ -387,6 +411,16 @@ describe("DOMMatrix Class Test", () => {
       expect(err).to.have.property(
         "message",
         `CSSMatrix: invalid transform string "${source3}"`,
+      );
+    }
+
+    try {
+      CSSMatrix.fromString(source4);
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err).to.have.property(
+        "message",
+        `CSSMatrix: invalid transform string "${source4}"`,
       );
     }
   });

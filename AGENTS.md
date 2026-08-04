@@ -29,6 +29,8 @@ pnpm lint:ts        # deno lint src
 pnpm check:ts       # tsc --noEmit
 pnpm fix:ts         # deno lint src --fix
 pnpm format         # deno fmt src
+pnpm bench          # vitest browser bench vs test/fixtures/index-3.0.x.ts (no coverage)
+pnpm bench:native   # vitest browser bench vs native DOMMatrix (no coverage)
 ```
 
 Always run `pnpm lint` and `pnpm test` after making changes.
@@ -38,8 +40,11 @@ Deno equivalents: `deno task test`, `deno task lint`, `deno task check`, `deno t
 ## Project Structure
 
 - `src/index.ts` — the entire library (single file, ~1200 lines). The `CSSMatrix` class plus module-level helper functions (`Translate`, `Rotate`, `fromString`, etc.). Heavily documented with JSDoc.
+- `test/fixtures/index-3.0.x.ts` — snapshot of the pre-3.1.0 implementation used as the benchmark baseline by `test/dommatrix.bench.test.ts`. Excluded from coverage (see `vitest.config.mts`) and from JSR publish (only the `publish.include` files ship). Included in the `tsconfig.json` `include` so `pnpm check:ts` covers it.
 - `src/types.ts` — exported types (`JSONMatrix`, `Matrix`, `Matrix3d`, `PointTuple`)
 - `test/dommatrix.test.ts` — the full test suite (Vitest, browser mode)
+- `test/dommatrix.bench.test.ts` — benchmark vs the `test/fixtures/index-3.0.x.ts` snapshot: parity suite (every op must match the backup within `1e-9`, runs in `pnpm test` and gates CI) + interleaved perf suite (auto-skipped under coverage)
+- `test/native.bench.test.ts` — benchmark vs native `DOMMatrix`: parity suite (21 ops at `1e-9`, runs in `pnpm test`) + interleaved perf suite
 - `test/fixtures/` — test helpers and sample data
 - `docs/` — GitHub Pages demo; `docs/dommatrix.js` is a build artifact copied from `dist/`
 - `dist/` — build output, committed to the repo; regenerate with `pnpm build`, never edit by hand
@@ -83,5 +88,9 @@ Note: `prepublishOnly` runs `pnpm up --latest` (updates all deps), `pnpm format`
 - The old `vite.config.ts` was replaced by `tsdown.config.mts` in 3.0.5 — `tsdown.config.mts` relies on: object-form `entry` for the chunk name (`dommatrix`), an `outputOptions` override for UMD (it must spread defaults, otherwise `sourcemap` is silently dropped), and `outExtensions` to keep the `.d.ts` filename. The `.mts` extension (not `.ts`) prevents Node's `MODULE_TYPELESS_PACKAGE_JSON` ESM-reparse warning — `package.json` deliberately has no `"type": "module"` because that would break Node `require()` of the UMD `dist/dommatrix.js`
 - With `deno.json` present, `deno lint` enforces `verbatim-module-syntax` — type-only imports (like `import type CSSMatrix from "."` in `src/types.ts`) must use `import type`
 - Vitest runs only in browser mode; any Node-only concern (globals, `require()`, `process`) needs the stubbed-global test pattern
+- **Browser `console.table` is NOT forwarded to the terminal** — both bench suites accumulate rows on `globalThis` (`__CSSMATRIX_BENCH__`, `__CSSMATRIX_NATIVE_BENCH__`, inspectable in `pnpm test-ui` devtools) and print a pad-aligned `console.log` table in `afterAll`. `console.log` in `afterAll` does forward.
+- **Bench measurements must run without coverage**: istanbul instruments `src/index.ts` but not `test/fixtures/index-3.0.x.ts`, so under coverage the current file measures 30-60% slower than an identical backup. The suites skip timing at runtime when `typeof globalThis["__VITEST_COVERAGE__"] === "object"` (the key only appears after instrumented code executes) — parity assertions still run in `pnpm test`.
+- **Interleaved sampling**: `bench(a, b, iterations)` warms up both implementations, then takes 2 alternating samples each and reports medians. Sequential per-implementation measurement biases toward the first implementation (~20-30%) because the second's allocations raise GC pressure. Identical files must measure ~0.92-1.09x.
+- Native DOMMatrix quirks that shaped `test/native.bench.test.ts`: Chrome lacks `DOMMatrix.fromArray` (use `DOMMatrix.fromMatrix(values)`); native has no `skew()`/`skewSelf()` (only `skewX`/`skewY`); `rotateAxisAngle(x, y, z, angle)` takes the angle last; `DOMPoint` exposes `x/y/z/w` as prototype getters so `Object.keys()` is empty — extract values into a plain object before comparing; the bench test needs a long timeout (120s) because 22 interleaved cases take ~15s.
 - `rotateAxisAngle`/`rotateAxisAngleSelf` throw only when any of the 4 values is non-finite; zero-length vector returns a copy (or `this` for the `Self` variant)
 - `deno lint` runs on `src/` only — the `tsconfig.json` `include` is `["src/*"]`, `noEmit: true`

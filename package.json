@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "3.0.6",
+  "version": "3.1.0",
   "description": "TypeScript shim for DOMMatrix",
   "homepage": "https://thednp.github.io/dommatrix/",
   "type": "module",
@@ -30,6 +30,8 @@
     "pre-test": "pnpm clean-coverage",
     "test": "pnpm pre-test && vitest --browser.headless",
     "test-ui": "pnpm pre-test && vitest --browser --ui",
+    "bench": "vitest --browser.headless --coverage.enabled=false test/dommatrix.bench.test.ts",
+    "bench:native": "vitest --browser.headless --coverage.enabled=false test/native.bench.test.ts",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "format": "deno fmt src",
     "lint": "pnpm lint:ts && pnpm check:ts",

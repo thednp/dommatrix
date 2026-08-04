@@ -35,10 +35,10 @@ jobs:
       - name: Install Playwright
         run: pnpm exec playwright install
 
-      - name: Build (if needed)
-        run: pnpm build # Optional
+      # - name: Build (if needed)
+      #   run: pnpm build # Optional
 
-      - name: Test (optional but recommended)
+      - name: Test
         run: pnpm test
 
       - name: Publish to npm

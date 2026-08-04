@@ -17,6 +17,7 @@ A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/AP
 - [Quick Start](#quick-start)
 - [API Reference](#api-reference)
 - [CSSMatrix vs native DOMMatrix](#cssmatrix-vs-native-dommatrix)
+- [Benchmarks](#benchmarks)
 - [Alternatives](#alternatives)
 - [History](#history)
 - [Thanks](#thanks)
@@ -193,6 +194,79 @@ The shim mirrors the native **DOMMatrix** API surface closely — the same `m11`
 | TypeScript | Ships bundled type definitions, zero runtime dependencies | WebIDL-generated typings |
 
 Methods of the `DOMMatrixReadOnly` prototype that are not part of this shim: `flipX()`, `flipY()`, `inverse()` and `rotateFromVector()` (`transpose()` is not part of the native interface either). Everything else — `translate*`, `rotate*`, `rotateAxisAngle*`, `scale*`, `skew*`, `multiply*`, `toString()`, `toFloat(32/64)Array()`, `transformPoint()` — is implemented with behavior verified against the native interface by the test suite.
+
+## Benchmarks
+
+Two benchmark suites run headless Chromium via Vitest and gate CI with **parity assertions** (output must be identical within `1e-9`), while the timings are reported only:
+
+- `pnpm bench` — `test/dommatrix.bench.test.ts`, current implementation vs a `test/fixtures/index-3.0.x.ts` snapshot of the previous release (22 operations)
+- `pnpm bench:native` — `test/native.bench.test.ts`, current implementation vs the browser's native `DOMMatrix` (22 operations, 21 parity-checked)
+
+Measurements are skipped under coverage (istanbul instrumentation distorts timings) and use interleaved sampling — both implementations are alternated per sample and medians are reported, so the ratios are noise-floor-corrected (identical files measure ~0.92–1.09x). Results are also stored on `globalThis.__CSSMATRIX_BENCH__` / `__CSSMATRIX_NATIVE_BENCH__` for inspection in `pnpm test-ui` devtools, since browser `console.table` output is not forwarded to the terminal.
+
+The tables below report the median of two interleaved runs on headless Chromium (Playwright 1217), 2026-08-04. Ratios above 1 mean the shim is faster.
+
+### vs 3.0.x (previous release)
+
+Ratio = 3.1.x ops/s ÷ 3.0.x ops/s.
+
+**Large wins (6.9–104x)** — the hot paths that were specialized:
+
+| Operation | Ratio | Operation | Ratio |
+| --- | --- | --- | --- |
+| `skewSelf` | ~104x | `scaleSelf` | ~61x |
+| `translateSelf` | ~49x | `multiplySelf` | ~18x |
+| `scale` | ~14x | `skew` | ~13x |
+| `translate` | ~13x | `toJSON` | ~9.7x |
+| `fromMatrix` | ~7.3x | `multiply` | ~6.9x |
+
+**Moderate wins (2.2–5.2x)**:
+
+| Operation | Ratio | Operation | Ratio |
+| --- | --- | --- | --- |
+| `rotate` | ~5.2x | `rotateSelf` | ~4.7x |
+| `rotateAxisAngle` | ~4.1x | `new CSSMatrix(transform list)` | ~2.2x |
+
+**Mild wins (1.2–1.4x)**:
+
+| Operation | Ratio |
+| --- | --- |
+| `new CSSMatrix(matrix 2D)` | ~1.3x |
+| `new CSSMatrix(matrix3d)` | ~1.2x |
+
+**At parity (~1.0x)** — unchanged code paths, no regression:
+
+`new CSSMatrix()`, `fromArray`, `transformPoint`, `toString`, `toFloat32Array`, `is2D` + `isIdentity` (~1.0–1.1x).
+
+### vs native `DOMMatrix`
+
+Ratio = shim ops/s ÷ native ops/s.
+
+**Shim faster** (1.8–150x):
+
+| Operation | Ratio | Operation | Ratio |
+| --- | --- | --- | --- |
+| `new Matrix()` | ~150x¹ | `multiplySelf` | ~48x |
+| `scaleSelf` | ~35x | `skewXSelf` | ~35x |
+| `translateSelf` | ~31x | `rotateAxisAngle` | ~10x |
+| `rotateSelf` | ~8.3x | static from values | ~7.0x |
+| `multiply` | ~4.0x | `translate` | ~4.0x |
+| `scale` | ~4.0x | `fromMatrix` | ~3.8x |
+| `skewX` | ~3.7x | `rotate` | ~3.4x |
+| `new Matrix(matrix 2D)` | ~2.7x | `toJSON` | ~2.0x |
+| `new Matrix(matrix3d)` | ~1.95x | `new Matrix(transform list)` | ~1.9x |
+| `is2D` + `isIdentity` | ~1.8x | `toFloat32Array` | ~1.0x |
+
+¹ measured as construct + `toJSON()`; native's `toJSON()` is a slow JS↔C++ bridge that dominates this row.
+
+**Native faster** (the pure-compute cases):
+
+| Operation | Ratio |
+| --- | --- |
+| `transformPoint` | ~0.36x (native ~2.8x faster) |
+| `toString` | ~0.82x (native ~1.2x faster) |
+
+The shim wins construction and mutation-heavy operations because V8 fully optimizes the plain-JS hot paths, while native `DOMMatrix` pays a C++ call per property access. Native C++ wins where the operation itself is the whole cost: point transforms and serialization.
 
 ## Alternatives
 
