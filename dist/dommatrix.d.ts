@@ -81,17 +81,21 @@ declare const isCompatibleObject: (object?: unknown) => object is CSSMatrix | DO
  * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
  *
  * @param array an `Array` to feed values from.
+ * @param target an optional matrix instance to write the values into; when omitted
+ * a new matrix is returned. Used internally by `setMatrixValue` to mutate in place.
  * @return the resulted matrix.
  */
-declare const fromArray: (array: number[] | Float32Array | Float64Array) => CSSMatrix;
+declare const fromArray: (array: number[] | Float32Array | Float64Array, target?: CSSMatrix) => CSSMatrix;
 /**
  * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
  * `DOMMatrix` instance which provides the values for its properties.
  *
  * @param m the source matrix to feed values from.
+ * @param target an optional matrix instance to write the values into; when omitted
+ * a new matrix is returned. Used internally by `setMatrixValue` to mutate in place.
  * @return the resulted matrix.
  */
-declare const fromMatrix: (m: CSSMatrix | DOMMatrix | JSONMatrix) => CSSMatrix;
+declare const fromMatrix: (m: CSSMatrix | DOMMatrix | JSONMatrix, target?: CSSMatrix) => CSSMatrix;
 /**
  * Creates a new mutable `CSSMatrix` given any valid CSS transform string,
  * or what we call `TransformList`:
@@ -322,8 +326,11 @@ declare class CSSMatrix {
    * This method expects valid *matrix()* / *matrix3d()* string values, as well
    * as other transform functions like *translateX(10px)*.
    *
+   * The matrix is mutated in place (the same instance is returned), matching
+   * the behavior of the native `DOMMatrix.setMatrixValue()`.
+   *
    * @param source
-   * @return the matrix instance
+   * @return the current matrix instance
    */
   setMatrixValue(source?: CSSMatrixInput): CSSMatrix;
   /**

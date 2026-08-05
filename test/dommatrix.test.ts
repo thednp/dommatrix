@@ -2,6 +2,7 @@ import { expect, it, describe, vi, beforeEach, afterEach } from "vitest";
 import { getExampleDOM } from "./fixtures/getExampleDom";
 
 import CSSMatrix from "../src/index";
+// import CSSMatrix from "../dist/dommatrix";
 import type { Matrix, Matrix3d } from "../src/types";
 import testSamples from "./fixtures/testSamples";
 
@@ -361,13 +362,16 @@ describe("DOMMatrix Class Test", () => {
     expect(CSSMatrix.SkewX(30).m21).to.be.closeTo(0.5773502691896257, 1e-9);
     expect(CSSMatrix.SkewY(30).m12).to.be.closeTo(0.5773502691896257, 1e-9);
 
-    expect(m.setMatrixValue([1, 0, 0, 1, 10, 20])).to.deep.equal(
-      new CSSMatrix("translate(10px,20px)"),
-    );
-    expect(m.setMatrixValue("translate(10px,20px)")).to.deep.equal(
-      new CSSMatrix("translate(10px,20px)"),
-    );
-    expect(m.setMatrixValue(m.toJSON())).to.deep.equal(m);
+    m.setMatrixValue([1, 0, 0, 1, 10, 20]);
+    expect(m).to.deep.equal(new CSSMatrix("translate(10px,20px)"));
+    m.setMatrixValue("translate(10px,20px)");
+    expect(m).to.deep.equal(new CSSMatrix("translate(10px,20px)"));
+    const json = m.toJSON();
+    m.setMatrixValue(json);
+    expect(m.toJSON()).to.deep.equal(json);
+    expect(m.setMatrixValue([1, 0, 0, 1, 10, 20])).toBe(m);
+    expect(m.setMatrixValue("translate(10px,20px)")).toBe(m);
+    expect(m.setMatrixValue(m.toJSON())).toBe(m);
     expect(m.toFloat32Array(true)).to.have.length(6);
     expect(m.toFloat64Array(true)).to.have.length(6);
     // @ts-expect-error

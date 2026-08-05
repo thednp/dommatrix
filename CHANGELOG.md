@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.1] - 2026-08-05
+
+### Added
+
+- `pnpm bench:docs` (`scripts/update-benchmark.js`): runs both bench suites twice, parses the printed tables, writes `test/fixtures/bench-results.json`, and regenerates the `BENCHMARK.md` tables and the README `## Benchmarks` summary from it — no more hand-transcribing benchmark numbers.
+
+### Changed
+
+- The full benchmark report moved out of the README into a dedicated `BENCHMARK.md` (static methodology intro and conclusion, with the two result tables wrapped in `<!-- b1 -->` / `<!-- /b1 -->` and `<!-- b2 -->` / `<!-- /b2 -->` markers). The README `## Benchmarks` section is now a short summary — a one-line "X–Yx faster than the previous release / than native" range plus a link to `BENCHMARK.md` — so it keeps the attention on the big picture instead of the per-operation numbers.
+- `setMatrixValue()` now **mutates the matrix in place and returns `this`**, matching the native `DOMMatrix.setMatrixValue()` (previously it returned a new matrix and left the original untouched). The `fromArray()` / `fromMatrix()` value writers now accept an optional target instance, so the array / object paths of `setMatrixValue()` write straight into the existing instance instead of allocating a new one. Both benchmark suites gained `setMatrixValue()` operations to cover the new path: array and transform-list inputs against the 3.0.x snapshot, and a parity-checked transform-list case against native (the native parity suite now covers 22 operations).
+
+### Fixed
+
+- The native benchmark's `transformPoint` case measured asymmetric work: the shim side constructed the matrix from a transform string on every iteration while the native side reused a pre-built `DOMMatrix`. Both sides now pre-build the matrix, and the corrected measurement is ~11x shim-faster on `transformPoint` (previously reported as ~0.36x native-faster, see the 3.1.0 entry above); `test/fixtures/bench-results.json`, the `BENCHMARK.md` tables and the README `## Benchmarks` summary were regenerated with `pnpm bench:docs`.
+
+[3.1.1]: https://github.com/thednp/dommatrix/releases/tag/3.1.1
+
 ## [3.1.0] - 2026-08-04
 
 ### Added
@@ -22,8 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `multiply()`/`multiplySelf()` share a new `multiplyInto()` kernel with a single 64-multiplication pass; `multiplySelf()` writes into `this` instead of allocating and spreading a result object.
   - `translate()`, `translateSelf()`, `scale()`, `scaleSelf()`, `skew()`, `skewSelf()` (plus `skewX()`/`skewY()` delegating to `skew()`) use specialized pre-multiply math instead of general matrix multiplication.
   - `toJSON()` builds the result object with explicit property writes instead of spreading `this`; `toFloat32Array()`/`toFloat64Array()` build typed arrays directly, skipping the intermediate `toArray()` allocation.
-- Measured performance deltas (vs `3.0.7` snapshot, Chromium, `pnpm bench`; ops/s ratios are noise-floor-corrected via interleaved sampling): `multiplySelf` ~17–18x, `scale` ~13x, `skew` ~6–14x, `translate` ~6.5–13x, `multiply` ~7x, `fromMatrix` ~7–7.6x, `rotate` ~5–5.6x, `rotateAxisAngle` ~4.1–4.5x, `toJSON` ~9.7–10.1x, `new CSSMatrix(transform list)` ~1.9–2.4x; unchanged code paths (`new CSSMatrix()`, `fromArray`, `transformPoint`, `toString`, `is2D`/`isIdentity`) measure ~0.96–1.1x.
-- vs native `DOMMatrix` (`pnpm bench:native`, Chromium): the shim is faster on construction and mutation-heavy operations (e.g. `multiplySelf` ~48x, `translateSelf` ~28x, `scaleSelf` ~36x, `multiply` ~4x — largely native's Web IDL per-property access and `toJSON()` overhead), while native wins the pure-compute cases: `transformPoint` ~0.36x and `toString` ~0.84x (shim/native ratios); `toFloat32Array` is at parity.
+- Measured performance deltas (vs the `3.0.x` snapshot, Chromium, `pnpm bench`; ops/s ratios are noise-floor-corrected via interleaved sampling): `multiplySelf` ~17–18x, `scale` ~13x, `skew` ~6–14x, `translate` ~6.5–13x, `multiply` ~7x, `fromMatrix` ~7–7.6x, `rotate` ~5–5.6x, `rotateAxisAngle` ~4.1–4.5x, `toJSON` ~9.7–10.1x, `new CSSMatrix(transform list)` ~1.9–2.4x; unchanged code paths (`new CSSMatrix()`, `fromArray`, `transformPoint`, `toString`, `is2D`/`isIdentity`) measure ~0.96–1.1x.
+- vs native `DOMMatrix` (`pnpm bench:native`, Chromium): the shim is faster on construction and mutation-heavy operations (e.g. `multiplySelf` ~48x, `translateSelf` ~28x, `scaleSelf` ~36x, `multiply` ~4x — largely native's Web IDL per-property access and `toJSON()` overhead) and on point transforms (`transformPoint` ~11x), while native wins only the serialization case: `toString` ~0.84x (shim/native ratios); `toFloat32Array` is at parity.
 
 ### Fixed
 

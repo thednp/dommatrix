@@ -83,10 +83,13 @@ const isCompatibleObject = (
  * the result is a 3D matrix. Otherwise, a TypeError exception is thrown.
  *
  * @param array an `Array` to feed values from.
+ * @param target an optional matrix instance to write the values into; when omitted
+ * a new matrix is returned. Used internally by `setMatrixValue` to mutate in place.
  * @return the resulted matrix.
  */
 const fromArray = (
   array: number[] | Float32Array | Float64Array,
+  target?: CSSMatrix,
 ): CSSMatrix => {
   if (!isCompatibleArray(array)) {
     throw TypeError(
@@ -115,7 +118,8 @@ const fromArray = (
       m43,
       m44,
     ] = array;
-    return fromValues(
+    return writeValues(
+      target ?? new CSSMatrix(),
       m11,
       m12,
       m13,
@@ -135,7 +139,8 @@ const fromArray = (
     );
   }
   const [M11, M12, M21, M22, M41, M42] = array as Matrix;
-  return fromValues(
+  return writeValues(
+    target ?? new CSSMatrix(),
     M11,
     M12,
     0,
@@ -153,6 +158,83 @@ const fromArray = (
     0,
     1,
   );
+};
+
+/**
+ * Internal helper that writes the 16 values of a matrix into a given `CSSMatrix`
+ * instance. This is the single place where all 22 aliases (`a`-`f` and `m11`-`m44`)
+ * are written, so every write path keeps the instance monomorphic.
+ *
+ * @param target the matrix instance to write the values into.
+ * @param m11 the `m11` value.
+ * @param m12 the `m12` value.
+ * @param m13 the `m13` value.
+ * @param m14 the `m14` value.
+ * @param m21 the `m21` value.
+ * @param m22 the `m22` value.
+ * @param m23 the `m23` value.
+ * @param m24 the `m24` value.
+ * @param m31 the `m31` value.
+ * @param m32 the `m32` value.
+ * @param m33 the `m33` value.
+ * @param m34 the `m34` value.
+ * @param m41 the `m41` value.
+ * @param m42 the `m42` value.
+ * @param m43 the `m43` value.
+ * @param m44 the `m44` value.
+ * @return the target matrix.
+ */
+const writeValues = (
+  target: CSSMatrix,
+  m11: number,
+  m12: number,
+  m13: number,
+  m14: number,
+  m21: number,
+  m22: number,
+  m23: number,
+  m24: number,
+  m31: number,
+  m32: number,
+  m33: number,
+  m34: number,
+  m41: number,
+  m42: number,
+  m43: number,
+  m44: number,
+): CSSMatrix => {
+  target.m11 = m11;
+  target.a = m11;
+
+  target.m21 = m21;
+  target.c = m21;
+
+  target.m31 = m31;
+
+  target.m41 = m41;
+  target.e = m41;
+
+  target.m12 = m12;
+  target.b = m12;
+
+  target.m22 = m22;
+  target.d = m22;
+
+  target.m32 = m32;
+
+  target.m42 = m42;
+  target.f = m42;
+
+  target.m13 = m13;
+  target.m23 = m23;
+  target.m33 = m33;
+  target.m43 = m43;
+  target.m14 = m14;
+  target.m24 = m24;
+  target.m34 = m34;
+  target.m44 = m44;
+
+  return target;
 };
 
 /**
@@ -196,40 +278,25 @@ const fromValues = (
   m43: number,
   m44: number,
 ): CSSMatrix => {
-  const m = new CSSMatrix();
-
-  m.m11 = m11;
-  m.a = m11;
-
-  m.m21 = m21;
-  m.c = m21;
-
-  m.m31 = m31;
-
-  m.m41 = m41;
-  m.e = m41;
-
-  m.m12 = m12;
-  m.b = m12;
-
-  m.m22 = m22;
-  m.d = m22;
-
-  m.m32 = m32;
-
-  m.m42 = m42;
-  m.f = m42;
-
-  m.m13 = m13;
-  m.m23 = m23;
-  m.m33 = m33;
-  m.m43 = m43;
-  m.m14 = m14;
-  m.m24 = m24;
-  m.m34 = m34;
-  m.m44 = m44;
-
-  return m;
+  return writeValues(
+    new CSSMatrix(),
+    m11,
+    m12,
+    m13,
+    m14,
+    m21,
+    m22,
+    m23,
+    m24,
+    m31,
+    m32,
+    m33,
+    m34,
+    m41,
+    m42,
+    m43,
+    m44,
+  );
 };
 
 /**
@@ -237,11 +304,17 @@ const fromValues = (
  * `DOMMatrix` instance which provides the values for its properties.
  *
  * @param m the source matrix to feed values from.
+ * @param target an optional matrix instance to write the values into; when omitted
+ * a new matrix is returned. Used internally by `setMatrixValue` to mutate in place.
  * @return the resulted matrix.
  */
-const fromMatrix = (m: CSSMatrix | DOMMatrix | JSONMatrix): CSSMatrix => {
+const fromMatrix = (
+  m: CSSMatrix | DOMMatrix | JSONMatrix,
+  target?: CSSMatrix,
+): CSSMatrix => {
   if (isCompatibleObject(m)) {
-    return fromValues(
+    return writeValues(
+      target ?? new CSSMatrix(),
       m.m11,
       m.m12,
       m.m13,
@@ -962,13 +1035,35 @@ export default class CSSMatrix {
    * This method expects valid *matrix()* / *matrix3d()* string values, as well
    * as other transform functions like *translateX(10px)*.
    *
+   * The matrix is mutated in place (the same instance is returned), matching
+   * the behavior of the native `DOMMatrix.setMatrixValue()`.
+   *
    * @param source
-   * @return the matrix instance
+   * @return the current matrix instance
    */
   setMatrixValue(source?: CSSMatrixInput): CSSMatrix {
     // CSS transform string source - TransformList first
     if (typeof source === "string" && source.length && source !== "none") {
-      return fromString(source);
+      const m = fromString(source);
+      return writeValues(
+        this,
+        m.m11,
+        m.m12,
+        m.m13,
+        m.m14,
+        m.m21,
+        m.m22,
+        m.m23,
+        m.m24,
+        m.m31,
+        m.m32,
+        m.m33,
+        m.m34,
+        m.m41,
+        m.m42,
+        m.m43,
+        m.m44,
+      );
     }
 
     // [Array | Float[32/64]Array] come next
@@ -977,12 +1072,12 @@ export default class CSSMatrix {
       source instanceof Float64Array ||
       source instanceof Float32Array
     ) {
-      return fromArray(source);
+      return fromArray(source, this);
     }
 
     // new CSSMatrix(CSSMatrix | DOMMatrix | JSONMatrix) last
     if (typeof source === "object") {
-      return fromMatrix(source);
+      return fromMatrix(source, this);
     }
 
     return this;

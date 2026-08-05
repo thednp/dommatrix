@@ -1,0 +1,336 @@
+{
+  "date": "2026-08-05",
+  "backup": [
+    {
+      "op": "new CSSMatrix()",
+      "parity": "ok",
+      "backup": 39215686,
+      "current": 40816326,
+      "ratio": 1.0408163202857141
+    },
+    {
+      "op": "new CSSMatrix(matrix 2D)",
+      "parity": "ok",
+      "backup": 758725,
+      "current": 1101322,
+      "ratio": 1.4515430491943722
+    },
+    {
+      "op": "new CSSMatrix(transform list)",
+      "parity": "ok",
+      "backup": 265252,
+      "current": 615385,
+      "ratio": 2.3200013571999456
+    },
+    {
+      "op": "new CSSMatrix(matrix3d)",
+      "parity": "ok",
+      "backup": 706215,
+      "current": 846024,
+      "ratio": 1.197969456893439
+    },
+    {
+      "op": "fromArray",
+      "parity": "ok",
+      "backup": 3125000,
+      "current": 3144654,
+      "ratio": 1.00628928
+    },
+    {
+      "op": "fromMatrix",
+      "parity": "ok",
+      "backup": 2369668,
+      "current": 15151515,
+      "ratio": 6.3939399949697595
+    },
+    {
+      "op": "setMatrixValue (array)",
+      "parity": "ok",
+      "backup": 6756757,
+      "current": 8928571,
+      "ratio": 1.3214284604285755
+    },
+    {
+      "op": "setMatrixValue (transform list)",
+      "parity": "ok",
+      "backup": 829876,
+      "current": 1869159,
+      "ratio": 2.252335288645533
+    },
+    {
+      "op": "multiply",
+      "parity": "ok",
+      "backup": 2358491,
+      "current": 16129032,
+      "ratio": 6.838708309677671
+    },
+    {
+      "op": "multiplySelf",
+      "parity": "ok",
+      "backup": 1445087,
+      "current": 27777778,
+      "ratio": 19.222218454667434
+    },
+    {
+      "op": "translate",
+      "parity": "ok",
+      "backup": 2105263,
+      "current": 28571429,
+      "ratio": 13.571429792857234
+    },
+    {
+      "op": "translateSelf",
+      "parity": "ok",
+      "backup": 1402525,
+      "current": 71428573,
+      "ratio": 50.9285559972193
+    },
+    {
+      "op": "rotate",
+      "parity": "ok",
+      "backup": 1724138,
+      "current": 9009009,
+      "ratio": 5.225225010990999
+    },
+    {
+      "op": "rotateSelf",
+      "parity": "ok",
+      "backup": 1169591,
+      "current": 5376344,
+      "ratio": 4.596772717984321
+    },
+    {
+      "op": "rotateAxisAngle",
+      "parity": "ok",
+      "backup": 2118644,
+      "current": 8620690,
+      "ratio": 4.0689658102069055
+    },
+    {
+      "op": "scale",
+      "parity": "ok",
+      "backup": 2127660,
+      "current": 28571429,
+      "ratio": 13.42856894428621
+    },
+    {
+      "op": "scaleSelf",
+      "parity": "ok",
+      "backup": 1416431,
+      "current": 90909091,
+      "ratio": 64.18179989000524
+    },
+    {
+      "op": "skew",
+      "parity": "ok",
+      "backup": 1964637,
+      "current": 26315790,
+      "ratio": 13.39473398902698
+    },
+    {
+      "op": "skewSelf",
+      "parity": "ok",
+      "backup": 1369863,
+      "current": 124999998,
+      "ratio": 91.24999945249999
+    },
+    {
+      "op": "transformPoint",
+      "parity": "ok",
+      "backup": 32258065,
+      "current": 33333333,
+      "ratio": 1.0333333075000004
+    },
+    {
+      "op": "toString",
+      "parity": "ok",
+      "backup": 2392344,
+      "current": 2450980,
+      "ratio": 1.0245098530980494
+    },
+    {
+      "op": "toJSON",
+      "parity": "ok",
+      "backup": 2212389,
+      "current": 21276596,
+      "ratio": 9.617023046127963
+    },
+    {
+      "op": "toFloat32Array",
+      "parity": "ok",
+      "backup": 10869565,
+      "current": 12820513,
+      "ratio": 1.1794872195897443
+    },
+    {
+      "op": "is2D + isIdentity",
+      "parity": "ok",
+      "backup": 147058824,
+      "current": 142857143,
+      "ratio": 0.9714285692914286
+    }
+  ],
+  "native": [
+    {
+      "op": "new Matrix()",
+      "parity": "ok",
+      "shim": 83333333,
+      "native": 514139,
+      "ratio": 162.0832751454373
+    },
+    {
+      "op": "new Matrix(matrix 2D)",
+      "parity": "ok",
+      "shim": 1018330,
+      "native": 401284,
+      "ratio": 2.537679050248702
+    },
+    {
+      "op": "new Matrix(transform list)",
+      "parity": "ok",
+      "shim": 696864,
+      "native": 363636,
+      "ratio": 1.9163779163779164
+    },
+    {
+      "op": "new Matrix(matrix3d)",
+      "parity": "ok",
+      "shim": 777605,
+      "native": 397456,
+      "ratio": 1.9564555573447124
+    },
+    {
+      "op": "static from values",
+      "parity": "ok",
+      "shim": 2717391,
+      "native": 362319,
+      "ratio": 7.499995860001822
+    },
+    {
+      "op": "fromMatrix",
+      "parity": "ok",
+      "shim": 859107,
+      "native": 223514,
+      "ratio": 3.843638429807529
+    },
+    {
+      "op": "setMatrixValue (transform list)",
+      "parity": "ok",
+      "shim": 1666667,
+      "native": 496278,
+      "ratio": 3.3583334340833164
+    },
+    {
+      "op": "multiply",
+      "parity": "ok",
+      "shim": 854701,
+      "native": 216732,
+      "ratio": 3.943584703689349
+    },
+    {
+      "op": "multiplySelf",
+      "parity": "ok",
+      "shim": 12820513,
+      "native": 263852,
+      "ratio": 48.58978897260585
+    },
+    {
+      "op": "translate",
+      "parity": "ok",
+      "shim": 1633987,
+      "native": 410509,
+      "ratio": 3.9803926345098404
+    },
+    {
+      "op": "translateSelf",
+      "parity": "ok",
+      "shim": 17241379,
+      "native": 562746,
+      "ratio": 30.63794145138304
+    },
+    {
+      "op": "rotate",
+      "parity": "ok",
+      "shim": 1432665,
+      "native": 402739,
+      "ratio": 3.5573038618062816
+    },
+    {
+      "op": "rotateSelf",
+      "parity": "ok",
+      "shim": 4184100,
+      "native": 496771,
+      "ratio": 8.422593106280358
+    },
+    {
+      "op": "rotateAxisAngle",
+      "parity": "ok",
+      "shim": 4273504,
+      "native": 445236,
+      "ratio": 9.59828944649579
+    },
+    {
+      "op": "scale",
+      "parity": "ok",
+      "shim": 1574803,
+      "native": 403226,
+      "ratio": 3.9055095653554086
+    },
+    {
+      "op": "scaleSelf",
+      "parity": "ok",
+      "shim": 20000000,
+      "native": 547345,
+      "ratio": 36.540025029917146
+    },
+    {
+      "op": "skewX",
+      "parity": "ok",
+      "shim": 1642036,
+      "native": 421053,
+      "ratio": 3.8998320876469235
+    },
+    {
+      "op": "skewXSelf",
+      "parity": "ok",
+      "shim": 18867924,
+      "native": 546448,
+      "ratio": 34.52830644452903
+    },
+    {
+      "op": "transformPoint",
+      "parity": "ok",
+      "shim": 28571429,
+      "native": 2450980,
+      "ratio": 11.657144897143183
+    },
+    {
+      "op": "toJSON",
+      "parity": "ok",
+      "shim": 907441,
+      "native": 428816,
+      "ratio": 2.116154714376329
+    },
+    {
+      "op": "toFloat32Array",
+      "parity": "ok",
+      "shim": 496032,
+      "native": 513875,
+      "ratio": 0.965277548041839
+    },
+    {
+      "op": "toString",
+      "parity": "-",
+      "shim": 668449,
+      "native": 816993,
+      "ratio": 0.8181820407273991
+    },
+    {
+      "op": "is2D + isIdentity",
+      "parity": "ok",
+      "shim": 172413794,
+      "native": 94339622,
+      "ratio": 1.8275862288275864
+    }
+  ]
+}

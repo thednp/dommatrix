@@ -68,6 +68,8 @@ const cases: BenchCase[] = [
   { name: "new CSSMatrix(matrix3d)", iterations: 5e4, make: (C) => () => new C("matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,10,20,30,1)") },
   { name: "fromArray", iterations: 5e4, make: (C) => () => C.fromArray([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 20, 30, 1]) },
   { name: "fromMatrix", iterations: 5e4, make: (C) => { const m = new C(); return () => C.fromMatrix(m) } },
+  { name: "setMatrixValue (array)", iterations: 5e4, make: (C) => { const m = new C(); return () => m.setMatrixValue([1, 0, 0, 1, 10, 20]) } },
+  { name: "setMatrixValue (transform list)", iterations: 2e4, make: (C) => { const m = new C(); return () => m.setMatrixValue("translate(10px,20px)") } },
   { name: "multiply", iterations: 5e4, make: (C) => { const a = new C("rotate(30deg)"); const b = new C("translate(10px,20px)"); return () => a.multiply(b) } },
   { name: "multiplySelf", iterations: 5e4, make: (C) => { const m = new C("rotate(30deg)"); const t = C.Translate(1, 2, 3); return () => m.multiplySelf(t) } },
   { name: "translate", iterations: 1e5, make: (C) => { const m = new C("rotate(30deg)"); return () => m.translate(10, 20, 5) } },

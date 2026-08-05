@@ -12,12 +12,12 @@ A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/AP
 ## Table of Contents
 
 - [Features](#features)
+- [Benchmarks](#benchmarks)
 - [Demo](#demo)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [API Reference](#api-reference)
 - [CSSMatrix vs native DOMMatrix](#cssmatrix-vs-native-dommatrix)
-- [Benchmarks](#benchmarks)
 - [Alternatives](#alternatives)
 - [History](#history)
 - [Thanks](#thanks)
@@ -32,6 +32,18 @@ A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/AP
 - **Immutable and mutable APIs** — `translate()` returns a new matrix, `translateSelf()` mutates in place, same as native `DOMMatrix`
 - **TypeScript** — bundled type definitions, including the `Matrix`, `Matrix3d`, `JSONMatrix` and `PointTuple` types
 - **Verified against native** — every method is tested side-by-side with the native `DOMMatrix` in real browsers, with **100% test coverage**
+
+## Benchmarks
+
+<!-- b-summary -->
+
+`CSSMatrix` is **1.2x–91x faster** than the previous 3.0.x release series and **1.8x–162x faster** than the native `DOMMatrix` — except `toString()`, which native does ~1.2x faster.
+
+Every operation's result matches the previous release series and the native `DOMMatrix` to within `1e-9` (output is indistinguishable at the 9th decimal place). Full methodology, per-operation results and interpretation: [BENCHMARK](BENCHMARK.md).
+
+Last updated: **2026-08-05**.
+
+<!-- /b-summary -->
 
 ## Demo
 
@@ -152,7 +164,7 @@ For the complete JavaScript API, check the [JavaScript API](https://github.com/t
 
 | Method | Description |
 | --- | --- |
-| `setMatrixValue(init)` | Returns a new matrix from the given string / array / object |
+| `setMatrixValue(init)` | Replaces the matrix values from the given string / array / object, mutates in place and returns `this` |
 | `translate(x, y?, z?)` / `translateSelf(x, y?, z?)` | Applies a translation (CSS `translate3d()`) |
 | `rotate(rx?, ry?, rz?)` / `rotateSelf(rx?, ry?, rz?)` | Applies a rotation; a single value rotates about the z-axis (CSS `rotate()`) |
 | `rotateAxisAngle(x, y, z, angle)` / `rotateAxisAngleSelf(...)` | Applies a rotation about a vector (CSS `rotate3d()`) |
@@ -188,85 +200,12 @@ The shim mirrors the native **DOMMatrix** API surface closely — the same `m11`
 | `transformOrigin` argument | Not supported | Supported (`new DOMMatrix(init, transformOrigin)`) |
 | `is2D` / `isIdentity` | Computed getters — always reflect the current values | `is2D` is a flag fixed at construction and can report stale results (e.g. after `rotateAxisAngle()`) |
 | `transformPoint()` | Accepts a `DOMPoint` **or** a plain `{ x, y, z, w }` tuple; returns the same type it received | Accepts `DOMPointInit`, always returns a `DOMPoint` |
-| `setMatrixValue()` | Returns a **new** matrix, the original is left unchanged | Mutates the matrix in place and returns `this` |
+| `setMatrixValue()` | Mutates in place and returns `this`; accepts any of the shim's input types (string, array / typed array, `DOMMatrix`, plain object) | Mutates in place and returns `this`; accepts `DOMMatrixInit` only |
 | `toArray()` | Plain `Array` of 6/16 values, alongside `toFloat32Array()` / `toFloat64Array()` | `toFloat32Array()` / `toFloat64Array()` only |
 | `toJSON()` | `{ a-f, m11-m44, is2D, isIdentity }` | Same shape |
 | TypeScript | Ships bundled type definitions, zero runtime dependencies | WebIDL-generated typings |
 
 Methods of the `DOMMatrixReadOnly` prototype that are not part of this shim: `flipX()`, `flipY()`, `inverse()` and `rotateFromVector()` (`transpose()` is not part of the native interface either). Everything else — `translate*`, `rotate*`, `rotateAxisAngle*`, `scale*`, `skew*`, `multiply*`, `toString()`, `toFloat(32/64)Array()`, `transformPoint()` — is implemented with behavior verified against the native interface by the test suite.
-
-## Benchmarks
-
-Two benchmark suites run headless Chromium via Vitest and gate CI with **parity assertions** (output must be identical within `1e-9`), while the timings are reported only:
-
-- `pnpm bench` — `test/dommatrix.bench.test.ts`, current implementation vs a `test/fixtures/index-3.0.x.ts` snapshot of the previous release (22 operations)
-- `pnpm bench:native` — `test/native.bench.test.ts`, current implementation vs the browser's native `DOMMatrix` (22 operations, 21 parity-checked)
-
-Measurements are skipped under coverage (istanbul instrumentation distorts timings) and use interleaved sampling — both implementations are alternated per sample and medians are reported, so the ratios are noise-floor-corrected (identical files measure ~0.92–1.09x). Results are also stored on `globalThis.__CSSMATRIX_BENCH__` / `__CSSMATRIX_NATIVE_BENCH__` for inspection in `pnpm test-ui` devtools, since browser `console.table` output is not forwarded to the terminal.
-
-The tables below report the median of two interleaved runs on headless Chromium (Playwright 1217), 2026-08-04. Ratios above 1 mean the shim is faster.
-
-### vs 3.0.x (previous release)
-
-Ratio = 3.1.x ops/s ÷ 3.0.x ops/s.
-
-**Large wins (6.9–104x)** — the hot paths that were specialized:
-
-| Operation | Ratio | Operation | Ratio |
-| --- | --- | --- | --- |
-| `skewSelf` | ~104x | `scaleSelf` | ~61x |
-| `translateSelf` | ~49x | `multiplySelf` | ~18x |
-| `scale` | ~14x | `skew` | ~13x |
-| `translate` | ~13x | `toJSON` | ~9.7x |
-| `fromMatrix` | ~7.3x | `multiply` | ~6.9x |
-
-**Moderate wins (2.2–5.2x)**:
-
-| Operation | Ratio | Operation | Ratio |
-| --- | --- | --- | --- |
-| `rotate` | ~5.2x | `rotateSelf` | ~4.7x |
-| `rotateAxisAngle` | ~4.1x | `new CSSMatrix(transform list)` | ~2.2x |
-
-**Mild wins (1.2–1.4x)**:
-
-| Operation | Ratio |
-| --- | --- |
-| `new CSSMatrix(matrix 2D)` | ~1.3x |
-| `new CSSMatrix(matrix3d)` | ~1.2x |
-
-**At parity (~1.0x)** — unchanged code paths, no regression:
-
-`new CSSMatrix()`, `fromArray`, `transformPoint`, `toString`, `toFloat32Array`, `is2D` + `isIdentity` (~1.0–1.1x).
-
-### vs native `DOMMatrix`
-
-Ratio = shim ops/s ÷ native ops/s.
-
-**Shim faster** (1.8–150x):
-
-| Operation | Ratio | Operation | Ratio |
-| --- | --- | --- | --- |
-| `new Matrix()` | ~150x¹ | `multiplySelf` | ~48x |
-| `scaleSelf` | ~35x | `skewXSelf` | ~35x |
-| `translateSelf` | ~31x | `rotateAxisAngle` | ~10x |
-| `rotateSelf` | ~8.3x | static from values | ~7.0x |
-| `multiply` | ~4.0x | `translate` | ~4.0x |
-| `scale` | ~4.0x | `fromMatrix` | ~3.8x |
-| `skewX` | ~3.7x | `rotate` | ~3.4x |
-| `new Matrix(matrix 2D)` | ~2.7x | `toJSON` | ~2.0x |
-| `new Matrix(matrix3d)` | ~1.95x | `new Matrix(transform list)` | ~1.9x |
-| `is2D` + `isIdentity` | ~1.8x | `toFloat32Array` | ~1.0x |
-
-¹ measured as construct + `toJSON()`; native's `toJSON()` is a slow JS↔C++ bridge that dominates this row.
-
-**Native faster** (the pure-compute cases):
-
-| Operation | Ratio |
-| --- | --- |
-| `transformPoint` | ~0.36x (native ~2.8x faster) |
-| `toString` | ~0.82x (native ~1.2x faster) |
-
-The shim wins construction and mutation-heavy operations because V8 fully optimizes the plain-JS hot paths, while native `DOMMatrix` pays a C++ call per property access. Native C++ wins where the operation itself is the whole cost: point transforms and serialization.
 
 ## Alternatives
 
