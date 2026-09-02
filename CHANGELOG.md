@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.2] - 2026-09-02
+
+### Changed
+
+- Tooling maintenance: rename `tsdown.config.mts` → `tsdown.config.ts` and `vitest.config.mts` → `vitest.config.ts`, add `pnpm-workspace.yaml` with `minimumReleaseAgeExclude` for `@types/node`, and set `minimumDependencyAge: 0` in `deno.json`.
+- Rebuild `dist/` and `docs/dommatrix.js` from the 3.1.1 sources (no runtime changes).
+
+### Dependencies
+
+- Bump `vitest` and `@vitest/*` from `^4.1.10` to `^4.1.11`, `@types/node` from `^26.1.2` to `^26.4.1` (with `pnpm-lock.yaml` and `deno.lock` refreshed).
+
+
 ## [3.1.1] - 2026-08-05
 
 ### Added
@@ -20,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The native benchmark's `transformPoint` case measured asymmetric work: the shim side constructed the matrix from a transform string on every iteration while the native side reused a pre-built `DOMMatrix`. Both sides now pre-build the matrix, and the corrected measurement is ~11x shim-faster on `transformPoint` (previously reported as ~0.36x native-faster, see the 3.1.0 entry above); `test/fixtures/bench-results.json`, the `BENCHMARK.md` tables and the README `## Benchmarks` summary were regenerated with `pnpm bench:docs`.
 
+[3.1.2]: https://github.com/thednp/dommatrix/releases/tag/3.1.2
 [3.1.1]: https://github.com/thednp/dommatrix/releases/tag/3.1.1
 
 ## [3.1.0] - 2026-08-04
