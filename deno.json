@@ -1,6 +1,6 @@
 {
   "name": "@thednp/dommatrix",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "license": "MIT",
   "description": "TypeScript shim for DOMMatrix",
   "keywords": [
@@ -14,13 +14,14 @@
     "transform",
     "typescript"
   ],
+  "minimumDependencyAge": 0,
   "exports": "./src/index.ts",
   "imports": {
-    "@vitest/browser": "npm:@vitest/browser@^4.1.10",
-    "@vitest/browser-playwright": "npm:@vitest/browser-playwright@^4.1.10",
-    "@vitest/coverage-istanbul": "npm:@vitest/coverage-istanbul@^4.1.10",
+    "@vitest/browser": "npm:@vitest/browser@^4.1.11",
+    "@vitest/browser-playwright": "npm:@vitest/browser-playwright@^4.1.11",
+    "@vitest/coverage-istanbul": "npm:@vitest/coverage-istanbul@^4.1.11",
     "playwright": "npm:playwright@^1.62.1",
-    "vitest": "npm:vitest@^4.1.10"
+    "vitest": "npm:vitest@^4.1.11"
   },
   "tasks": {
     "test": "deno task clean-coverage && vitest --browser.headless",

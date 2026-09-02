@@ -204,25 +204,26 @@
 				"rotate",
 				"scale",
 				"skew"
-			].some((p) => prop.includes(p)) && /[XYZ]/.test(prop) && x && [y, z].every((n) => n === void 0)) if ("skewX" === prop || "skewY" === prop) m["skewX" === prop ? "skewXSelf" : "skewYSelf"](x);
-			else {
-				const fn = prop.replace(/[XYZ]/, "");
-				const axis = prop.replace(fn, "");
-				const idx = [
-					"X",
-					"Y",
-					"Z"
-				].indexOf(axis);
-				const def = fn === "scale" ? 1 : 0;
-				const method = fn + "Self";
-				const axeValues = [
-					idx === 0 ? x : def,
-					idx === 1 ? x : def,
-					idx === 2 ? x : def
-				];
-				m[method](...axeValues);
-			}
-			else throw TypeError(invalidStringError);
+			].some((p) => prop.includes(p)) && /[XYZ]/.test(prop) && x && [y, z].every((n) => n === void 0)) {
+				if ("skewX" === prop || "skewY" === prop) m["skewX" === prop ? "skewXSelf" : "skewYSelf"](x);
+				else {
+					const fn = prop.replace(/[XYZ]/, "");
+					const axis = prop.replace(fn, "");
+					const idx = [
+						"X",
+						"Y",
+						"Z"
+					].indexOf(axis);
+					const def = fn === "scale" ? 1 : 0;
+					const method = fn + "Self";
+					const axeValues = [
+						idx === 0 ? x : def,
+						idx === 1 ? x : def,
+						idx === 2 ? x : def
+					];
+					m[method](...axeValues);
+				}
+			} else throw TypeError(invalidStringError);
 		}
 		if (consumed !== str.length) throw TypeError(invalidStringError);
 		return m;
