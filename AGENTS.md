@@ -81,7 +81,7 @@ Deno equivalents: `deno task test`, `deno task lint`, `deno task check`, `deno t
 1. Bump `version` in `package.json` **and** in `deno.json`
 2. Add an entry to `CHANGELOG.md` (Keep a Changelog style, date-stamped)
 3. Run `pnpm build && pnpm lint && pnpm test` and `deno publish --dry-run --allow-dirty`
-4. Commit, then tag with the **bare version number** (no `v` prefix — existing tags are `1.0.0` ... `3.1.0`)
+4. Commit, then tag with the **bare version number** (no `v` prefix — existing tags are `1.0.0` ... `3.1.2`)
 
 The GitHub Actions `publish.yml` workflow publishes to both npm and JSR on GitHub Release (JSR via OIDC when enabled on the scope, otherwise the `JSR_TOKEN` secret).
 

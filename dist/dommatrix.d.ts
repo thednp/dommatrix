@@ -1,4 +1,3 @@
-//#region src/types.d.ts
 /** A DOMPoint compatible Tuple. */
 interface PointTuple {
   /** The X coordinate of the point. */
@@ -67,8 +66,6 @@ type Matrix = [number, number, number, number, number, number];
 type Matrix3d = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number];
 /** All CSSMatrix compatible initialization values. */
 type CSSMatrixInput = string | number[] | Matrix | Matrix3d | CSSMatrix | DOMMatrix | JSONMatrix | Float32Array | Float64Array;
-//#endregion
-//#region src/index.d.ts
 /** Checks if an array is compatible with CSSMatrix */
 declare const isCompatibleArray: (array?: unknown) => array is Matrix | Matrix3d | Float32Array | Float64Array;
 /** Checks if an object is compatible with CSSMatrix */
@@ -103,6 +100,8 @@ declare const fromMatrix: (m: CSSMatrix | DOMMatrix | JSONMatrix, target?: CSSMa
  * * `matrix(a, b, c, d, e, f)` - valid matrix() transform function
  * * `matrix3d(m11, m12, m13, ...m44)` - valid matrix3d() transform function
  * * `translate(tx, ty) rotateX(alpha)` - any valid transform function(s)
+ *
+ * Angle arguments accept the `deg`, `grad`, `rad` and `turn` units.
  *
  * @copyright thednp © 2021
  *
@@ -219,7 +218,7 @@ declare const Multiply: (m1: CSSMatrix | DOMMatrix | JSONMatrix, m2: CSSMatrix |
  * @link homepage <https://thednp.github.io/dommatrix/>
  * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix
  */
-declare class CSSMatrix {
+export default class CSSMatrix {
   /** The first element of the first row, alias of `a`. */
   m11: number;
   /** The second element of the first row, alias of `b`. */
@@ -544,6 +543,4 @@ declare class CSSMatrix {
    */
   transformPoint(t: PointTuple | DOMPoint): PointTuple | DOMPoint;
 }
-//#endregion
-export { type CSSMatrixInput, type JSONMatrix, type Matrix, type Matrix3d, type PointTuple, CSSMatrix as default };
-//# sourceMappingURL=dommatrix.d.ts.map
+export type { CSSMatrixInput, JSONMatrix, Matrix, Matrix3d, PointTuple };

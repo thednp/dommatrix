@@ -453,12 +453,116 @@ describe("DOMMatrix Class Test", () => {
       );
 
       expect(css.isIdentity).to.equal(dom.isIdentity);
-      if (test === "rotate3d1") {
+      // the native DOMMatrix flags a zero rotation / a 3D scale as `is2D`
+      // false at construction, while the shim computes the flag from the
+      // current values
+      if (["rotate3d1", "rotateZeroY", "scale3dOne"].includes(test)) {
         expect(css.is2D).to.not.equal(dom.is2D);
       } else {
         expect(css.is2D).to.equal(dom.is2D);
       }
     });
+  });
+});
+
+describe("CSSMatrix fromString edge cases", () => {
+  it("Test translate with a zero value, expect a valid matrix", () => {
+    const m = new CSSMatrix("translate(0px, 20px)");
+    expect(m.toFloat32Array(true)).to.deep.equal(
+      new Float32Array([1, 0, 0, 1, 0, 20]),
+    );
+    expect(new CSSMatrix("translate(0px)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("translateX(0px)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("translate3d(0px, 0px, 0px)").isIdentity).to.equal(
+      true,
+    );
+  });
+
+  it("Test scale with a zero value, expect a valid matrix", () => {
+    const m = new CSSMatrix("scaleX(0)");
+    expect(m.toFloat32Array(true)).to.deep.equal(
+      new Float32Array([0, 0, 0, 1, 0, 0]),
+    );
+    expect(new CSSMatrix("scale(0)").toFloat32Array(true)).to.deep.equal(
+      new Float32Array([0, 0, 0, 0, 0, 0]),
+    );
+    expect(new CSSMatrix("scaleY(0)").toFloat32Array(true)).to.deep.equal(
+      new Float32Array([1, 0, 0, 0, 0, 0]),
+    );
+  });
+
+  it("Test rotate with a zero value, expect a valid matrix", () => {
+    expect(new CSSMatrix("rotate(0deg)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("rotateX(0deg)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("rotateZ(0deg)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("rotate3d(0, 0, 1, 0deg)").isIdentity).to.equal(true);
+    const m = new CSSMatrix("rotateX(0deg) rotateY(10deg)");
+    expect(m.m32).to.be.closeTo(-0.173648, 6);
+    expect(m.m33).to.be.closeTo(0.984807, 6);
+  });
+
+  it("Test skew with a zero value, expect a valid matrix", () => {
+    expect(new CSSMatrix("skew(0deg)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("skew(0deg, 0deg)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("skewX(0deg)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("skewY(0deg)").isIdentity).to.equal(true);
+    const m = new CSSMatrix("skew(0deg, 10deg)");
+    expect(m.m12).to.be.closeTo(0.176326, 6);
+  });
+
+  it("Test perspective with a zero value, expect the native clamped value", () => {
+    expect(new CSSMatrix("perspective(0px)").m34).to.equal(-1);
+    expect(new CSSMatrix("perspective(400px)").m34).to.equal(-0.0025);
+  });
+
+  it("Test no-op transforms, expect the identity matrix", () => {
+    expect(new CSSMatrix("scale(1)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("scale(1, 1)").isIdentity).to.equal(true);
+    expect(new CSSMatrix("scale3d(1, 1, 1)").isIdentity).to.equal(true);
+  });
+
+  it("Test angle units, expect degrees conversion", () => {
+    const grad = new CSSMatrix("rotate(100grad)");
+    expect(grad.m11).to.be.closeTo(0, 9);
+    expect(grad.m12).to.be.closeTo(1, 9);
+    const turn = new CSSMatrix("rotate(0.25turn)");
+    expect(turn.m11).to.be.closeTo(0, 9);
+    expect(turn.m12).to.be.closeTo(1, 9);
+    const rad = new CSSMatrix("rotate(1rad)");
+    expect(rad.m11).to.be.closeTo(0.540302, 6);
+    expect(rad.m12).to.be.closeTo(0.841471, 6);
+    expect(new CSSMatrix("rotate(200grad)").m11).to.be.closeTo(-1, 9);
+    expect(new CSSMatrix("rotate(0.5turn)").m11).to.be.closeTo(-1, 9);
+    expect(new CSSMatrix("skewX(100grad)").m21).to.be.closeTo(
+      Math.tan((100 * 360) / 400 / 180 * Math.PI),
+      6,
+    );
+  });
+
+  it("Test case insensitive angle units, expect degrees conversion", () => {
+    expect(new CSSMatrix("rotate(10Deg)").m12).to.be.closeTo(0.173648, 6);
+    expect(new CSSMatrix("rotate(10Grad)").m12).to.be.closeTo(0.156434, 6);
+    const turn = new CSSMatrix("rotate(10TURN)");
+    expect(turn.m11).to.be.closeTo(1, 9);
+    expect(turn.m12).to.be.closeTo(0, 9);
+    const rad = new CSSMatrix("rotate(10RAD)");
+    expect(rad.m11).to.be.closeTo(-0.839072, 6);
+    expect(rad.m12).to.be.closeTo(-0.544021, 6);
+  });
+
+  it("Test invalid arguments, expect the invalid transform string error", () => {
+    const invalid = [
+      "translate(10px, wombat)",
+      "scale(2, wombat)",
+      "skew(10deg, wombat)",
+      "rotate(wombatdeg)",
+      "perspective(-10px)",
+    ];
+    for (const source of invalid) {
+      expect(() => CSSMatrix.fromString(source)).to.throw(
+        `CSSMatrix: invalid transform string "${source}"`,
+      );
+    }
   });
 });
 

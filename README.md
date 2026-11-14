@@ -27,7 +27,7 @@ A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/AP
 
 - **Zero runtime dependencies** — the entire library is a single file
 - **Node.js compatible** — no `DOMMatrix` / `DOMPoint` globals required, works in legacy browsers too
-- **Full transform string parsing** — `matrix()`, `matrix3d()`, `translate*()`, `rotate*()`, `rotate3d()`, `scale*()`, `skew*()`, `perspective()` with `deg` / `rad` / `px` units, via `fromString()` or the constructor
+- **Full transform string parsing** — `matrix()`, `matrix3d()`, `translate*()`, `rotate*()`, `rotate3d()`, `scale*()`, `skew*()`, `perspective()` with `deg` / `grad` / `rad` / `turn` / `px` units, via `fromString()` or the constructor
 - **2D & 3D** — the `m11`-`m44` / `a`-`f` properties, `matrix()` / `matrix3d()` string output
 - **Immutable and mutable APIs** — `translate()` returns a new matrix, `translateSelf()` mutates in place, same as native `DOMMatrix`
 - **TypeScript** — bundled type definitions, including the `Matrix`, `Matrix3d`, `JSONMatrix` and `PointTuple` types

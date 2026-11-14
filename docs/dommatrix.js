@@ -1,7 +1,7 @@
 (function(global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define([], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.CSSMatrix = factory());
 })(this, function() {
-	//#region src/index.ts
+	// src/index.ts
 	/** The property names of a JSONMatrix, used for compatibility checks */
 	const JSON_KEYS = Object.keys({
 		a: 1,
@@ -147,6 +147,26 @@
 		if (isCompatibleObject(m)) return writeValues(target ?? new CSSMatrix(), m.m11, m.m12, m.m13, m.m14, m.m21, m.m22, m.m23, m.m24, m.m31, m.m32, m.m33, m.m34, m.m41, m.m42, m.m43, m.m44);
 		throw TypeError(`CSSMatrix: "${JSON.stringify(m)}" is not a DOMMatrix / CSSMatrix / JSON compatible object.`);
 	};
+	/** The CSS angle units and their conversion factor to degrees. */
+	const angleUnits = {
+		deg: 1,
+		grad: 360 / 400,
+		rad: 180 / Math.PI,
+		turn: 360
+	};
+	/**
+	* Parses a transform function argument, converting the CSS angle units
+	* (`deg`, `grad`, `rad` and `turn`) to degrees; any other unit keeps its
+	* numeric value.
+	*/
+	const parseComponent = (raw) => {
+		const match = /^(.*?)(deg|grad|rad|turn)$/i.exec(raw);
+		if (!match) return parseFloat(raw);
+		const value = parseFloat(match[1]);
+		return Number.isNaN(value) ? NaN : value * angleUnits[match[2].toLowerCase()];
+	};
+	/** Tells if a parsed argument is a usable number, zero included. */
+	const isNumber = (value) => typeof value === "number" && !Number.isNaN(value);
 	/**
 	* Creates a new mutable `CSSMatrix` given any valid CSS transform string,
 	* or what we call `TransformList`:
@@ -154,6 +174,8 @@
 	* * `matrix(a, b, c, d, e, f)` - valid matrix() transform function
 	* * `matrix3d(m11, m12, m13, ...m44)` - valid matrix3d() transform function
 	* * `translate(tx, ty) rotateX(alpha)` - any valid transform function(s)
+	*
+	* Angle arguments accept the `deg`, `grad`, `rad` and `turn` units.
 	*
 	* @copyright thednp © 2021
 	*
@@ -173,7 +195,7 @@
 			const value = match[2];
 			consumed += match[0].length;
 			if (!value) throw TypeError(invalidStringError);
-			const components = value.split(",").map((n) => n.includes("rad") ? parseFloat(n) * (180 / Math.PI) : parseFloat(n));
+			const components = value.split(",").map(parseComponent);
 			const [x, y, z, a] = components;
 			const xyz = [
 				x,
@@ -186,25 +208,25 @@
 				z,
 				a
 			];
-			if (prop === "perspective" && x && [y, z].every((n) => n === void 0)) m.m34 = -1 / x;
-			else if (prop.includes("matrix") && [6, 16].includes(components.length) && components.every((n) => !Number.isNaN(+n))) {
+			if (prop === "perspective" && isNumber(x) && [y, z].every((n) => n === void 0)) {
+				if (x < 0) throw TypeError(invalidStringError);
+				m.m34 = -1 / Math.max(x, 1);
+			} else if (prop.includes("matrix") && [6, 16].includes(components.length) && components.every((n) => !Number.isNaN(+n))) {
 				const values = components.map((n) => Math.abs(n) < 1e-6 ? 0 : n);
 				m.multiplySelf(fromArray(values));
-			} else if (prop === "translate3d" && xyz.every((n) => !Number.isNaN(+n))) m.translateSelf(x, y, z);
-			else if (prop === "translate" && x && z === void 0) m.translateSelf(x, y || 0, 0);
-			else if (prop === "rotate3d" && xyza.every((n) => !Number.isNaN(+n)) && a) m.rotateAxisAngleSelf(x, y, z, a);
-			else if (prop === "rotate" && x && [y, z].every((n) => n === void 0)) m.rotateSelf(0, 0, x);
-			else if (prop === "scale3d" && xyz.every((n) => !Number.isNaN(+n)) && xyz.some((n) => n !== 1)) m.scaleSelf(x, y, z);
-			else if (prop === "scale" && !Number.isNaN(x) && (x !== 1 || y !== 1) && z === void 0) {
-				const sy = Number.isNaN(+y) ? x : y;
-				m.scaleSelf(x, sy, 1);
-			} else if (prop === "skew" && (x || !Number.isNaN(x) && y) && z === void 0) m.skewSelf(x, y || 0);
+			} else if (prop === "translate3d" && xyz.every(isNumber)) m.translateSelf(x, y, z);
+			else if (prop === "translate" && isNumber(x) && (y === void 0 || isNumber(y)) && z === void 0) m.translateSelf(x, y ?? 0, 0);
+			else if (prop === "rotate3d" && xyza.every(isNumber)) m.rotateAxisAngleSelf(x, y, z, a);
+			else if (prop === "rotate" && isNumber(x) && [y, z].every((n) => n === void 0)) m.rotateSelf(0, 0, x);
+			else if (prop === "scale3d" && xyz.every(isNumber)) m.scaleSelf(x, y, z);
+			else if (prop === "scale" && isNumber(x) && (y === void 0 || isNumber(y)) && z === void 0) m.scaleSelf(x, y ?? x, 1);
+			else if (prop === "skew" && isNumber(x) && (y === void 0 || isNumber(y)) && z === void 0) m.skewSelf(x, y ?? 0);
 			else if ([
 				"translate",
 				"rotate",
 				"scale",
 				"skew"
-			].some((p) => prop.includes(p)) && /[XYZ]/.test(prop) && x && [y, z].every((n) => n === void 0)) {
+			].some((p) => prop.includes(p)) && /[XYZ]/.test(prop) && isNumber(x) && [y, z].every((n) => n === void 0)) {
 				if ("skewX" === prop || "skewY" === prop) m["skewX" === prop ? "skewXSelf" : "skewYSelf"](x);
 				else {
 					const fn = prop.replace(/[XYZ]/, "");
@@ -1061,7 +1083,6 @@
 			};
 		}
 	};
-	//#endregion
 	return CSSMatrix;
 });
 

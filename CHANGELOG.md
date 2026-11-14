@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.3] - 2026-11-14
+
+### Fixed
+
+- `CSSMatrix.fromString()` (and the `new CSSMatrix(string)` constructor) no longer throws `CSSMatrix: invalid transform string` when a transform function argument is `0`. The parser checked the arguments for truthiness instead of testing them for being a number, so every valid zero value was rejected: `translate(0px, 20px)`, `translateX(0px)`, `scaleX(0)`, `rotate(0deg)`, `rotateX(0deg)`, `rotate3d(0, 0, 1, 0deg)`, `skew(0deg)`, `skewX(0deg)`, `perspective(0px)`, ... All of them now produce the same matrix as the native `DOMMatrix`.
+- The CSS angle units are now parsed exactly: `grad` was matched by the `rad` check (`"grad".includes("rad")`) and turned into radians, and `turn` was not converted at all — `rotate(100grad)` was parsed as 100rad and `rotate(0.25turn)` as 0.25deg. Both now convert to the correct degrees (`1grad` = `0.9deg`, `1turn` = `360deg`), so `rotate(100grad)` and `rotate(0.25turn)` both yield the 90deg rotation. The units are case-insensitive, as in CSS (`rotate(10RAD)`).
+- The no-op transforms `scale(1, 1)` and `scale3d(1, 1, 1)` were rejected as invalid strings; they now return the identity matrix, like the native `DOMMatrix`.
+- Transform arguments that are not numbers (`translate(10px, wombat)`, `scale(2, wombat)`, `skew(10deg, wombat)`) are now rejected with the invalid transform string error instead of being silently parsed as `0`.
+- `perspective()` now matches the native `DOMMatrix`: negative lengths are rejected and the perspective length is clamped to a minimum of `1px` (`perspective(0px)` gives `m34` of `-1`).
+
+### Dependencies
+
+- Bump `vitest` and `@vitest/*` from `^4.1.11` to `^5.1.0`, `tsdown` from `^0.22.14` to `^0.23.7`, `playwright` from `^1.62.1` to `^1.65.1` and `@types/node` from `^26.4.1` to `^26.6.6` (with `pnpm-lock.yaml` and `deno.lock` refreshed, and `pnpm-workspace.yaml` extended with the `minimumReleaseAgeExclude` entries for `playwright@1.65.1` / `playwright-core@1.65.1`).
+
+[3.1.3]: https://github.com/thednp/dommatrix/releases/tag/3.1.3
+
 ## [3.1.2] - 2026-09-02
 
 ### Changed

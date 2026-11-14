@@ -28,5 +28,20 @@ export default {
   combo: 'translate(25px, 15px) matrix(0.984807, -0.173648, 0.173648, 0.984807, 0, 0)',
   combo1: 'skewX(0.3rad) skewY(10deg) translate3d(15px,15px, -15px) matrix(0.984807, -0.173648, 0.173648, 0.984807, 0, 0)',
   combo2: 'perspective(800px) scale(0.9,1.1) rotateX(15deg) rotate(-0.125rad) skewX(-5deg) rotate3d(0.1,1.5,0.7,25deg) skewY(-0.2rad)',
-  combo3: 'perspective(1200px) rotateY(-175deg) rotate(-0.125rad) scale3d(0.9,1.1,0.75) skewX(-0.2rad) rotate3d(0.1,1.5,0.7,25deg) skewY(-5deg) matrix(0.9659, 0.2588, -0.2588, 0.9659, -1.5396, -1.5396)'
+  combo3: 'perspective(1200px) rotateY(-175deg) rotate(-0.125rad) scale3d(0.9,1.1,0.75) skewX(-0.2rad) rotate3d(0.1,1.5,0.7,25deg) skewY(-5deg) matrix(0.9659, 0.2588, -0.2588, 0.9659, -1.5396, -1.5396)',
+  translateZero: 'translate(0px, 20px)',
+  translateZeroX: 'translateX(0px)',
+  scaleZeroX: 'scaleX(0)',
+  rotateZero: 'rotate(0deg)',
+  rotateZeroY: 'rotateY(0deg)',
+  skewZero: 'skew(0deg)',
+  skewZeroY: 'skewY(0deg)',
+  perspectiveZero: 'perspective(0px)',
+  scaleOne: 'scale(1, 1)',
+  scale3dOne: 'scale3d(1, 1, 1)',
+  rotateGrad: 'rotate(100grad)',
+  rotateTurn: 'rotate(0.25turn)',
+  rotateRad: 'rotate(1rad)',
+  rotateGrad3d: 'rotate3d(1, 0, 0, 100grad)',
+  rotateGradUpper: 'rotate(10Grad)'
 }
