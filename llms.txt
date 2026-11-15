@@ -2,7 +2,7 @@
 
 > A TypeScript sourced [DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix) shim for **Node.js** apps and legacy browsers. Ships a single default export, the `CSSMatrix` class, with an API surface nearly identical to native `DOMMatrix`. Zero runtime dependencies, 100% test coverage, works where the `DOMMatrix` / `DOMPoint` globals do not exist.
 
-> Current version: **3.1.3**
+> Current version: **3.1.4**
 
 ## Links
 
@@ -45,7 +45,7 @@ element.style.transform = m.toString();
 
 **Static methods** — `fromString`, `fromArray`, `fromMatrix`, `toArray`, `isCompatibleArray`, `isCompatibleObject`, `Translate`, `Rotate`, `RotateAxisAngle`, `Scale`, `Skew`, `SkewX`, `SkewY`, `Multiply`.
 
-**Static properties** — `CSSMatrix.version` (the library version, e.g. `"3.1.3"`).
+**Static properties** — `CSSMatrix.version` (the library version, e.g. `"3.1.4"`).
 
 **Instance methods** — `setMatrixValue`, `translate` / `translateSelf`, `rotate` / `rotateSelf`, `rotateAxisAngle` / `rotateAxisAngleSelf`, `scale` / `scaleSelf`, `skew` / `skewSelf`, `skewX` / `skewXSelf`, `skewY` / `skewYSelf`, `multiply` / `multiplySelf`, `transformPoint`, `toArray`, `toFloat32Array`, `toFloat64Array`, `toString`, `toJSON`.
 

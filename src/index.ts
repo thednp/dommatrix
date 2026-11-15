@@ -83,7 +83,7 @@ const fromArray = (
       `CSSMatrix: "${Array.from(array).join(",")}" must be an array with 6/16 numbers.`,
     );
   }
-  // istanbul ignore else @preserve
+  // istanbul ignore else
   if (array.length === 16) {
     const [m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44] = array;
     return writeValues(

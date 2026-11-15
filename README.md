@@ -191,7 +191,7 @@ For the complete JavaScript API, check the [JavaScript API](https://github.com/t
 
 | Property            | Description                         |
 | ------------------- | ----------------------------------- |
-| `CSSMatrix.version` | The library version, e.g. `"3.1.3"` |
+| `CSSMatrix.version` | The library version, e.g. `"3.1.4"` |
 
 ## CSSMatrix vs native DOMMatrix
 
@@ -257,4 +257,4 @@ DOMMatrix shim is meant to be a light pocket tool for many things like [svg-path
 
 ## License
 
-DOMMatrix shim is [MIT Licensed](https://github.com/thednp/DOMMatrix/blob/master/LICENSE).
+DOMMatrix shim is [MIT Licensed](https://github.com/thednp/dommatrix/blob/master/LICENSE).

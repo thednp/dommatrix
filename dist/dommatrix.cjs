@@ -1,5 +1,5 @@
 // package.json
-var version = "3.1.3";
+var version = "3.1.4";
 // src/index.ts
 /** The property names of a JSONMatrix, used for compatibility checks */
 const JSON_KEYS = Object.keys({
@@ -50,7 +50,6 @@ const isCompatibleObject = (object) => {
 */
 const fromArray = (array, target) => {
 	if (!isCompatibleArray(array)) throw TypeError(`CSSMatrix: "${Array.from(array).join(",")}" must be an array with 6/16 numbers.`);
-	// istanbul ignore else @preserve
 	if (array.length === 16) {
 		const [m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44] = array;
 		return writeValues(target ?? new CSSMatrix(), m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44);

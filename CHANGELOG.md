@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.4] - 2026-11-15
+
+### Changed
+
+- Tooling maintenance: the bundles now control their comments with the bundler's native `outputOptions.comments` option in `tsdown.config.ts`, with no extra plugin. The UMD build (`comments: false`) drops every source comment, which shrinks it by ~20% — 36.1 kB → 19.0 kB — while the ESM and CJS builds keep their JSDoc (`comments: { jsdoc: true, annotation: false }`) and only drop the `/*#__PURE__*/` annotation comments. The bundled type declarations (`dist/dommatrix.d.ts`) are unchanged, so the editor hints are the same.
+- The `// istanbul ignore else @preserve` marker in `src/index.ts` dropped its `@preserve` suffix, since keeping that comment in the UMD output is no longer needed.
+
+[3.1.4]: https://github.com/thednp/dommatrix/releases/tag/3.1.4
+
 ## [3.1.3] - 2026-11-14
 
 ### Changed
