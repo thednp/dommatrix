@@ -11,7 +11,7 @@ The tables below report the median of two interleaved runs on headless Chromium,
 
 <!-- b-updated -->
 
-Last updated: **2026-08-05**.
+Last updated: **2026-11-15**.
 
 <!-- /b-updated -->
 
@@ -21,36 +21,35 @@ Ratio = 3.1.x ops/s ÷ 3.0.x ops/s.
 
 <!-- b1 -->
 
-**Large wins (6.4x–91x)**:
+**Large wins (6.3x–89x)**:
 
-| Operation | Ratio | Operation | Ratio |
-| --- | --- | --- | --- |
-| `fromMatrix` | ~6.4x | `multiply` | ~6.8x |
-| `multiplySelf` | ~19x | `translate` | ~14x |
-| `translateSelf` | ~51x | `scale` | ~13x |
-| `scaleSelf` | ~64x | `skew` | ~13x |
-| `skewSelf` | ~91x | `toJSON` | ~9.6x |
+| Operation       | Ratio | Operation    | Ratio |
+| --------------- | ----- | ------------ | ----- |
+| `fromMatrix`    | ~6.3x | `multiply`   | ~6.9x |
+| `multiplySelf`  | ~18x  | `translate`  | ~13x  |
+| `translateSelf` | ~50x  | `rotateSelf` | ~13x  |
+| `scale`         | ~13x  | `scaleSelf`  | ~69x  |
+| `skew`          | ~13x  | `skewSelf`   | ~89x  |
+| `toJSON`        | ~6.7x |              |       |     |
 
-**Moderate wins (2.3x–5.2x)**:
+**Moderate wins (2.1x–5.4x)**:
 
-| Operation | Ratio | Operation | Ratio |
-| --- | --- | --- | --- |
-| `new CSSMatrix(transform list)` | ~2.3x | `setMatrixValue (transform list)` | ~2.3x |
-| `rotate` | ~5.2x | `rotateSelf` | ~4.6x |
-| `rotateAxisAngle` | ~4.1x | | | |
+| Operation                       | Ratio | Operation                         | Ratio |
+| ------------------------------- | ----- | --------------------------------- | ----- |
+| `new CSSMatrix(transform list)` | ~2.1x | `setMatrixValue (transform list)` | ~2.4x |
+| `rotate`                        | ~5.4x | `rotateAxisAngle`                 | ~4.0x |
 
-**Mild wins (1.2x–1.5x)**:
+**Mild wins (1.2x–1.3x)**:
 
-| Operation | Ratio |
-| --- | --- |
-| `new CSSMatrix(matrix 2D)` | ~1.5x |
-| `new CSSMatrix(matrix3d)` | ~1.2x |
-| `setMatrixValue (array)` | ~1.3x |
-| `toFloat32Array` | ~1.2x |
+| Operation                  | Ratio |
+| -------------------------- | ----- |
+| `new CSSMatrix(matrix 2D)` | ~1.2x |
+| `setMatrixValue (array)`   | ~1.3x |
+| `toFloat32Array`           | ~1.3x |
 
-**At parity (0.97x–1.0x)** — unchanged code paths, no regression:
+**At parity (0.83x–1.1x)** — unchanged code paths, no regression:
 
-`new CSSMatrix()`, `fromArray`, `transformPoint`, `toString`, `is2D + isIdentity` (~0.97x–1.0x).
+`new CSSMatrix()`, `new CSSMatrix(matrix3d)`, `fromArray`, `transformPoint`, `toString`, `is2D + isIdentity` (~0.83x–1.1x).
 
 <!-- /b1 -->
 
@@ -60,33 +59,30 @@ Ratio = shim ops/s ÷ native ops/s.
 
 <!-- b2 -->
 
-**Shim faster (1.8x–162x)**:
+**Shim faster (1.3x–166x)**:
 
-| Operation | Ratio | Operation | Ratio |
-| --- | --- | --- | --- |
-| `new Matrix()` | ~162x | `new Matrix(matrix 2D)` | ~2.5x |
-| `new Matrix(transform list)` | ~1.9x | `new Matrix(matrix3d)` | ~2.0x |
-| `static from values` | ~7.5x | `fromMatrix` | ~3.8x |
-| `setMatrixValue (transform list)` | ~3.4x | `multiply` | ~3.9x |
-| `multiplySelf` | ~49x | `translate` | ~4.0x |
-| `translateSelf` | ~31x | `rotate` | ~3.6x |
-| `rotateSelf` | ~8.4x | `rotateAxisAngle` | ~9.6x |
-| `scale` | ~3.9x | `scaleSelf` | ~37x |
-| `skewX` | ~3.9x | `skewXSelf` | ~35x |
-| `transformPoint` | ~12x | `toJSON` | ~2.1x |
-| `is2D + isIdentity` | ~1.8x | | | |
+| Operation                         | Ratio | Operation               | Ratio |
+| --------------------------------- | ----- | ----------------------- | ----- |
+| `new Matrix()`                    | ~166x | `new Matrix(matrix 2D)` | ~2.2x |
+| `new Matrix(transform list)`      | ~1.8x | `new Matrix(matrix3d)`  | ~1.3x |
+| `static from values`              | ~8.9x | `fromMatrix`            | ~3.7x |
+| `setMatrixValue (transform list)` | ~3.3x | `multiply`              | ~3.8x |
+| `multiplySelf`                    | ~49x  | `translate`             | ~3.5x |
+| `translateSelf`                   | ~33x  | `rotate`                | ~3.0x |
+| `rotateSelf`                      | ~8.6x | `rotateAxisAngle`       | ~9.5x |
+| `scale`                           | ~3.8x | `scaleSelf`             | ~35x  |
+| `skewX`                           | ~3.4x | `skewXSelf`             | ~37x  |
+| `transformPoint`                  | ~12x  | `toJSON`                | ~2.1x |
+| `is2D + isIdentity`               | ~1.8x |                         |       |     |
 
-*¹ measured as construct + `toJSON()`; native's `toJSON()` is a slow JS↔C++ bridge that dominates this row.*
+_¹ measured as construct + `toJSON()`; native's `toJSON()` is a slow JS↔C++ bridge that dominates this row._
 
 **Native faster**:
 
-| Operation | Ratio |
-| --- | --- |
-| `toString` | ~0.82x (native ~1.2x faster) |
-
-**At parity** — noise-floor territory (identical files measure ~0.92–1.09x):
-
-`toFloat32Array` (~0.97x–0.97x).
+| Operation        | Ratio                        |
+| ---------------- | ---------------------------- |
+| `toFloat32Array` | ~0.95x (native ~1.1x faster) |
+| `toString`       | ~0.82x (native ~1.2x faster) |
 
 <!-- /b2 -->
 

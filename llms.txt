@@ -24,6 +24,7 @@
 - parses any valid CSS transform string (`matrix()`, `matrix3d()`, `translate*()`, `rotate*()`, `rotate3d()`, `scale*()`, `skew*()`, `perspective()`) with `deg` / `grad` / `rad` / `turn` / `px` units;
 - implements both immutable methods (`translate()`, `rotate()`, `scale()`, `skew()`, `multiply()`) that return new matrices, and mutating `*Self()` variants that return `this`, mirroring native `DOMMatrix`;
 - ships bundled TypeScript definitions, including the exported `Matrix`, `Matrix3d`, `JSONMatrix`, `PointTuple` and `CSSMatrixInput` types;
+- exposes the library version as the `CSSMatrix.version` static property;
 - is verified against the native interface by a browser test suite (Vitest + Chromium) with 100% coverage;
 - is built with [tsdown](https://tsdown.dev), producing ESM (`dommatrix.mjs`), CJS (`dommatrix.cjs`) and UMD (`dommatrix.js`, global `CSSMatrix`) bundles into `dist/`.
 
@@ -43,6 +44,8 @@ element.style.transform = m.toString();
 **Constructor** — accepts a CSS transform string, an array of 6 (2D) / 16 (3D) numbers, a `Float32Array` / `Float64Array`, a `CSSMatrix` / `DOMMatrix` instance, or a `toJSON()` object.
 
 **Static methods** — `fromString`, `fromArray`, `fromMatrix`, `toArray`, `isCompatibleArray`, `isCompatibleObject`, `Translate`, `Rotate`, `RotateAxisAngle`, `Scale`, `Skew`, `SkewX`, `SkewY`, `Multiply`.
+
+**Static properties** — `CSSMatrix.version` (the library version, e.g. `"3.1.3"`).
 
 **Instance methods** — `setMatrixValue`, `translate` / `translateSelf`, `rotate` / `rotateSelf`, `rotateAxisAngle` / `rotateAxisAngleSelf`, `scale` / `scaleSelf`, `skew` / `skewSelf`, `skewX` / `skewXSelf`, `skewY` / `skewYSelf`, `multiply` / `multiplySelf`, `transformPoint`, `toArray`, `toFloat32Array`, `toFloat64Array`, `toString`, `toJSON`.
 

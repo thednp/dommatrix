@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.1.3] - 2026-11-14
 
+### Changed
+
+- Added the `CSSMatrix.version` static property, which exposes the library version (e.g. `"3.1.3"`). The value is read from `package.json` at build time and inlined in the bundles, so it adds no runtime dependency and no file read.
+- The GitHub Actions workflows now run on the Vite+ toolchain. `ci.yml`, `publish.yml` and `codeql.yml` use the `voidzero-dev/setup-vp` action (pinned to the exact release that ships with the pinned Vite+ version) instead of the separate pnpm / Node.js setup steps, and run the project scripts through `vpr` (`vpr lint`, `vpr build`, `vpr test`). The release workflow publishes to npm with `vp pm publish` (keeping the provenance attestation) and to JSR with `deno publish --allow-dirty`.
+
 ### Fixed
 
 - `CSSMatrix.fromString()` (and the `new CSSMatrix(string)` constructor) no longer throws `CSSMatrix: invalid transform string` when a transform function argument is `0`. The parser checked the arguments for truthiness instead of testing them for being a number, so every valid zero value was rejected: `translate(0px, 20px)`, `translateX(0px)`, `scaleX(0)`, `rotate(0deg)`, `rotateX(0deg)`, `rotate3d(0, 0, 1, 0deg)`, `skew(0deg)`, `skewX(0deg)`, `perspective(0px)`, ... All of them now produce the same matrix as the native `DOMMatrix`.
@@ -31,7 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dependencies
 
 - Bump `vitest` and `@vitest/*` from `^4.1.10` to `^4.1.11`, `@types/node` from `^26.1.2` to `^26.4.1` (with `pnpm-lock.yaml` and `deno.lock` refreshed).
-
 
 ## [3.1.1] - 2026-08-05
 
@@ -78,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [3.1.0]: https://github.com/thednp/dommatrix/releases/tag/3.1.0
 
 ## [3.0.6] - 2026-08-04
+
 - The `README.md` now documents installing from JSR (`jsr add @thednp/dommatrix`).
 
 ## [3.0.5] - 2026-08-04
@@ -87,7 +92,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JSDoc coverage for every public class member (the `m11`–`m44` and `a`–`f` properties plus all static helpers), so the generated documentation is complete.
 - A `deno.json` for JSR publishing (`@thednp/dommatrix@3.0.5`, `exports: "./src/index.ts"`) with Deno tasks mirroring the `package.json` scripts (`test`, `test-ui`, `clean-coverage`, `lint`, `check`, `format`, `fix`, `build`, `copy-docs`), the vitest/playwright dev dependencies declared via `npm:` specifiers in `imports`, and a `publish.include` list.
 - The GitHub Actions publish workflow now also publishes to JSR (`deno publish`).
-
 
 ### Changed
 

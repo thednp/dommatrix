@@ -1,336 +1,336 @@
 {
-  "date": "2026-08-05",
+  "date": "2026-11-15",
   "backup": [
     {
       "op": "new CSSMatrix()",
       "parity": "ok",
-      "backup": 39215686,
-      "current": 40816326,
-      "ratio": 1.0408163202857141
+      "backup": 38461539,
+      "current": 40816327,
+      "ratio": 1.061224487142857
     },
     {
       "op": "new CSSMatrix(matrix 2D)",
       "parity": "ok",
-      "backup": 758725,
-      "current": 1101322,
-      "ratio": 1.4515430491943722
+      "backup": 793651,
+      "current": 970874,
+      "ratio": 1.2233009219417603
     },
     {
       "op": "new CSSMatrix(transform list)",
       "parity": "ok",
-      "backup": 265252,
-      "current": 615385,
-      "ratio": 2.3200013571999456
+      "backup": 313972,
+      "current": 671141,
+      "ratio": 2.137582332182488
     },
     {
       "op": "new CSSMatrix(matrix3d)",
       "parity": "ok",
-      "backup": 706215,
-      "current": 846024,
-      "ratio": 1.197969456893439
+      "backup": 723589,
+      "current": 597372,
+      "ratio": 0.8255681056511363
     },
     {
       "op": "fromArray",
       "parity": "ok",
-      "backup": 3125000,
-      "current": 3144654,
-      "ratio": 1.00628928
+      "backup": 3267974,
+      "current": 3355705,
+      "ratio": 1.02684568481879
     },
     {
       "op": "fromMatrix",
       "parity": "ok",
-      "backup": 2369668,
+      "backup": 2415459,
       "current": 15151515,
-      "ratio": 6.3939399949697595
+      "ratio": 6.272727046909097
     },
     {
       "op": "setMatrixValue (array)",
       "parity": "ok",
-      "backup": 6756757,
-      "current": 8928571,
-      "ratio": 1.3214284604285755
+      "backup": 7142857,
+      "current": 9433962,
+      "ratio": 1.3207547064150942
     },
     {
       "op": "setMatrixValue (transform list)",
       "parity": "ok",
-      "backup": 829876,
-      "current": 1869159,
-      "ratio": 2.252335288645533
+      "backup": 833333,
+      "current": 2020202,
+      "ratio": 2.424243369697348
     },
     {
       "op": "multiply",
       "parity": "ok",
-      "backup": 2358491,
-      "current": 16129032,
-      "ratio": 6.838708309677671
+      "backup": 2427184,
+      "current": 16666667,
+      "ratio": 6.86666812240028
     },
     {
       "op": "multiplySelf",
       "parity": "ok",
-      "backup": 1445087,
-      "current": 27777778,
-      "ratio": 19.222218454667434
+      "backup": 1483680,
+      "current": 26315789,
+      "ratio": 17.736836110212444
     },
     {
       "op": "translate",
       "parity": "ok",
-      "backup": 2105263,
-      "current": 28571429,
-      "ratio": 13.571429792857234
+      "backup": 2178649,
+      "current": 27777778,
+      "ratio": 12.750001491750163
     },
     {
       "op": "translateSelf",
       "parity": "ok",
-      "backup": 1402525,
-      "current": 71428573,
-      "ratio": 50.9285559972193
+      "backup": 1430615,
+      "current": 71428571,
+      "ratio": 49.92857687078634
     },
     {
       "op": "rotate",
       "parity": "ok",
-      "backup": 1724138,
-      "current": 9009009,
-      "ratio": 5.225225010990999
+      "backup": 1808318,
+      "current": 9803922,
+      "ratio": 5.42156965754917
     },
     {
       "op": "rotateSelf",
       "parity": "ok",
-      "backup": 1169591,
-      "current": 5376344,
-      "ratio": 4.596772717984321
+      "backup": 1219512,
+      "current": 16393443,
+      "ratio": 13.442625410820066
     },
     {
       "op": "rotateAxisAngle",
       "parity": "ok",
-      "backup": 2118644,
-      "current": 8620690,
-      "ratio": 4.0689658102069055
+      "backup": 2173913,
+      "current": 8771930,
+      "ratio": 4.035087880701758
     },
     {
       "op": "scale",
       "parity": "ok",
-      "backup": 2127660,
-      "current": 28571429,
-      "ratio": 13.42856894428621
+      "backup": 2247191,
+      "current": 30303030,
+      "ratio": 13.484848417424242
     },
     {
       "op": "scaleSelf",
       "parity": "ok",
-      "backup": 1416431,
-      "current": 90909091,
-      "ratio": 64.18179989000524
+      "backup": 1457726,
+      "current": 100000000,
+      "ratio": 68.59999753040009
     },
     {
       "op": "skew",
       "parity": "ok",
-      "backup": 1964637,
-      "current": 26315790,
-      "ratio": 13.39473398902698
+      "backup": 2016129,
+      "current": 27027027,
+      "ratio": 13.40540560648649
     },
     {
       "op": "skewSelf",
       "parity": "ok",
-      "backup": 1369863,
-      "current": 124999998,
-      "ratio": 91.24999945249999
+      "backup": 1410437,
+      "current": 125000000,
+      "ratio": 88.62501480037747
     },
     {
       "op": "transformPoint",
       "parity": "ok",
-      "backup": 32258065,
+      "backup": 30303030,
       "current": 33333333,
-      "ratio": 1.0333333075000004
+      "ratio": 1.1
     },
     {
       "op": "toString",
       "parity": "ok",
-      "backup": 2392344,
-      "current": 2450980,
-      "ratio": 1.0245098530980494
+      "backup": 2427184,
+      "current": 2551020,
+      "ratio": 1.0510204417959248
     },
     {
       "op": "toJSON",
       "parity": "ok",
-      "backup": 2212389,
-      "current": 21276596,
-      "ratio": 9.617023046127963
+      "backup": 3039514,
+      "current": 20408163,
+      "ratio": 6.714284915285799
     },
     {
       "op": "toFloat32Array",
       "parity": "ok",
-      "backup": 10869565,
-      "current": 12820513,
-      "ratio": 1.1794872195897443
+      "backup": 8771930,
+      "current": 11363636,
+      "ratio": 1.2954544780909105
     },
     {
       "op": "is2D + isIdentity",
       "parity": "ok",
-      "backup": 147058824,
-      "current": 142857143,
-      "ratio": 0.9714285692914286
+      "backup": 149253731,
+      "current": 147058824,
+      "ratio": 0.9852941230661765
     }
   ],
   "native": [
     {
       "op": "new Matrix()",
       "parity": "ok",
-      "shim": 83333333,
-      "native": 514139,
-      "ratio": 162.0832751454373
+      "shim": 86956522,
+      "native": 524521,
+      "ratio": 165.78272747897606
     },
     {
       "op": "new Matrix(matrix 2D)",
       "parity": "ok",
-      "shim": 1018330,
-      "native": 401284,
-      "ratio": 2.537679050248702
+      "shim": 931099,
+      "native": 425532,
+      "ratio": 2.1880822123835575
     },
     {
       "op": "new Matrix(transform list)",
       "parity": "ok",
-      "shim": 696864,
-      "native": 363636,
-      "ratio": 1.9163779163779164
+      "shim": 706714,
+      "native": 392157,
+      "ratio": 1.8021200692579757
     },
     {
       "op": "new Matrix(matrix3d)",
       "parity": "ok",
-      "shim": 777605,
-      "native": 397456,
-      "ratio": 1.9564555573447124
+      "shim": 560538,
+      "native": 421941,
+      "ratio": 1.3284748341592783
     },
     {
       "op": "static from values",
       "parity": "ok",
-      "shim": 2717391,
-      "native": 362319,
-      "ratio": 7.499995860001822
+      "shim": 3448276,
+      "native": 385505,
+      "ratio": 8.944828212344847
     },
     {
       "op": "fromMatrix",
       "parity": "ok",
-      "shim": 859107,
-      "native": 223514,
-      "ratio": 3.843638429807529
+      "shim": 848896,
+      "native": 229991,
+      "ratio": 3.6909966042149476
     },
     {
       "op": "setMatrixValue (transform list)",
       "parity": "ok",
-      "shim": 1666667,
-      "native": 496278,
-      "ratio": 3.3583334340833164
+      "shim": 1818182,
+      "native": 546448,
+      "ratio": 3.327273592363775
     },
     {
       "op": "multiply",
       "parity": "ok",
-      "shim": 854701,
-      "native": 216732,
-      "ratio": 3.943584703689349
+      "shim": 841751,
+      "native": 220070,
+      "ratio": 3.8249238878538647
     },
     {
       "op": "multiplySelf",
       "parity": "ok",
-      "shim": 12820513,
-      "native": 263852,
-      "ratio": 48.58978897260585
+      "shim": 12500000,
+      "native": 255885,
+      "ratio": 48.8500693670985
     },
     {
       "op": "translate",
       "parity": "ok",
-      "shim": 1633987,
-      "native": 410509,
-      "ratio": 3.9803926345098404
+      "shim": 1536098,
+      "native": 434405,
+      "ratio": 3.536096499810085
     },
     {
       "op": "translateSelf",
       "parity": "ok",
-      "shim": 17241379,
-      "native": 562746,
-      "ratio": 30.63794145138304
+      "shim": 19607843,
+      "native": 590319,
+      "ratio": 33.21567322075013
     },
     {
       "op": "rotate",
       "parity": "ok",
-      "shim": 1432665,
-      "native": 402739,
-      "ratio": 3.5573038618062816
+      "shim": 1275510,
+      "native": 421763,
+      "ratio": 3.0242339892309187
     },
     {
       "op": "rotateSelf",
       "parity": "ok",
-      "shim": 4184100,
-      "native": 496771,
-      "ratio": 8.422593106280358
+      "shim": 4587156,
+      "native": 535906,
+      "ratio": 8.559627994461716
     },
     {
       "op": "rotateAxisAngle",
       "parity": "ok",
-      "shim": 4273504,
-      "native": 445236,
-      "ratio": 9.59828944649579
+      "shim": 4504505,
+      "native": 471698,
+      "ratio": 9.549552891892693
     },
     {
       "op": "scale",
       "parity": "ok",
-      "shim": 1574803,
-      "native": 403226,
-      "ratio": 3.9055095653554086
+      "shim": 1655629,
+      "native": 435350,
+      "ratio": 3.8029838061329966
     },
     {
       "op": "scaleSelf",
       "parity": "ok",
-      "shim": 20000000,
-      "native": 547345,
-      "ratio": 36.540025029917146
+      "shim": 18518519,
+      "native": 532481,
+      "ratio": 34.77780240046124
     },
     {
       "op": "skewX",
       "parity": "ok",
-      "shim": 1642036,
-      "native": 421053,
-      "ratio": 3.8998320876469235
+      "shim": 1517451,
+      "native": 449438,
+      "ratio": 3.3763299943484975
     },
     {
       "op": "skewXSelf",
       "parity": "ok",
-      "shim": 18867924,
-      "native": 546448,
-      "ratio": 34.52830644452903
+      "shim": 21276596,
+      "native": 569152,
+      "ratio": 37.38297677948949
     },
     {
       "op": "transformPoint",
       "parity": "ok",
-      "shim": 28571429,
-      "native": 2450980,
-      "ratio": 11.657144897143183
+      "shim": 30303030,
+      "native": 2610966,
+      "ratio": 11.606060745333336
     },
     {
       "op": "toJSON",
       "parity": "ok",
-      "shim": 907441,
-      "native": 428816,
-      "ratio": 2.116154714376329
+      "shim": 933707,
+      "native": 451264,
+      "ratio": 2.0690925932491844
     },
     {
       "op": "toFloat32Array",
       "parity": "ok",
-      "shim": 496032,
-      "native": 513875,
-      "ratio": 0.965277548041839
+      "shim": 515464,
+      "native": 541712,
+      "ratio": 0.9515462090557344
     },
     {
       "op": "toString",
       "parity": "-",
-      "shim": 668449,
+      "shim": 666667,
       "native": 816993,
-      "ratio": 0.8181820407273991
+      "ratio": 0.816000871488495
     },
     {
       "op": "is2D + isIdentity",
       "parity": "ok",
-      "shim": 172413794,
-      "native": 94339622,
-      "ratio": 1.8275862288275864
+      "shim": 178571429,
+      "native": 101010101,
+      "ratio": 1.7678571472767857
     }
   ]
 }

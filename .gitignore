@@ -4,3 +4,4 @@ experiments
 coverage
 test/_screenshots_
 test/__screenshots__
+.vitest/

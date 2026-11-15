@@ -1,19 +1,18 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig } from "vite-plus/pack";
 
 export default defineConfig({
-  entry: { dommatrix: 'src/index.ts' },
+  entry: { dommatrix: "src/index.ts" },
   format: {
     es: {},
     cjs: { dts: false },
     umd: { dts: false },
   },
-  globalName: 'CSSMatrix',
+  globalName: "CSSMatrix",
   sourcemap: true,
   dts: true,
-  outExtensions: ({ format }) =>
-    format === 'es' ? { dts: '.d.ts' } : undefined,
+  outExtensions: ({ format }) => (format === "es" ? { dts: ".d.ts" } : undefined),
   outputOptions: (options, format) =>
-    format === 'umd'
-      ? { ...options, entryFileNames: '[name].js', chunkFileNames: '[name].js' }
+    format === "umd"
+      ? { ...options, entryFileNames: "[name].js", chunkFileNames: "[name].js" }
       : undefined,
 });

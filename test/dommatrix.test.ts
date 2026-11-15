@@ -1,6 +1,7 @@
-import { expect, it, describe, vi, beforeEach, afterEach } from "vitest";
+import { expect, it, describe, vi, beforeEach, afterEach } from "vite-plus/test";
 import { getExampleDOM } from "./fixtures/getExampleDom";
 
+import pkg from "../package.json" with { type: "json" };
 import CSSMatrix from "../src/index";
 // import CSSMatrix from "../dist/dommatrix";
 import type { Matrix, Matrix3d } from "../src/types";
@@ -76,8 +77,8 @@ describe("DOMMatrix Class Test", () => {
 
   it("Test init with incomplete array, expect error", () => {
     const test = [
-      0.906308, 0.0839613, -0.414194, 0.00103549, 0, 0.980067, 0.198669,
-      -0.000496673, 0.422618, -0.180056, 0.888242, -0.0022206, 0, 0, 0,
+      0.906308, 0.0839613, -0.414194, 0.00103549, 0, 0.980067, 0.198669, -0.000496673, 0.422618,
+      -0.180056, 0.888242, -0.0022206, 0, 0, 0,
     ];
     try {
       CSSMatrix.fromArray(test);
@@ -302,9 +303,7 @@ describe("DOMMatrix Class Test", () => {
     const dp = new DOMMatrix().rotate(15).translate(15, 15);
     const mp = new CSSMatrix().rotate(15).translate(15, 15);
 
-    console.log(
-      "For some reason the native DOMMatrix again falsely claims **is2D** to be true",
-    );
+    console.log("For some reason the native DOMMatrix again falsely claims **is2D** to be true");
     expect(mp.isIdentity).to.equal(dp.isIdentity);
     expect(mp.is2D).to.equal(dp.is2D);
     expect(mp.toFloat32Array()).to.deep.equal(dp.toFloat32Array());
@@ -314,9 +313,7 @@ describe("DOMMatrix Class Test", () => {
   });
 
   it("Test init a 6 values array", () => {
-    const test = [
-      0.9659, 0.25879, -0.2588, 0.9659, -1.53961, -1.53961,
-    ] as Matrix;
+    const test = [0.9659, 0.25879, -0.2588, 0.9659, -1.53961, -1.53961] as Matrix;
     const m1 = new CSSMatrix(test);
     // const m2 = new CSSMatrix(...test);
     const m3 = new CSSMatrix(test);
@@ -328,8 +325,8 @@ describe("DOMMatrix Class Test", () => {
 
   it("Test init a 16 values array", () => {
     const test = [
-      0.852, 0.153, 0.186, -0.0004, -0.092, 0.869, -0.266, 0.0006, -0.25, 0.258,
-      0.933, -0.002, 0, 0, 0, 1,
+      0.852, 0.153, 0.186, -0.0004, -0.092, 0.869, -0.266, 0.0006, -0.25, 0.258, 0.933, -0.002, 0,
+      0, 0, 1,
     ] as Matrix3d;
     const m1 = new CSSMatrix(test);
     // const m2 = new CSSMatrix(...test);
@@ -339,11 +336,16 @@ describe("DOMMatrix Class Test", () => {
     expect(m1.toFloat32Array()).to.deep.equal(m3.toFloat32Array());
     expect(m1.toFloat32Array()).to.deep.equal(m4.toFloat32Array());
 
-    expect(
-      new CSSMatrix(new Float32Array(test)).toFloat32Array(),
-    ).to.deep.equal(m1.toFloat32Array());
+    expect(new CSSMatrix(new Float32Array(test)).toFloat32Array()).to.deep.equal(
+      m1.toFloat32Array(),
+    );
     // @ts-expect-error
     expect(new CSSMatrix(42).isIdentity).toBe(true);
+  });
+
+  it("Test static version property", () => {
+    expect(CSSMatrix.version).to.equal(pkg.version);
+    expect(CSSMatrix.version).to.match(/^\d+\.\d+\.\d+/);
   });
 
   it("Test static methods", () => {
@@ -392,40 +394,28 @@ describe("DOMMatrix Class Test", () => {
       CSSMatrix.fromString(source1);
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
-      expect(err).to.have.property(
-        "message",
-        `CSSMatrix: invalid transform string "${source1}"`,
-      );
+      expect(err).to.have.property("message", `CSSMatrix: invalid transform string "${source1}"`);
     }
 
     try {
       CSSMatrix.fromString(source2);
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
-      expect(err).to.have.property(
-        "message",
-        `CSSMatrix: invalid transform string "${source2}"`,
-      );
+      expect(err).to.have.property("message", `CSSMatrix: invalid transform string "${source2}"`);
     }
 
     try {
       CSSMatrix.fromString(source3);
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
-      expect(err).to.have.property(
-        "message",
-        `CSSMatrix: invalid transform string "${source3}"`,
-      );
+      expect(err).to.have.property("message", `CSSMatrix: invalid transform string "${source3}"`);
     }
 
     try {
       CSSMatrix.fromString(source4);
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
-      expect(err).to.have.property(
-        "message",
-        `CSSMatrix: invalid transform string "${source4}"`,
-      );
+      expect(err).to.have.property("message", `CSSMatrix: invalid transform string "${source4}"`);
     }
   });
 
@@ -468,21 +458,15 @@ describe("DOMMatrix Class Test", () => {
 describe("CSSMatrix fromString edge cases", () => {
   it("Test translate with a zero value, expect a valid matrix", () => {
     const m = new CSSMatrix("translate(0px, 20px)");
-    expect(m.toFloat32Array(true)).to.deep.equal(
-      new Float32Array([1, 0, 0, 1, 0, 20]),
-    );
+    expect(m.toFloat32Array(true)).to.deep.equal(new Float32Array([1, 0, 0, 1, 0, 20]));
     expect(new CSSMatrix("translate(0px)").isIdentity).to.equal(true);
     expect(new CSSMatrix("translateX(0px)").isIdentity).to.equal(true);
-    expect(new CSSMatrix("translate3d(0px, 0px, 0px)").isIdentity).to.equal(
-      true,
-    );
+    expect(new CSSMatrix("translate3d(0px, 0px, 0px)").isIdentity).to.equal(true);
   });
 
   it("Test scale with a zero value, expect a valid matrix", () => {
     const m = new CSSMatrix("scaleX(0)");
-    expect(m.toFloat32Array(true)).to.deep.equal(
-      new Float32Array([0, 0, 0, 1, 0, 0]),
-    );
+    expect(m.toFloat32Array(true)).to.deep.equal(new Float32Array([0, 0, 0, 1, 0, 0]));
     expect(new CSSMatrix("scale(0)").toFloat32Array(true)).to.deep.equal(
       new Float32Array([0, 0, 0, 0, 0, 0]),
     );
@@ -534,7 +518,7 @@ describe("CSSMatrix fromString edge cases", () => {
     expect(new CSSMatrix("rotate(200grad)").m11).to.be.closeTo(-1, 9);
     expect(new CSSMatrix("rotate(0.5turn)").m11).to.be.closeTo(-1, 9);
     expect(new CSSMatrix("skewX(100grad)").m21).to.be.closeTo(
-      Math.tan((100 * 360) / 400 / 180 * Math.PI),
+      Math.tan(((100 * 360) / 400 / 180) * Math.PI),
       6,
     );
   });
@@ -758,9 +742,7 @@ describe("CSSMatrix Mutable Methods", () => {
 
   it("Test rotateAxisAngleSelf to be chainable", () => {
     const m = new CSSMatrix();
-    const result = m
-      .rotateAxisAngleSelf(1, 0, 0, 90)
-      .rotateAxisAngleSelf(0, 1, 0, 45);
+    const result = m.rotateAxisAngleSelf(1, 0, 0, 90).rotateAxisAngleSelf(0, 1, 0, 45);
 
     expect(result).toBe(m);
     // Verify combined rotation
