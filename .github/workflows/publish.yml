@@ -23,9 +23,7 @@ jobs:
         with:
           node-version: "26"
           cache: true
-          run-install:
-            args:
-              - --frozen-lockfile
+          run-install: '{"args":["--frozen-lockfile"]}'
           registry-url: "https://registry.npmjs.org"
 
       - name: Verify Vite+

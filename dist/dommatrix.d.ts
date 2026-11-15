@@ -63,43 +63,13 @@ interface JSONMatrix {
 /** An array of 6 numbers representing a 2D matrix. */
 type Matrix = [number, number, number, number, number, number];
 /** An array of 16 numbers representing a 3D matrix. */
-type Matrix3d = [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-];
+type Matrix3d = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number];
 /** All CSSMatrix compatible initialization values. */
-type CSSMatrixInput =
-  | string
-  | number[]
-  | Matrix
-  | Matrix3d
-  | CSSMatrix
-  | DOMMatrix
-  | JSONMatrix
-  | Float32Array
-  | Float64Array;
+type CSSMatrixInput = string | number[] | Matrix | Matrix3d | CSSMatrix | DOMMatrix | JSONMatrix | Float32Array | Float64Array;
 /** Checks if an array is compatible with CSSMatrix */
-declare const isCompatibleArray: (
-  array?: unknown,
-) => array is Matrix | Matrix3d | Float32Array | Float64Array;
+declare const isCompatibleArray: (array?: unknown) => array is Matrix | Matrix3d | Float32Array | Float64Array;
 /** Checks if an object is compatible with CSSMatrix */
-declare const isCompatibleObject: (
-  object?: unknown,
-) => object is CSSMatrix | DOMMatrix | JSONMatrix;
+declare const isCompatibleObject: (object?: unknown) => object is CSSMatrix | DOMMatrix | JSONMatrix;
 /**
  * Creates a new mutable `CSSMatrix` instance given an array of 16/6 floating point values.
  * This static method invalidates arrays that contain non-number elements.
@@ -112,10 +82,7 @@ declare const isCompatibleObject: (
  * a new matrix is returned. Used internally by `setMatrixValue` to mutate in place.
  * @return the resulted matrix.
  */
-declare const fromArray: (
-  array: number[] | Float32Array | Float64Array,
-  target?: CSSMatrix,
-) => CSSMatrix;
+declare const fromArray: (array: number[] | Float32Array | Float64Array, target?: CSSMatrix) => CSSMatrix;
 /**
  * Creates a new mutable `CSSMatrix` instance given an existing matrix or a
  * `DOMMatrix` instance which provides the values for its properties.
@@ -240,10 +207,7 @@ declare const SkewY: (angle: number) => CSSMatrix;
  * @param m2 the second matrix.
  * @return the resulted matrix.
  */
-declare const Multiply: (
-  m1: CSSMatrix | DOMMatrix | JSONMatrix,
-  m2: CSSMatrix | DOMMatrix | JSONMatrix,
-) => CSSMatrix;
+declare const Multiply: (m1: CSSMatrix | DOMMatrix | JSONMatrix, m2: CSSMatrix | DOMMatrix | JSONMatrix) => CSSMatrix;
 /**
  * Creates and returns a new `DOMMatrix` compatible instance
  * with equivalent instance methods.
